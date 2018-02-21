@@ -1,4 +1,0 @@
-This file contains a list of packages required to run the GENIOS web
-application.
-
-Flask - Python routing framework
