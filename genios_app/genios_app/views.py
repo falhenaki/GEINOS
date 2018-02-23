@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app
+from genios_app import app, models
 
 @app.route('/')
 def start_app():
@@ -31,5 +31,10 @@ def logout():
 	flash('You were logged out')
 	return start_app()
 
-if __name__ == "__main__":
-	app.run()
+@app.route('/ping_device', methods=['GET', 'POST'])
+def simple_ping():
+	r = models.simple_ping()
+	flash(r)
+	return start_app()
+
+
