@@ -14,6 +14,7 @@ def simple_ping():
     data = fh.read()
 
   headers = {'Accept':'application/xml', 'Content-Type' : 'application/xml'}
-  r = requests.put('http://localhost:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/new-netconf-device', headers = headers, data = data)
+  r = requests.put('http://localhost:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/new-netconf-device', headers = headers, data = data, auth=('admin', 'admin'))
+
 
   return r
