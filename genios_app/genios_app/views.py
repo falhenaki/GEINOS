@@ -1,5 +1,9 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
 from genios_app import app, models
+from sqlalchemy.orm import sessionmaker
+from tabledef import *
+
+engine = create_engine('sqlite:///tutorial.db', echo=True)
 
 @app.route('/')
 def start_app():
@@ -19,7 +23,16 @@ def login():
 	:return: returns to previous route with a potentially changed login status
 	"""
 	error = None
-	if request.form['password'] == 'password' and request.form['username'] == 'admin':
+
+	POST_USERNAME = str(request.form['username'])
+	POST_PASSWORD = str(request.form['password'])
+
+	Session = sessionmaker(bind=engine)
+	s = Session()
+	query = s.query(User).filter(User.username.in_([POST_USERNAME]), User.password.in_([POST_PASSWORD]))
+	result = query.first()
+
+	if result:
 		session['logged_in'] = True
 	else:
 		flash('Incorrect Username and/or Password')
@@ -36,5 +49,4 @@ def simple_ping():
 	r = models.simple_ping()
 	flash(r)
 	return start_app()
-
 
