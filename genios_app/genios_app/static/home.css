@@ -1,0 +1,48 @@
+.panel-default > .panel-heading-custom {
+background: #3B73B9; color: #fff; min-height: 5vh; height:50px; }
+
+.panel-default > .panel-heading-topnav {
+background: #EEEEEE; color: #fff; min-height: 5vh; height:30px; }
+
+.pic-right{
+         position: relative;
+         left: 500px;
+}
+
+.pic-left{
+         position: relative;
+         right: 675px;
+}
+.panel-default{
+    margin: 0 0 0 0;
+}
+#sidebar {
+    min-width: 200px;
+    max-width: 200px;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    margin: 0px;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+.list-style{
+    background: #EDF5FF
+}
+
+a {
+    color: black;
+    font-size: 12px;
+    font-align: left;
+    margin: 0 0 0 50px;
+}
+
+p{
+    color: black;
+    font-size: 18px;
+    padding: 0px;
+    margin: 0 0 0 30px;
+}

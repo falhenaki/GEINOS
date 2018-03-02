@@ -5,6 +5,7 @@ from tabledef import *
 
 engine = create_engine('sqlite:///tutorial.db', echo=True)
 
+
 @app.route('/')
 def start_app():
 	"""
@@ -12,9 +13,9 @@ def start_app():
 	:return: login template or connection test page
 	"""
 	if not session.get('logged_in'):
-		return render_template('login.html')
+		return render_template('home.html')
 	else:
-		return render_template('connection_test.html')
+		return render_template('home.html')
 
 @app.route('/login', methods=['POST'])
 def login():
