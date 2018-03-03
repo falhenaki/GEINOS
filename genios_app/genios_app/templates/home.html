@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 
-  <title>Bootstrap Example</title>
+  <title>Home</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block stylesheet %}{% endblock %}
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="static/testcss.css">
+  <link rel="stylesheet" type="text/css" href="static/home.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
@@ -29,34 +30,39 @@
 </div>
 </div>
 <div class="wrapper">
-
         <nav id="sidebar">
             <!-- Sidebar Links -->
             <ul class="list-unstyled components list-style text-left">
+                {% block page_title %}
+                    <p1></p1>
+                {% endblock %}
                    <p>Administration</p>
-                <li><a href="#">Users</a></li>
-                <li><a href="#">User Groups</a></li>
-                <li><a href="#">User Authentication</a></li>
-                <li><a href="#">Device Enrollment</a></li>
-                <li class="active"><a href="#">Support</a></li>
+                <li><a href="{{url_for('users')}}">Users</a></li>
+                <li><a href="{{url_for('user_groups')}}">User Groups</a></li>
+                <li><a href="{{url_for('authentication')}}">User Authentication</a></li>
+                <li><a href="{{url_for('enrollment')}}">Device Enrollment</a></li>
+                <li class="active"><a href="{{url_for('support')}}">Support</a></li>
                                 <br>
                     <p>Device Inventory</p>
-                <li><a href="#">Devices</a></li>
-                <li><a href="#">Device Groups</a></li>
+                <li><a href="{{url_for('devices')}}">Devices</a></li>
+                <li><a href="{{url_for('device_groups')}}">Device Groups</a></li>
                                 <br>
                     <p>Template Inventory</p>
-                <li><a href="#">Templates</a></li>
-                <li><a href="#">Parameters</a></li>
-                <li><a href="#">Assignments</a></li>
+                <li><a href="{{url_for('templates')}}">Templates</a></li>
+                <li><a href="{{url_for('parameters')}}">Parameters</a></li>
+                <li><a href="{{url_for('assignments')}}">Assignments</a></li>
                                 <br>
                     <p>Reports</p>
-                <li><a href="#">Deployments</a></li>
-                <li><a href="#">Events/Alarms</a></li>
+                <li><a href="{{url_for('deployments')}}">Deployments</a></li>
+                <li><a href="{{url_for('events_alarms')}}">Events/Alarms</a></li>
             </ul>
         </nav>
         <div class="overlay"><div>
+
+
 </div>
 
+{% block body %}{% endblock %}
 
 
 </body>

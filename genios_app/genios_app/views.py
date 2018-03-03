@@ -50,4 +50,39 @@ def simple_ping():
 	r = models.simple_ping()
 	flash(r)
 	return start_app()
-
+@app.route('/users', methods=['GET', 'POST'])
+def users():
+	return render_template('users.html')
+@app.route('/devices', methods=['GET', 'POST'])
+def devices():
+	return render_template('devices.html')
+@app.route('/device_groups', methods=['GET', 'POST'])
+def device_groups():
+	return render_template('devices.html')
+@app.route('/user_groups', methods=['GET', 'POST'])
+def user_groups():
+	return render_template('devices.html')
+@app.route('/enrollment', methods=['GET', 'POST'])
+def enrollment():
+	return render_template('devices.html')
+@app.route('/support', methods=['GET', 'POST'])
+def support():
+	return render_template('devices.html')
+@app.route('/templates', methods=['GET', 'POST'])
+def templates():
+	return render_template('devices.html')
+@app.route('/assignments', methods=['GET', 'POST'])
+def assignments():
+	return render_template('devices.html')
+@app.route('/parameters', methods=['GET', 'POST'])
+def parameters():
+	return render_template('devices.html')
+@app.route('/deployments', methods=['GET', 'POST'])
+def deployments():
+	return render_template('devices.html')
+@app.route('/events_alarms', methods=['GET', 'POST'])
+def events_alarms():
+	return render_template('devices.html')
+@app.route('/authentication', methods=['GET', 'POST'])
+def authentication():
+	return render_template('devices.html')
