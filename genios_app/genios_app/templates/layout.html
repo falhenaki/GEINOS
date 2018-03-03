@@ -1,15 +1,9 @@
-<!doctype html>
-<title>GENIOS</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>GENIOS</h1>
-  <div class=metanav>
-  {% if session.logged_in %}
-    <a href="{{ url_for('logout') }}">log out</a>
-  {% endif %}
-  </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  {% block body %}{% endblock %}
-</div>
+{% extends "home.html" %}
+{% block stylesheet %}
+{% endblock %}
+{% block page_title %}
+    <p1>Under Development</p1>
+{% endblock %}
+
+{% block body %}
+{% endblock %}

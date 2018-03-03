@@ -1,4 +1,6 @@
-.device-name-input{
+
+
+.template-name-input{
     position: absolute;
     left: 220px;
     top: 150px;
@@ -12,17 +14,18 @@
     color: black;
     font-size: 14px;
 }
-.serial-input{
+.config-input{
     position: absolute;
     left: 220px;
     top: 290px;
     color: black;
     font-size: 14px;
+    width: 500px;
 }
 .btn-add{
     position: absolute;
     left: 220px;
-    top: 360px;
+    top: 560px;
     color: black;
     font-size: 14px;
     width: 120px
@@ -31,8 +34,8 @@
 .btn-import{
     text: center;
     position: absolute;
-    left: 220px;
-    top: 430px;
+    left: 520px;
+    top: 560px;
     color: black;
     font-size: 14px;
 }

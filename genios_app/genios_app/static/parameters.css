@@ -1,38 +1,41 @@
-.device-name-input{
+.param-name-input{
     position: absolute;
     left: 220px;
     top: 150px;
     color: black;
     font-size: 14px;
 }
-.device-model-input{
+.param-type-input{
     position: absolute;
     left: 220px;
     top: 220px;
     color: black;
     font-size: 14px;
 }
-.serial-input{
+.param-value-input{
     position: absolute;
     left: 220px;
     top: 290px;
     color: black;
     font-size: 14px;
 }
+
 .btn-add{
     position: absolute;
     left: 220px;
-    top: 360px;
+    top: 390px;
     color: black;
     font-size: 14px;
     width: 120px
 
 }
-.btn-import{
-    text: center;
+.device-check{
     position: absolute;
     left: 220px;
-    top: 430px;
-    color: black;
-    font-size: 14px;
+    top: 360px;
+}
+.device-check-label{
+    position: absolute;
+    left: 240px;
+    top: 360px;
 }
