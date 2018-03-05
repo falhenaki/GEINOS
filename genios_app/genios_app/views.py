@@ -1,6 +1,7 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
 from genios_app import app, models, genios_decorators
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 from tabledef import *
 
 engine = create_engine('sqlite:///genios_db.db', echo=True)
@@ -30,12 +31,9 @@ def login():
 
 		Session = sessionmaker(bind=engine)
 		s = Session()
-		query = s.query(User).filter(User.username.in_([POST_USERNAME]), User.password.in_([POST_PASSWORD]))
-		result = query.first()
-		print("Result: ")
+		user = s.query(User).filter_by(username=POST_USERNAME).first()
 
-		if result:
-			print("Setting username")
+		if user.check_password(POST_PASSWORD):
 			session['logged_in'] = True
 			session['username'] = POST_USERNAME
 		else:

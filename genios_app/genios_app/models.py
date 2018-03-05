@@ -1,6 +1,7 @@
 ###class definitions go here###
 # this is is just a simple call to see if we are able to communicate with the device/send data
 import requests, os
+from werkzeug.security import check_password_hash, generate_password_hash
 def simple_ping():
   """
   Basic test ping to check if the Orbit device can be reached

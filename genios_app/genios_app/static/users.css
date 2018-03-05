@@ -5,17 +5,26 @@
     color: black;
     font-size: 14px;
 }
-.role-input{
+
+.password-input{
     position: absolute;
     left: 220px;
     top: 220px;
     color: black;
     font-size: 14px;
 }
-.btn-primary{
+
+.role-input{
     position: absolute;
     left: 220px;
     top: 300px;
+    color: black;
+    font-size: 14px;
+}
+.btn-primary{
+    position: absolute;
+    left: 220px;
+    top: 380px;
     color: black;
     font-size: 14px;
 }
