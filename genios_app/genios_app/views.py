@@ -21,7 +21,7 @@ def start_app():
 @app.route('/login', methods=['POST'])
 def login():
 	"""
-	route to submit login requests to TODO add a database connection
+	route to submit login requests to
 	:return: returns to previous route with a potentially changed login status
 	"""
 	error = None
@@ -34,6 +34,7 @@ def login():
 		user = s.query(User).filter_by(username=POST_USERNAME).first()
 
 		if user.check_password(POST_PASSWORD):
+			print("Hashed: " + user.hashed_password)
 			session['logged_in'] = True
 			session['username'] = POST_USERNAME
 		else:

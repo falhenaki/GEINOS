@@ -18,6 +18,14 @@ def add_User():
     POST_PASSWORD = request.form['password']
     POST_RETYPE_PASS = request.form['retype_password']
     POST_EMAIL = request.form['email']
+
+    if POST_PASSWORD != POST_RETYPE_PASS:
+        flash('Passwords did not match')
+        return render_template('users.html')
+    else:
+        user = User(POST_USERNAME, POST_PASSWORD, POST_EMAIL)
+        session.add(user)
+        session.commit()
     return
 
 @app.route('genios/user_groups/add_group', methods='POST')
