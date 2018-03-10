@@ -2,9 +2,7 @@ from flask import Flask, render_template, session, request, g, redirect, url_for
 from genios_app import app, models
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
-
-engine = create_engine('sqlite:///tutorial.db', echo=True)
-
+import datetime
 
 @app.route('/')
 def start_app():
@@ -15,7 +13,7 @@ def start_app():
 	if not session.get('logged_in'):
 		return render_template('home.html')
 	else:
-		return render_template('home.html')
+		return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -30,7 +28,7 @@ def login():
 
 	Session = sessionmaker(bind=engine)
 	s = Session()
-	query = s.query(User).filter(User.username.in_([POST_USERNAME]), User.password.in_([POST_PASSWORD]))
+	query = s.query(User).filter(User.username.in_([POST_USERNAME]), User.passwordhash.in_([POST_PASSWORD]))
 	result = query.first()
 
 	if result:
