@@ -24,7 +24,7 @@ def login():
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
 		auth_module.login(POST_USERNAME, POST_PASSWORD)
-	return render_template('home.html')
+		return start_app()
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():

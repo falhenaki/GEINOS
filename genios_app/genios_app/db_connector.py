@@ -30,6 +30,8 @@ def get_user_role(username):
     :param username: user to check
     :return: user's current role
     """
+    Session = sessionmaker(bind=engine)
+    s = Session()
     query = s.query(User).filter(User.username.in_(username))
     user = query.first()
     return user.role_type
@@ -61,6 +63,8 @@ class DB_User_Connection():
         getter for checking if login should be allowed
         :return: true if username and password were valid false otherwise
         """
+        print("ran islegal")
+        print(self.legal_user)
         return self.legal_user
 
     def check_legal(self, username, password):
@@ -70,7 +74,7 @@ class DB_User_Connection():
         :param password: password to check
         :return:
         """
-        query = s.query(User).filter(User.username.in_(username))
+        query = self.s.query(User).filter(User.username == username)
         user = query.first()
         if user.check_password(password):
             self.legal_user = True
@@ -81,4 +85,6 @@ class DB_User_Connection():
         getter for the user pulled from the database's role
         :return: user's role type
         """
+        print("tried getting role")
+        print(self.this_user.role_type)
         return self.this_user.role_type

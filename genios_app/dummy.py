@@ -9,13 +9,7 @@ engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit
 Session = sessionmaker(bind=engine)
 session = Session()
 
-user = User("admin", "password", datetime.datetime.now(), 'ADMIN')
-session.add(user)
-
-user = User("python", "python", datetime.datetime.now(), 'OPERATOR')
-session.add(user)
-
-user = User("jumpiness", "python", datetime.datetime.now(), 'OPERATOR')
+user = User("doug", "gawne", datetime.datetime.now(), 'ADMIN')
 session.add(user)
 
 # commit the record the database

@@ -11,7 +11,9 @@ def login(username, password):
     connector = db_connector.DB_User_Connection(username, password)
     if connector.is_legal():
         session['username'] = username
+        print("set username")
         session['user_role'] = connector.get_role()
+        print("tried setting user_role")
         return True
     else:
         return False
