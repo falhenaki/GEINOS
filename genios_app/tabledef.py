@@ -1,14 +1,17 @@
 from sqlalchemy import *
-from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import create_engine
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
+from genios_app import app
+from flask.ext.sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project', echo=True)
+db = SQLAlchemy(app)
 Base = declarative_base()
 
 
-class User(Base):
+class User(db.Model):
     """"""
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)
@@ -18,13 +21,18 @@ class User(Base):
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, passwordhash, last_login, role_type):
+    def __init__(self, username, password, last_login, role_type):
         """"""
         self.username = username
-        self.passwordhash = passwordhash
+        self.hash_password(password)
         self.last_login = last_login
         self.role_type = role_type
 
+    def hash_password(self, password):
+        self.passwordhash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.passwordhash, password)
 
 class User_Group(Base):
     """"""

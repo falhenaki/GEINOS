@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app, models
+from genios_app import app, models, auth_module
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
 import datetime
@@ -25,24 +25,11 @@ def login():
 	if request.method == 'POST':
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
-
-	Session = sessionmaker(bind=engine)
-	s = Session()
-	query = s.query(User).filter(User.username.in_([POST_USERNAME]), User.passwordhash.in_([POST_PASSWORD]))
-	user = query.first()
-
-		if user.check_password(POST_PASSWORD):
-			print("Hashed: " + user.hashed_password)
-			session['logged_in'] = True
-			session['username'] = POST_USERNAME
-		else:
-			flash('Incorrect Username and/or Password')
-		return start_app()
+		auth_module.login(POST_USERNAME, POST_PASSWORD)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-	session.pop('logged_in', None)
-	flash('You were logged out')
+	auth_module.logout()
 	return start_app()
 
 @app.route('/ping_device', methods=['GET', 'POST'])
