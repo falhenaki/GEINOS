@@ -17,7 +17,7 @@ class User(db.Model):
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    passwordhash = Column(String)
+    passwordhash = Column(db.String)
     last_login = Column(DateTime(timezone=false))
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
