@@ -8,7 +8,7 @@ def login(username, password):
     :param password: password to check
     :return: true if user is logged in false otherwise
     """
-    connector = db_connector.DB_USER_Connection(username, password)
+    connector = db_connector.DB_User_Connection(username, password)
     if connector.is_legal():
         session['username'] = username
         session['user_role'] = connector.get_role()

@@ -1,5 +1,7 @@
 README.txt
 genios_app/__init__.py
+genios_app/auth_module.py
+genios_app/db_connector.py
 genios_app/forms.py
 genios_app/genios_decorators.py
 genios_app/models.py

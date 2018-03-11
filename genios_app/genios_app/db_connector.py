@@ -54,7 +54,7 @@ class DB_User_Connection():
     def __init__(self, username, password):
         Session = sessionmaker(bind=engine)
         self.s = Session()
-        self.check_legal()
+        self.check_legal(username, password)
 
     def is_legal(self):
         """

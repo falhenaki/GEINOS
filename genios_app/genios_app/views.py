@@ -1,7 +1,5 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app, models, auth_module
-from sqlalchemy.orm import sessionmaker
-from tabledef import *
+from genios_app import app, models, auth_module, genios_decorators
 import datetime
 
 @app.route('/')
@@ -10,8 +8,8 @@ def start_app():
 	Initial route of the app renders a basic login template or connection test if the user is logged in
 	:return: login template or connection test page
 	"""
-	if not session.get('logged_in'):
-		return render_template('home.html')
+	if not 'username' in session:
+		return render_template('login.html')
 	else:
 		return render_template('home.html')
 
@@ -26,6 +24,7 @@ def login():
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
 		auth_module.login(POST_USERNAME, POST_PASSWORD)
+	return render_template('home.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -39,6 +38,7 @@ def simple_ping():
 	return start_app()
 
 @app.route('/users', methods=['GET', 'POST'])
+@genios_decorators.requires_roles('ADMIN')
 def users():
 	return render_template('users.html')
 
