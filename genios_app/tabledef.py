@@ -31,8 +31,10 @@ class User(db.Model):
 
     def hash_password(self, password):
         self.passwordhash = generate_password_hash(password)
+        print(self.passwordhash)
 
     def check_password(self, password):
+        print(self.passwordhash)
         return check_password_hash(self.passwordhash, password)
 
 class User_Group(Base):
