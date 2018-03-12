@@ -1,9 +1,9 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from genios_app import app, models
+from genios_app import app, models, auth_module
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
-from genios_decorations import login_required
+from genios_app import genios_decorators
 
 engine = create_engine('sqlite:///genios_db.db', echo=True)
 
@@ -12,7 +12,7 @@ def login():
     return
 
 @app.route('/genios/users/add_user', methods='POST')
-@login_required
+@genios_decorators.roles_required("ADMIN")
 def add_User():
     POST_USERNAME = request.form['username']
     POST_PASSWORD = request.form['password']
@@ -23,20 +23,12 @@ def add_User():
         flash('Passwords did not match')
         return render_template('users.html')
     else:
-        user = User(POST_USERNAME, POST_PASSWORD, POST_EMAIL)
-        session.add(user)
-        session.commit()
-    return
+        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL):
+            flash("User added sucessfully")
+        else:
+            flash("Username already taken")
+    return render_template("users.html")
 
-@app.route('genios/user_groups/add_group', methods='POST')
-@login_required
-def add_user_group():
-    return
-
-@app.route('genios/user_groups/remove_group/<int:group_id>', methods='DELETE')
-@login_required
-def remove_user_group():
-    return
 
 
 

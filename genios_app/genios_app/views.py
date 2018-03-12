@@ -26,7 +26,6 @@ def login():
 	"""
 	error = None
 	if request.method == 'POST':
-
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
 
@@ -39,7 +38,7 @@ def login():
 			session['logged_in'] = True
 			session['username'] = POST_USERNAME
 		else:
-			print('Incorrect Username and/or Password')
+			flash('Incorrect Username and/or Password')
 		return start_app()
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -80,6 +79,8 @@ def createusers():
 		s.add(user)
 		s.commit()
 	return render_template('users.html')
+
+
 @app.route('/devices', methods=['GET', 'POST'])
 @genios_decorators.login_required
 def devices():

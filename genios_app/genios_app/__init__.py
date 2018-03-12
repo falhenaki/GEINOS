@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app.config.update(dict(
     SECRET_KEY='something_secret',
-    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    SQLALCHEMY_DATABASE_URI='mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project',
 ))
 from genios_app import views
 if __name__ == '__main__':
