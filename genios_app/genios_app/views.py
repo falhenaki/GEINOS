@@ -1,7 +1,5 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app, models
-from sqlalchemy.orm import sessionmaker
-from tabledef import *
+from genios_app import app, models, auth_module, genios_decorators
 import datetime
 
 @app.route('/')
@@ -10,10 +8,10 @@ def start_app():
 	Initial route of the app renders a basic login template or connection test if the user is logged in
 	:return: login template or connection test page
 	"""
-	if not session.get('logged_in'):
-		return render_template('home.html')
-	else:
+	if not 'username' in session:
 		return render_template('login.html')
+	else:
+		return render_template('home.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -27,7 +25,7 @@ def login():
 		POST_PASSWORD = str(request.form['password'])
 		auth_module.login(POST_USERNAME, POST_PASSWORD)
 		return start_app()
-	
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
 	auth_module.logout()
@@ -42,6 +40,25 @@ def simple_ping():
 @app.route('/users', methods=['GET', 'POST'])
 @genios_decorators.requires_roles('ADMIN')
 def users():
+	if request.method == 'POST':
+		POST_USERNAME = str(request.form['usr'])
+
+
+	return render_template('users.html')
+@app.route('/createusers', methods=['POST'])
+@genios_decorators.login_required
+def createusers():
+	if request.method == 'POST':
+		print('post')
+		POST_USERNAME = str(request.form['usr'])
+		POST_PASSWORD = str(request.form['password'])
+		print(POST_PASSWORD)
+		print(POST_USERNAME)
+		Session = sessionmaker(bind=engine)
+		s = Session()
+		user = User(POST_USERNAME, POST_PASSWORD, "email")
+		s.add(user)
+		s.commit()
 	return render_template('users.html')
 
 @app.route('/devices', methods=['GET', 'POST'])
