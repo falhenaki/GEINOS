@@ -42,6 +42,7 @@ def check_username_availability(username):
     :param username: username to check
     :return: true if username is free false if it is taken
     """
+    s = Session()
     query = s.query(User).filter(User.username.in_(username))
     user = query.first()
     if user:
