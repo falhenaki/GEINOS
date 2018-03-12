@@ -5,26 +5,40 @@
     color: black;
     font-size: 14px;
 }
-
-.password-input{
+.email-input{
     position: absolute;
     left: 220px;
     top: 220px;
     color: black;
     font-size: 14px;
 }
-
+.pass-input{
+    position: absolute;
+    left: 220px;
+    top: 290px;
+    color: black;
+    font-size: 14px;
+}
 .role-input{
     position: absolute;
     left: 220px;
-    top: 300px;
+    top: 380px;
     color: black;
     font-size: 14px;
 }
 .btn-primary{
     position: absolute;
     left: 220px;
-    top: 380px;
+    top: 450px;
     color: black;
     font-size: 14px;
+}
+.userTable{
+
+    position: absolute;
+    left: 220px;
+    top: 570px;
+    color: black;
+    font-size: 14px;
+
 }
