@@ -1,31 +1,44 @@
 from sqlalchemy import *
-from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String, DateTime
+from sqlalchemy import create_engine
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-import enum
-from sqlalchemy.orm import relationship, backref
+from flask_sqlalchemy import SQLAlchemy
+from genios_app import app
+
+from werkzeug.security import generate_password_hash, check_password_hash
 
 engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project', echo=True)
+db = SQLAlchemy(app)
 Base = declarative_base()
 
 
-class User(Base):
+class User(db.Model):
     """"""
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    passwordhash = Column(String)
+    passwordhash = Column(db.String)
     last_login = Column(DateTime(timezone=false))
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, passwordhash, last_login, role_type):
+    def __init__(self, username, password, role_type):
         """"""
         self.username = username
-        self.passwordhash = passwordhash
-        self.last_login = last_login
+        self.hash_password(password)
         self.role_type = role_type
 
+    def hash_password(self, password):
+        self.passwordhash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.passwordhash, password)
+
+    def update_last_login(self, login_date):
+        self.last_login = login_date
+
+    def change_role(self, role_type):
+        self.role_type = role_type
 
 class User_Group(Base):
     """"""
