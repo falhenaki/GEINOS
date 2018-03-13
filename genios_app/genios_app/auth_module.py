@@ -1,6 +1,5 @@
 from flask import session
 from genios_app import db_connector
-
 def login(username, password):
     """
     checks user login and if it is legal sets the required session tokens appropriately
@@ -18,7 +17,7 @@ def login(username, password):
     else:
         return False
 
-def add_user(username, password, email):
+def add_user(username, password, email, role_type):
     """
     adds user with given username password and email
     :param username: username to add
@@ -46,7 +45,7 @@ def change_user_role(username, new_role):
     :param new_role: role to change user to
     :return:
     """
-    db_connector.modify_user_role(username, new_role)
+    db_connector.change_user_role(username, new_role)
 
 def logout():
     """
@@ -55,3 +54,9 @@ def logout():
     """
     session.pop('username', None)
     session.pop('user_role', None)
+
+def check_username_availability(username):
+    return db_connector.check_username_availability(username)
+
+def get_user_role(username):
+    return db_connector.get_user_role(username)
