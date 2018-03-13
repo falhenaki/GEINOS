@@ -19,9 +19,20 @@ def remove_user(username):
     :param username: user to remove
     :return:
     """
-    User.query.filter_by(username=username).delete()
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    s.query(User).filter(User.username == username).delete()
+    s.commit()
 
-def modify_user_role(username, new_role):
+def change_user_role(username, new_role):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.username == username).first()
+    if user.role_type == new_role:
+        return False
+    else:
+        user.role_type = new_role
+        s.commit()
     return True
 
 def get_all_users():
@@ -42,8 +53,9 @@ def get_user_role(username):
     """
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(User).filter(User.username.in_(username))
+    query = s.query(User).filter(User.username == username)
     user = query.first()
+    print(user)
     return user.role_type
 
 def check_username_availability(username):
@@ -54,8 +66,7 @@ def check_username_availability(username):
     """
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(User).filter(User.username.in_(username))
-    user = query.first()
+    user = s.query(User).filter(User.username == username).first()
     if user:
         return False
     return True
@@ -81,7 +92,6 @@ class DB_User_Connection():
         getter for checking if login should be allowed
         :return: true if username and password were valid false otherwise
         """
-        print("ran islegal")
         print(self.legal_user)
         return self.legal_user
 
