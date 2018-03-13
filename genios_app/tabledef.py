@@ -22,20 +22,23 @@ class User(db.Model):
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, password, last_login, role_type):
+    def __init__(self, username, password, role_type):
         """"""
         self.username = username
         self.hash_password(password)
-        self.last_login = last_login
         self.role_type = role_type
 
     def hash_password(self, password):
         self.passwordhash = generate_password_hash(password)
-        print(self.passwordhash)
 
     def check_password(self, password):
-        print(self.passwordhash)
         return check_password_hash(self.passwordhash, password)
+
+    def update_last_login(self, login_date):
+        self.last_login = login_date
+
+    def change_role(self, role_type):
+        self.role_type = role_type
 
 class User_Group(Base):
     """"""

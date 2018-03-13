@@ -1,5 +1,6 @@
 from flask import session
 from genios_app import db_connector
+from datetime import datetime
 
 def login(username, password):
     """
@@ -11,9 +12,8 @@ def login(username, password):
     connector = db_connector.DB_User_Connection(username, password)
     if connector.is_legal():
         session['username'] = username
-        print("set username")
         session['user_role'] = connector.get_role()
-        print("tried setting user_role")
+        connector.update_last_login(datetime.now)
         return True
     else:
         return False
