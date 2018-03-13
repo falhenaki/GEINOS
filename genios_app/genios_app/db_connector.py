@@ -61,6 +61,12 @@ def check_username_availability(username):
         return False
     return True
 
+def change_role_type(username, role_type):
+    query = s.query(User).filter(User.username.in_(username))
+    user = query.first()
+    if user:
+        user.change_role(role_type)
+
 class DB_User_Connection():
     """
     object that can be used to hold and get user information about a user in the database
@@ -100,3 +106,7 @@ class DB_User_Connection():
         print("tried getting role")
         print(self.this_user.role_type)
         return self.this_user.role_type
+
+    def update_last_login(self, login_datetime):
+        self.this_user.update_last_login(login_datetime)
+
