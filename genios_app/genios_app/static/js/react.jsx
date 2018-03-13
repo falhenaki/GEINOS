@@ -1,52 +1,4 @@
 /*** @jsx React.DOM */
-
-
-
-/*const obj = [{
-  name: "onion",
-  price: ".99",
-  id: 1
-}, {
-  name: "pepper",
-  price: "1.25",
-  id: 2
-}, {
-  name: "broccoli",
-  price: "3.00",
-  id: 3
-}];
-
-class TableRow extends React.Component {
-  render() {
-    const {
-      data
-    } = this.props;
-    const row = data.map((data) =>
-    <tr>
-      <td key={data.name}>{data.name}</td>
-      <td key={data.id}>{data.id}</td>
-      <td key={data.price}>{data.price}</td>
-    </tr>
-    );
-    return (
-      <span>{row}</span>
-    );
-  }
-}
-
-class Table extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <table>
-        <TableRow data={this.props.data} />
-      </table>
-    );
-  }
-}*/
-// products will be presented by react-bootstrap-table
 var products = [{
       name: "Brian",
       role: "Admin",
@@ -68,4 +20,3 @@ React.render(
   </BootstrapTable>,
     document.getElementById("userTable")
 );
-//ReactDOM.render(<Table/>, document.getElementById("userTable"));
