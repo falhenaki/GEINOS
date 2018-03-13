@@ -1,8 +1,8 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app, models, auth_module, genios_decorators
+from genios_app import app, models, auth_module, genios_decorators, user_routing,db_connector
 import datetime
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def start_app():
 	"""
 	Initial route of the app renders a basic login template or connection test if the user is logged in
@@ -12,20 +12,20 @@ def start_app():
 		return render_template('login.html')
 	else:
 		return render_template('home.html')
-
+"""""
 @app.route('/login', methods=['POST'])
 def login():
-	"""
+
 	route to submit login requests to TODO add a database connection
 	:return: returns to previous route with a potentially changed login status
-	"""
+
 	error = None
 	if request.method == 'POST':
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
 		auth_module.login(POST_USERNAME, POST_PASSWORD)
 		return start_app()
-
+"""
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
 	auth_module.logout()
@@ -40,25 +40,15 @@ def simple_ping():
 @app.route('/users', methods=['GET', 'POST'])
 @genios_decorators.requires_roles('ADMIN')
 def users():
-	if request.method == 'POST':
-		POST_USERNAME = str(request.form['usr'])
+	test = db_connector.get_all_users()
+	return render_template('users.html', test=test)
 
 
-	return render_template('users.html')
 @app.route('/createusers', methods=['POST'])
-@genios_decorators.login_required
+#@genios_decorators.login_required
 def createusers():
-	if request.method == 'POST':
-		print('post')
-		POST_USERNAME = str(request.form['usr'])
-		POST_PASSWORD = str(request.form['password'])
-		print(POST_PASSWORD)
-		print(POST_USERNAME)
-		Session = sessionmaker(bind=engine)
-		s = Session()
-		user = User(POST_USERNAME, POST_PASSWORD, "email")
-		s.add(user)
-		s.commit()
+
+
 	return render_template('users.html')
 
 @app.route('/devices', methods=['GET', 'POST'])

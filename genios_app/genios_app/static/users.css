@@ -7,38 +7,43 @@
 }
 .email-input{
     position: absolute;
+    left: 420px;
+    top: 150px;
+    color: black;
+    font-size: 14px;
+}
+.password-input{
+    position: absolute;
     left: 220px;
     top: 220px;
     color: black;
     font-size: 14px;
 }
-.pass-input{
+.retypepassword-input{
     position: absolute;
-    left: 220px;
-    top: 290px;
+    left: 420px;
+    top: 220px;
     color: black;
     font-size: 14px;
 }
 .role-input{
     position: absolute;
     left: 220px;
-    top: 380px;
+    top: 290px;
     color: black;
     font-size: 14px;
 }
 .btn-primary{
     position: absolute;
-    left: 220px;
-    top: 450px;
+    left: 350px;
+    top: 315px;
     color: black;
     font-size: 14px;
 }
 .userTable{
-
     position: absolute;
-    left: 220px;
-    top: 570px;
+    left: 300px;
+    top: 440px;
     color: black;
     font-size: 14px;
-
 }

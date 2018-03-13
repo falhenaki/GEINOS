@@ -24,6 +24,16 @@ def remove_user(username):
 def modify_user_role(username, new_role):
     return True
 
+def get_all_users():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(User)
+    for user in query:
+        print(user.username)
+        print(user.last_login)
+        print(user.role_type)
+    return query
+
 def get_user_role(username):
     """
     gets the user's current role

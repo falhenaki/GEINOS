@@ -19,6 +19,3 @@ def simple_ping():
 
 
   return r
-
-
-

@@ -10,19 +10,24 @@ def login_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
+
         if not 'username' in session:
             return render_template('login.html')
         return f(*args, **kwargs)
+
     return decorated_function
 
 def requires_roles(*roles):
+
     def wrapper(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+
             if not 'username' in session:
                 return render_template('login.html')
             if session['user_role'] not in roles:
                 return redirect(url_for('permission_denied'))
+
             return f(*args, **kwargs)
         return decorated_function
     return wrapper
