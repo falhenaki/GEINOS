@@ -12,20 +12,20 @@ def start_app():
 		return render_template('login.html')
 	else:
 		return render_template('home.html')
-"""""
+
 @app.route('/login', methods=['POST'])
 def login():
-
+	'''
 	route to submit login requests to TODO add a database connection
 	:return: returns to previous route with a potentially changed login status
-
+	'''
 	error = None
 	if request.method == 'POST':
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
 		auth_module.login(POST_USERNAME, POST_PASSWORD)
 		return start_app()
-"""
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
 	auth_module.logout()

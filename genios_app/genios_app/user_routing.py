@@ -6,11 +6,11 @@ from tabledef import *
 from genios_app import genios_decorators
 
 engine = create_engine('sqlite:///genios_db.db', echo=True)
-
+'''
 @app.route('/genios/users/login', methods=['POST'])
 def login():
     return
-
+'''
 @app.route('/genios/add_user', methods=['POST'])
 @genios_decorators.requires_roles("ADMIN")
 def add_User():
