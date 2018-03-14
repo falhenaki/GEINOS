@@ -41,6 +41,7 @@ def simple_ping():
 @genios_decorators.requires_roles('ADMIN')
 def users():
 	test = db_connector.get_all_users()
+
 	return render_template('users.html', test=test)
 
 

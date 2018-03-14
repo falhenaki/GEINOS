@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker, session
 from tabledef import *
-
+import json
 def add_user(username, password, email):
     """
     adds user to the database
@@ -39,11 +39,10 @@ def get_all_users():
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(User)
+    userList=[]
     for user in query:
-        print(user.username)
-        print(user.last_login)
-        print(user.role_type)
-    return query
+        userList.append([user.username, user.role_type])
+    return userList
 
 def get_user_role(username):
     """
@@ -105,6 +104,7 @@ class DB_User_Connection():
         query = self.s.query(User).filter(User.username == username)
         user = query.first()
         if user.check_password(password):
+
             self.legal_user = True
             self.this_user = user
 
