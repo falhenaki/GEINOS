@@ -22,12 +22,12 @@ class User(db.Model):
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, password, role_type):
+    def __init__(self, username, password, email ,role_type):
         """"""
         self.username = username
         self.hash_password(password)
+        self.email = email
         self.role_type = role_type
-
     def hash_password(self, password):
         self.passwordhash = generate_password_hash(password)
 

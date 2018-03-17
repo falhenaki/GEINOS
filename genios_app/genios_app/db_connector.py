@@ -1,17 +1,20 @@
 from sqlalchemy.orm import sessionmaker, session
 from tabledef import *
 import json
-def add_user(username, password, email):
+def add_user(username, password, email, role_type):
     """
     adds user to the database
     :param username: username to add
     :param password: password to attach to username
     :param email: user email
+    :param role_type: user role
     :return:
     """
-    user = User(username, password, email)
-    session.add(user)
-    session.commit()
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = User(username, password, email, role_type)
+    s.add(user)
+    s.commit()
 
 def remove_user(username):
     """
@@ -70,11 +73,6 @@ def check_username_availability(username):
         return False
     return True
 
-def change_role_type(username, role_type):
-    query = s.query(User).filter(User.username.in_(username))
-    user = query.first()
-    if user:
-        user.change_role(role_type)
 
 class DB_User_Connection():
     """
@@ -119,4 +117,45 @@ class DB_User_Connection():
 
     def update_last_login(self, login_datetime):
         self.this_user.update_last_login(login_datetime)
+
+
+    ######################################
+        #Devices
+def add_device(vendor_id, serial_number,model_number, device_status, last_modified, ip ):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = Device(vendor_id, serial_number, model_number, device_status, last_modified, ip)
+    s.add(device)
+    s.commit()
+
+    return True
+
+def device_listed(vendor_id, serial_number,model_number):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.vendor_id == vendor_id).filter(Device.serial_number == serial_number).filter( Device.model_number == model_number ).first()
+    if device:
+        return True
+    return False
+
+def remove_device(vendor_id, serial_number,model_number):
+    """
+    removes specified device from the database
+    :param device: vendor_id, serial_number,model_number
+    :return:
+    """
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.vendor_id == vendor_id).filter(Device.serial_number == serial_number).filter( Device.model_number == model_number ).delete()
+    s.commit()
+    return True
+
+def get_all_devices():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device)
+    deviceList=[]
+    for device in query:
+        deviceList.append([device])
+    return deviceList
 

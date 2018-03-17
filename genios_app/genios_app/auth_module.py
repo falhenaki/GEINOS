@@ -28,7 +28,7 @@ def add_user(username, password, email, role_type):
     :return: true if user is added false otherwise
     """
     if db_connector.check_username_availability(username):
-        db_connector.add_user(username, password, email)
+        db_connector.add_user(username, password, email, role_type)
         return True
     return False
 
