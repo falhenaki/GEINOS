@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#config
+/genios_app/genios_app/static/data.json
+
