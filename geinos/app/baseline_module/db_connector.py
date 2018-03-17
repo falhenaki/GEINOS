@@ -7,6 +7,7 @@ def add_user(username, password, email, role_type):
     :param username: username to add
     :param password: password to attach to username
     :param email: user email
+    :param role_type: user role
     :return:
     """
     Session = sessionmaker(bind=engine)
@@ -126,6 +127,7 @@ def add_device(vendor_id, serial_number,model_number, device_status, last_modifi
     device = Device(vendor_id, serial_number, model_number, device_status, last_modified, ip)
     s.add(device)
     s.commit()
+
     return True
 
 def device_listed(vendor_id, serial_number,model_number):
@@ -133,8 +135,8 @@ def device_listed(vendor_id, serial_number,model_number):
     s = Session()
     device = s.query(Device).filter(Device.vendor_id == vendor_id).filter(Device.serial_number == serial_number).filter( Device.model_number == model_number ).first()
     if device:
-        return False
-    return True
+        return True
+    return False
 
 def remove_device(vendor_id, serial_number,model_number):
     """
@@ -156,3 +158,4 @@ def get_all_devices():
     for device in query:
         deviceList.append([device])
     return deviceList
+
