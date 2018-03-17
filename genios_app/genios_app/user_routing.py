@@ -20,12 +20,16 @@ def add_User():
     POST_RETYPE_PASS = request.form['retypepassword']
     POST_EMAIL = request.form['email']
     POST_ROLE = str(request.form['role'])
+    print(POST_USERNAME)
+    print(POST_PASSWORD)
+    print(POST_EMAIL)
+    print(POST_ROLE)
     if POST_PASSWORD != POST_RETYPE_PASS:
 
         print('Passwords did not match')
         return render_template('users.html')
     else:
-        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL):
+        if auth_module.add_user(POST_USERNAME, "password", POST_EMAIL, POST_ROLE):
             auth_module.change_user_role(POST_USERNAME, POST_ROLE)
             print("User added sucessfully")
         else:
