@@ -1,0 +1,25 @@
+{% extends "home.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="../static/devices.css">
+{% endblock %}
+{% block page_title %}
+    <p1>Devices</p1>
+{% endblock %}
+
+{% block body %}
+<div class="form-group device-name-input">
+  <label for="dvcn">Device Name</label>
+  <input type="text" class="form-control" id="dvcn">
+</div>
+<div class="form-group device-model-input">
+  <label for="dvcm">Device Model</label>
+  <input type="text" class="form-control" id="dvcm">
+</div>
+<div class="form-group serial-input">
+  <label for="dvcs">Serial Number</label>
+  <input type="text" class="form-control" id="dvcs">
+</div>
+
+<input class="btn btn-primary btn-add" type="submit" value="Add Device">
+<input class="btn btn-primary btn-import" type="submit" value="Import from file">
+{% endblock %}

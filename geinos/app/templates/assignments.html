@@ -1,0 +1,21 @@
+{% extends "home.html" %}
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="../static/assignments.css">
+{% endblock %}
+{% block page_title %}
+    <p1>Assignments</p1>
+{% endblock %}
+
+{% block body %}
+<div class="form-group template-name-input">
+  <label for="tmpln">Template Name</label>
+  <input type="text" class="form-control" id="tmpln">
+</div>
+<div class="form-group group-input">
+  <label for="grp">Device Group</label>
+  <input type="text" class="form-control" id="grp">
+</div>
+
+<input class="btn btn-primary btn-add" type="submit" value="Assign">
+
+{% endblock %}
