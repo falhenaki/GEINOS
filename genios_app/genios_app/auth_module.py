@@ -10,6 +10,7 @@ def login(username, password):
     :return: true if user is logged in false otherwise
     """
     connector = db_connector.DB_User_Connection(username, password)
+    print(connector.is_legal())
     if connector.is_legal():
         session['username'] = username
         session['user_role'] = connector.get_role()
@@ -33,7 +34,8 @@ def add_user(username, password, email, role_type):
 
 def remove_user(username):
     """
-    removes user from database
+    removes user from databa
+    se
     :param username: username to remove
     :return:
     """
