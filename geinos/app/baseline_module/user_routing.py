@@ -30,7 +30,7 @@ def add_User():
         else:
             print("Username already taken")
 
-    return render_template("users.html")
+    return redirect("/users", code=302)
 
 @app.route('/genios/remove_user', methods=['POST'])
 #@genios_decorators.requires_roles("ADMIN")
