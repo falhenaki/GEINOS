@@ -3,31 +3,31 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
-from app import db
+from genios_app import app
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-#engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project', echo=True)
-#db = SQLAlchemy(__init__)
+engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project', echo=True)
+db = SQLAlchemy(app)
 Base = declarative_base()
 
 
-class User(Base):
+class User(db.Model):
     """"""
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    passwordhash = Column(String)
+    passwordhash = Column(db.String)
     last_login = Column(DateTime(timezone=false))
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, password, email, role_type):
+    def __init__(self, username, password, email ,role_type):
         """"""
         self.username = username
         self.hash_password(password)
+        self.email = email
         self.role_type = role_type
-
     def hash_password(self, password):
         self.passwordhash = generate_password_hash(password)
 
@@ -108,25 +108,6 @@ class Device_in_Group(Base):
         self.vendor_id = vendor_id
         self.serial_number = serial_number
         self.model_number = model_number
-
-class Log(Base):
-    """"""
-    __tablename__ = "Logs"
-    log_id = Column(Integer, primary_key=True)
-    event_type = Column(Integer)
-    log_message = Column(String)
-    user = Column(String)
-    role = Column(Enum('ADMIN', 'OPERATOR'))
-    date_created = Column(DateTime(timezone=false))
-    # ----------------------------------------------------------------------
-    def __init__(self, log_id, event_type, log_message, user, role, date_created):
-        """"""
-        self.log_id = log_id
-        self.event_type = event_type
-        self.log_message = log_message
-        self.user = user
-        self.role = role
-        self.date_created = date_created
 
 # create tables
 # Base.metadata.create_all(engine)
