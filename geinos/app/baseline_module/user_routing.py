@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from genios_app import app, models, auth_module, db_connector
+from genios_app import app, models, auth_module, db_connector, views
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
 from genios_app import genios_decorators
@@ -12,7 +12,7 @@ def login():
     return
 '''
 @app.route('/genios/add_user', methods=['POST'])
-@genios_decorators.requires_roles("ADMIN")
+#@genios_decorators.requires_roles("ADMIN")
 def add_User():
 
     POST_USERNAME = request.form['usr']
@@ -20,20 +20,22 @@ def add_User():
     POST_RETYPE_PASS = request.form['retypepassword']
     POST_EMAIL = request.form['email']
     POST_ROLE = str(request.form['role'])
-    print(POST_USERNAME)
-    print(POST_PASSWORD)
-    print(POST_EMAIL)
-    print(POST_ROLE)
-    data = db_connector.get_all_users()
     if POST_PASSWORD != POST_RETYPE_PASS:
 
-        print('Passwords did not match')
-        return render_template('users.html',data=data)
+        return render_template('users.html')
     else:
-        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
+        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL):
             auth_module.change_user_role(POST_USERNAME, POST_ROLE)
             print("User added sucessfully")
         else:
             print("Username already taken")
 
-    return render_template("users.html",data=data)
+    return render_template("users.html")
+
+@app.route('/genios/remove_user', methods=['POST'])
+#@genios_decorators.requires_roles("ADMIN")
+def remove_User():
+
+    POST_USERNAME = request.form['rmusr']
+    auth_module.remove_user(POST_USERNAME)
+    return  render_template("home.html")

@@ -38,11 +38,10 @@ def simple_ping():
 	return start_app()
 
 @app.route('/users', methods=['GET', 'POST'])
-@genios_decorators.requires_roles('ADMIN')
+#@genios_decorators.requires_roles('ADMIN')
 def users():
-	test = db_connector.get_all_users()
-
-	return render_template('users.html', test=test)
+	userlist = db_connector.get_all_users()
+	return render_template('users.html', test=userlist)
 
 
 @app.route('/createusers', methods=['POST'])
