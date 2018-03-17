@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from genios_app import app, models, auth_module, genios_decorators, user_routing,db_connector
+from genios_app import app, models, auth_module, genios_decorators, user_routing,db_connector, device_mng
 import datetime
 
 @app.route('/', methods=['GET'])
