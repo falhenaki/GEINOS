@@ -29,7 +29,7 @@ def add_User():
         print('Passwords did not match')
         return render_template('users.html')
     else:
-        if auth_module.add_user(POST_USERNAME, "password", POST_EMAIL, POST_ROLE):
+        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
             auth_module.change_user_role(POST_USERNAME, POST_ROLE)
             print("User added sucessfully")
         else:
