@@ -12,7 +12,7 @@ def login():
     return
 '''
 @app.route('/genios/add_user', methods=['POST'])
-#@genios_decorators.requires_roles("ADMIN")
+@genios_decorators.requires_roles("ADMIN")
 def add_User():
 
     POST_USERNAME = request.form['usr']
@@ -22,9 +22,10 @@ def add_User():
     POST_ROLE = str(request.form['role'])
     if POST_PASSWORD != POST_RETYPE_PASS:
 
-        return render_template('users.html')
+        print('Passwords did not match')
+        return redirect("/users", code=302)
     else:
-        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL):
+        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
             auth_module.change_user_role(POST_USERNAME, POST_ROLE)
             print("User added sucessfully")
         else:
