@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from app.baseline_module import __init__, models, auth_module, genios_decorators, user_routing,db_connector
+from app.baseline_module import __init__, models, auth_module, genios_decorators, user_routing,db_connector, device_helpers
 import datetime
 from app import app
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,8 +15,6 @@ def start_app():
 	Initial route of the app renders a basic login template or connection test if the user is logged in
 	:return: login template or connection test page
 	"""
-	print(generate_password_hash("password"))
-	print(generate_password_hash("password"))
 	if not 'username' in session:
 		return render_template('login.html')
 	else:
@@ -99,8 +97,20 @@ def deployments():
 
 @app.route('/events_alarms', methods=['GET', 'POST'])
 def events_alarms():
-	return render_template('layout.html')
+    logs = db_connector.get_all_logs()
+    return render_template('events_alarms.html', logs=logs)
 
 @app.route('/authentication', methods=['GET', 'POST'])
 def authentication():
 	return render_template('layout.html')
+
+@app.route('/add_devices_from_list', methods=['POST'])
+def add_devices_from_list():
+    file = request.files['import_file']
+    if file:
+        #a = file.read()
+        file_data = file.readlines()
+        content = [x.strip() for x in file_data]
+        device_helpers.add_list_of_devices(content)
+        flash("File was read")
+    return render_template('devices.html')

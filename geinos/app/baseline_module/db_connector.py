@@ -3,7 +3,7 @@ from app.baseline_module.models import *
 from app import db, engine
 import json
 
-def add_user(username, password, email):
+def add_user(username, password, email, role_type):
     """
     adds user to the database
     :param username: username to add
@@ -11,9 +11,11 @@ def add_user(username, password, email):
     :param email: user email
     :return:
     """
-    user = User(username, password, email)
-    session.add(user)
-    session.commit()
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = User(username, password, email, role_type)
+    s.add(user)
+    s.commit()
 
 def remove_user(username):
     """
@@ -45,6 +47,15 @@ def get_all_users():
     for user in query:
         userList.append([user.username, user.role_type])
     return userList
+
+def get_all_logs():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Log)
+    logList=[]
+    for log in query:
+        logList.append(log.user, log.log_message)
+    return logList
 
 def get_user_role(username):
     """

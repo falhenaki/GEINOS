@@ -21,5 +21,8 @@
 </div>
 
 <input class="btn btn-primary btn-add" type="submit" value="Add Device">
-<input class="btn btn-primary btn-import" type="submit" value="Import from file">
+<form enctype="multipart/form-data" action="{{ url_for('add_devices_from_list') }}" method=post>
+    <input class="btn btn-primary import-file" type="file" name="import_file">
+    <input class="btn btn-primary btn-import" type="submit" value="Import">
+</form>
 {% endblock %}

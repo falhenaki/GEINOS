@@ -27,11 +27,19 @@
     font-size: 14px;
     width: 120px
 }
-.btn-import{
+.import-file{
     text: center;
     position: absolute;
     left: 220px;
     top: 430px;
+    color: black;
+    font-size: 14px;
+}
+.btn-import{
+    text: center;
+    position: absolute;
+    left: 220px;
+    top: 500px;
     color: black;
     font-size: 14px;
 }

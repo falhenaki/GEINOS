@@ -22,7 +22,7 @@ class User(Base):
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
 
     #----------------------------------------------------------------------
-    def __init__(self, username, password, role_type):
+    def __init__(self, username, password, email, role_type):
         """"""
         self.username = username
         self.hash_password(password)
@@ -108,6 +108,25 @@ class Device_in_Group(Base):
         self.vendor_id = vendor_id
         self.serial_number = serial_number
         self.model_number = model_number
+
+class Log(Base):
+    """"""
+    __tablename__ = "Logs"
+    log_id = Column(Integer, primary_key=True)
+    event_type = Column(Integer)
+    log_message = Column(String)
+    user = Column(String)
+    role = Column(Enum('ADMIN', 'OPERATOR'))
+    date_created = Column(DateTime(timezone=false))
+    # ----------------------------------------------------------------------
+    def __init__(self, log_id, event_type, log_message, user, role, date_created):
+        """"""
+        self.log_id = log_id
+        self.event_type = event_type
+        self.log_message = log_message
+        self.user = user
+        self.role = role
+        self.date_created = date_created
 
 # create tables
 # Base.metadata.create_all(engine)

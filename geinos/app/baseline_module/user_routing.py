@@ -21,15 +21,16 @@ def add_User():
     POST_RETYPE_PASS = request.form['retypepassword']
     POST_EMAIL = request.form['email']
     POST_ROLE = str(request.form['role'])
+    test = db_connector.get_all_users()
     if POST_PASSWORD != POST_RETYPE_PASS:
 
         print('Passwords did not match')
-        return render_template('users.html')
+        return render_template('users.html',test=test)
     else:
-        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL):
+        if auth_module.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
             auth_module.change_user_role(POST_USERNAME, POST_ROLE)
             print("User added sucessfully")
         else:
             print("Username already taken")
 
-    return render_template("users.html")
+    return render_template("users.html",test=test)
