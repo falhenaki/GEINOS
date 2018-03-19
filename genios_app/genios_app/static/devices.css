@@ -35,3 +35,11 @@
     color: black;
     font-size: 14px;
 }
+.devTable{
+    position: absolute;
+    left: 600px;
+    top: 120px;
+    color: black;
+    font-size: 12px;
+    padding-bottom: 100px;
+}

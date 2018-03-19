@@ -181,6 +181,15 @@ def add_device(vendor_id, serial_number,model_number, device_status, last_modifi
 
     return True
 
+def add_device_from_user(serial_number,model_number, status):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = Device(serial_number, model_number, status,datetime.datetime.now())
+    s.add(device)
+    s.commit()
+
+    return True
+
 def device_listed(vendor_id, serial_number,model_number):
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -207,6 +216,6 @@ def get_all_devices():
     query = s.query(Device)
     deviceList=[]
     for device in query:
-        deviceList.append([device])
+        deviceList.append([device.serial_number,device.model_number])
     return deviceList
 
