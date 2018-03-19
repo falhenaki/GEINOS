@@ -1,6 +1,8 @@
 from sqlalchemy.orm import sessionmaker, session
 from tabledef import *
 import json
+import datetime
+from math import floor
 def add_user(username, password, email, role_type):
     """
     adds user to the database
@@ -38,13 +40,62 @@ def change_user_role(username, new_role):
         s.commit()
     return True
 
+def change_user_email(username, new_email):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.username == username).first()
+    try:
+        if user.email == new_email:
+            return False
+        else:
+            user.email = new_email
+    except AttributeError:
+        user.email = new_email
+        s.commit()
+    return True
+
+def change_user_lastlogin(username):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.username == username).first()
+    user.last_login = datetime.datetime.now()
+    s.commit()
+    return True
+
 def get_all_users():
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(User)
     userList=[]
     for user in query:
-        userList.append([user.username, user.role_type])
+            last_login_time = 'min ago'
+            #change_user_email(user.username, 'none@noemail')
+            if user.last_login is None:
+                final_login = "Never"
+            else:
+                last_login = (datetime.datetime.now() - user.last_login).seconds
+                print(last_login)
+                last_login = floor(last_login/60)
+                if last_login < 1 :
+                    last_login = 1
+                    last_login_time = ' <  min ago'
+                if last_login < 60 and last_login > 1 :
+
+                    last_login_time = ' minutes ago'
+                if last_login > 60:
+                    last_login = floor(last_login/60)
+                    if last_login < 24 :
+                        last_login_time = ' hours ago'
+                    else:
+                        last_login = floor(last_login/24)
+                        last_login = ' days ago'
+                        if last_login > 7 :
+                            last_login = 7
+                            last_login_time = ' > days ago'
+
+                final_login = str(last_login) + last_login_time
+            userList.append([user.username, user.role_type, final_login])
+
     return userList
 
 def get_user_role(username):

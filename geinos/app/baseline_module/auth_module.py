@@ -29,6 +29,7 @@ def add_user(username, password, email, role_type):
     """
     if db_connector.check_username_availability(username):
         db_connector.add_user(username, password, email, role_type)
+
         return True
     return False
 
@@ -63,3 +64,6 @@ def check_username_availability(username):
 
 def get_user_role(username):
     return db_connector.get_user_role(username)
+
+def update_user_login(username):
+    db_connector.change_user_lastlogin(username)
