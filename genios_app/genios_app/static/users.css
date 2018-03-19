@@ -43,7 +43,8 @@
 .userTable{
     position: absolute;
     left: 300px;
-    top: 440px;
+    top: 420px;
     color: black;
-    font-size: 14px;
+    font-size: 12px;
+    padding-bottom: 100px;
 }

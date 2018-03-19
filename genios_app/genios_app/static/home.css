@@ -24,7 +24,7 @@ p1{
     font-size: 24px;
 }
 .wrapper{
-    height: 100vh;
+    height: auto;
     overflow: auto;
 }
 #sidebar {

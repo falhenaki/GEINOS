@@ -5,34 +5,27 @@ for (var i = 0; i < data.length; i++) {
           var newprod = {
         name: data[i][0],
         role: data[i][1],
-        email: "test@test",
-        lastlogin: "2 hours ago"
+        email: "fake@fake.com",
+        lastlogin: data[i][2]
       };
       products.push(newprod);
 }
-/*
-createCustomDeleteButton = (onClick) => {
-  return (
-    <button style={ { color: 'red' } } onClick={ onClick }>Delete rows</button>
-  );
+
+function format(cell, row){
+  return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
 
-const options = {
-    deleteBtn: this.createCustomDeleteButton
+var selectRowProp = {
+  mode: "checkbox",
+  clickToSelect: true,
 };
+ReactDOM.render(
+<BootstrapTable data={products} selectRow={selectRowProp} condensed  striped={true} hover={true} deleteRow pagination>
+  <TableHeaderColumn dataField="name"  width="150" isKey dataSort>User Name</TableHeaderColumn>
+  <TableHeaderColumn dataField="role"  width="150" >Role</TableHeaderColumn>
+  <TableHeaderColumn dataField="email"  width="200" >Email</TableHeaderColumn>
+  <TableHeaderColumn dataField="lastlogin"  width="150" dataSort >lastlogin</TableHeaderColumn>
+</BootstrapTable>,
 
-const selectRow = {
-    mode: 'radio' //radio or checkbox
-  };
-*/
-    ReactDOM.render(
-
-        <BootstrapTable data={products} striped={true} hover={true}>
-            <TableHeaderColumn dataField="name" width="250" isKey={true} dataAlign="center" dataSort={true}>User</TableHeaderColumn>
-            <TableHeaderColumn dataField="role" width="150">Role</TableHeaderColumn>
-            <TableHeaderColumn dataField="email" width="250">Email</TableHeaderColumn>
-            <TableHeaderColumn dataField="lastlogin" width="150" dataSort={true}>Last Login</TableHeaderColumn>
-        </BootstrapTable>,
-        /*<button>Delete Selected</button>*/
-        document.getElementById("userTable")
+            document.getElementById("userTable")
     );
