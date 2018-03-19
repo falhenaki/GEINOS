@@ -54,7 +54,10 @@ def createusers():
 
 @app.route('/devices', methods=['GET', 'POST'])
 def devices():
-	return render_template('devices.html')
+	devices=db_connector.get_all_devices()
+	print(devices)
+	return render_template('devices.html', devices=devices)
+
 
 @app.route('/device_groups', methods=['GET', 'POST'])
 def device_groups():

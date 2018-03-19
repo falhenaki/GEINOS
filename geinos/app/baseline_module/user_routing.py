@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from genios_app import app, models, auth_module, db_connector, views
 from sqlalchemy.orm import sessionmaker
 from tabledef import *
+from datetime import datetime
 from genios_app import genios_decorators
 
 engine = create_engine('sqlite:///genios_db.db', echo=True)
@@ -11,6 +12,20 @@ engine = create_engine('sqlite:///genios_db.db', echo=True)
 def login():
     return
 '''
+
+
+
+@app.route('/add_device', methods=['POST'])
+@genios_decorators.requires_roles("ADMIN")
+def add_device():
+	print(request.form)
+	POST_DEVMODEL = request.form['dvcm']
+	POST_SN = request.form['dvcs']
+
+	db_connector.add_device_from_user(POST_SN,POST_DEVMODEL, 'UNAUTHORIZED')
+	return redirect("/devices", code=302)
+
+
 @app.route('/genios/add_user', methods=['POST'])
 @genios_decorators.requires_roles("ADMIN")
 def add_User():

@@ -1,11 +1,7 @@
 {% extends "home.html" %}
 {% block stylesheet %}
 <script src="../static/js/react.jsx" type="text/jsx"></script>
-<script>  var data = {{ test | tojson }}
-</script>
-<script type="text/javascript" src="../static/js/react.jsx" >
-
-</script>
+<script>  var data = {{ test | tojson }} </script>
 <link rel="stylesheet" type="text/css" href="../static/users.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
@@ -13,7 +9,7 @@
 <script src="https://fb.me/react-dom-0.14.2.js"></script>
 <script src="https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table.js"></script>
 
-<script src="../static/js/react.jsx" type="text/jsx"></script>
+
 {% endblock %}
 {% block page_title %}
     <p1>Users</p1>
@@ -21,7 +17,6 @@
 
 {% block body %}
 <form action="{{ url_for('add_User') }}" method=post>
-
 
 <div class="form-group name-input">
   <label for="usr">Name</label>

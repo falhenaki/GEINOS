@@ -11,6 +11,7 @@ for (var i = 0; i < data.length; i++) {
       products.push(newprod);
 }
 
+
 function format(cell, row){
   return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
@@ -29,3 +30,10 @@ ReactDOM.render(
 
             document.getElementById("userTable")
     );
+
+
+
+
+
+
+

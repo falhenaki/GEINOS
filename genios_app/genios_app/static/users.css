@@ -1,49 +1,44 @@
-.name-input{
+.device-name-input{
     position: absolute;
     left: 220px;
     top: 150px;
     color: black;
     font-size: 14px;
 }
-.email-input{
-    position: absolute;
-    left: 420px;
-    top: 150px;
-    color: black;
-    font-size: 14px;
-}
-.password-input{
+.device-model-input{
     position: absolute;
     left: 220px;
     top: 220px;
     color: black;
     font-size: 14px;
 }
-.retypepassword-input{
-    position: absolute;
-    left: 420px;
-    top: 220px;
-    color: black;
-    font-size: 14px;
-}
-.role-input{
+.serial-input{
     position: absolute;
     left: 220px;
     top: 290px;
     color: black;
     font-size: 14px;
 }
-.btn-primary{
+.btn-add{
     position: absolute;
-    left: 350px;
-    top: 315px;
+    left: 220px;
+    top: 360px;
+    color: black;
+    font-size: 14px;
+    width: 120px
+}
+.btn-import{
+    text: center;
+    position: absolute;
+    left: 220px;
+    top: 430px;
     color: black;
     font-size: 14px;
 }
-.userTable{
+.devTable{
     position: absolute;
-    left: 300px;
-    top: 420px;
+    left: 600px;
+    top: 120px;
     color: black;
     font-size: 12px;
     padding-bottom: 100px;

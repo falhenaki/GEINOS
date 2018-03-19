@@ -74,14 +74,14 @@ class Device(Base):
     last_modified = Column(DateTime(timezone=false))
     IP = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, IP):
+    def __init__(self,serial_number, model_number, device_status,last_modified):
         """"""
-        self.vendor_id = vendor_id
+        #self.vendor_id = vendor_id
         self.serial_number = serial_number
         self.model_number = model_number
         self.device_status = device_status
         self.last_modified = last_modified
-        self.IP = IP
+        #self.IP = IP
 
 class Device_Group(Base):
     """"""
