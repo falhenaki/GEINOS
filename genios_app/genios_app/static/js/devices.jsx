@@ -10,6 +10,7 @@ for (var i = 0; i < data.length; i++) {
 }
 
 
+
 function format(cell, row){
   return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
