@@ -10,8 +10,18 @@ for (var i = 0; i < data.length; i++) {
       };
       products.push(newprod);
 }
+function onDeleteRow(rowKeys) {
+  alert('You deleted: ' + rowKeys)
+    const data = new FormData(event.target);
+    fetch('/api/form-submit-url', {
+      method: 'POST',
+      body: data,
+    });
+}
 
-
+const options = {
+      afterDeleteRow: onDeleteRow
+    }
 function format(cell, row){
   return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
@@ -20,9 +30,10 @@ var selectRowProp = {
   mode: "checkbox",
   clickToSelect: true,
 };
+
 ReactDOM.render(
-<BootstrapTable data={products} selectRow={selectRowProp} condensed  striped={true} hover={true} deleteRow pagination>
-  <TableHeaderColumn dataField="name"  width="150" isKey dataSort>User Name</TableHeaderColumn>
+<BootstrapTable data={products} selectRow={selectRowProp} options={options} condensed={true}  striped={true} hover={true} deleteRow pagination>
+  <TableHeaderColumn dataField="name" isKey={true}  width="150"  dataSort>User Name</TableHeaderColumn>
   <TableHeaderColumn dataField="role"  width="150" >Role</TableHeaderColumn>
   <TableHeaderColumn dataField="email"  width="200" >Email</TableHeaderColumn>
   <TableHeaderColumn dataField="lastlogin"  width="150" dataSort >lastlogin</TableHeaderColumn>
@@ -30,10 +41,3 @@ ReactDOM.render(
 
             document.getElementById("userTable")
     );
-
-
-
-
-
-
-

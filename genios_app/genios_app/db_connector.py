@@ -172,19 +172,19 @@ class DB_User_Connection():
 
     ######################################
         #Devices
-def add_device(vendor_id, serial_number,model_number, device_status, last_modified, ip ):
+def add_device(serial_number,model_number, device_status, last_modified, ip ):
     Session = sessionmaker(bind=engine)
     s = Session()
-    device = Device(vendor_id, serial_number, model_number, device_status, last_modified, ip)
+    device = Device(serial_number, model_number, device_status, last_modified, ip)
     s.add(device)
     s.commit()
 
     return True
 
-def add_device_from_user(serial_number,model_number, status):
+def add_device_from_user(serial_number,model_number, status, IP):
     Session = sessionmaker(bind=engine)
     s = Session()
-    device = Device(serial_number, model_number, status,datetime.datetime.now())
+    device = Device(serial_number, model_number, status,datetime.datetime.now(),IP)
     s.add(device)
     s.commit()
 

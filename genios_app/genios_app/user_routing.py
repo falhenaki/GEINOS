@@ -18,11 +18,10 @@ def login():
 @app.route('/add_device', methods=['POST'])
 @genios_decorators.requires_roles("ADMIN")
 def add_device():
-	print(request.form)
 	POST_DEVMODEL = request.form['dvcm']
+	print(POST_DEVMODEL)
 	POST_SN = request.form['dvcs']
-
-	db_connector.add_device_from_user(POST_SN,POST_DEVMODEL, 'UNAUTHORIZED')
+	db_connector.add_device_from_user(POST_SN,POST_DEVMODEL, 'UNAUTHORIZED','1.1.1.1')
 	return redirect("/devices", code=302)
 
 
