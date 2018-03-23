@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker, session
-from app.baseline_module.models import *
+from app.core_module.models import *
 from app import db, engine
 import json
 

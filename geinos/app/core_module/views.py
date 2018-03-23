@@ -1,10 +1,14 @@
 from flask import Blueprint
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from app.baseline_module import __init__, models, auth_module, genios_decorators, user_routing,db_connector, device_helpers
+from app.core_module import __init__, models, auth, genios_decorators, user_routing,db_connector, device_helpers
 import datetime
 from app import app
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_restful import Resource
 
+class HelloWorld(Resource):
+    def get(self):
+        return {'hello': 'world'}
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -30,12 +34,12 @@ def login():
 	if request.method == 'POST':
 		POST_USERNAME = str(request.form['username'])
 		POST_PASSWORD = str(request.form['password'])
-		auth_module.login(POST_USERNAME, POST_PASSWORD)
+		auth.login(POST_USERNAME, POST_PASSWORD)
 		return start_app()
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-	auth_module.logout()
+	auth.logout()
 	return start_app()
 
 @app.route('/ping_device', methods=['GET', 'POST'])

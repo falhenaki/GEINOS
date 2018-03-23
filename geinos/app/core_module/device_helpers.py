@@ -1,4 +1,4 @@
-from app.baseline_module import db_connector
+from app.core_module import db_connector
 
 def add_list_of_devices(entries):
     #for entry in entries:

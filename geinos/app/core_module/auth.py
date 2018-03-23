@@ -1,5 +1,5 @@
 from flask import session
-from app.baseline_module import db_connector
+from app.core_module import db_connector
 from datetime import datetime
 
 def login(username, password):
