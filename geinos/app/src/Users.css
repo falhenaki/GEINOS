@@ -1,0 +1,48 @@
+.container{
+    width: 100%;
+    margin: 0 0 0 0;
+    height: 100%;
+    padding-bottom: 100px;
+    position: relative;
+}
+
+.name-input{
+    width: 20%;
+    padding-top: 3%;
+}
+.email-input{
+    position: absolute;
+    padding-top: 3%;
+    width: 20%;
+    top: 0%;
+    left: 22%;
+}
+.role-input{
+    width: max-content;
+    position: absolute;
+    top: 25%;
+}
+.pass-input{
+    width: 20%
+}
+.pass-verify-input{
+    position: absolute;
+    width: 20%;
+    top: 16.8%;
+    left: 22%;
+}
+.button-submit{
+    position: absolute;
+    width: fit-content;
+    top: 27.5%;
+    left: 10%;
+}
+.table-user{
+    width: max-content;
+    position: absolute;
+    top: 40%;
+    left: 20%;
+    height: content-box;
+    padding-bottom: 10%;
+
+}
