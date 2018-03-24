@@ -1,0 +1,41 @@
+
+
+.template-name-input{
+    position: absolute;
+    left: 220px;
+    top: 150px;
+    color: black;
+    font-size: 14px;
+}
+.device-model-input{
+    position: absolute;
+    left: 220px;
+    top: 220px;
+    color: black;
+    font-size: 14px;
+}
+.config-input{
+    position: absolute;
+    left: 220px;
+    top: 290px;
+    color: black;
+    font-size: 14px;
+    width: 500px;
+}
+.btn-add{
+    position: absolute;
+    left: 220px;
+    top: 560px;
+    color: black;
+    font-size: 14px;
+    width: 120px
+
+}
+.btn-import{
+    text: center;
+    position: absolute;
+    left: 520px;
+    top: 560px;
+    color: black;
+    font-size: 14px;
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <title>Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% block stylesheet %}{% endblock %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="../static/home.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body >
+
+<div class="panel panel-default">
+   <div class="panel-heading panel-heading-custom">
+           <h3 class="panel-title text-center">
+               Device Provisioning
+            <img src="..." class="rounded mx-auto d-block pic-left" alt="...">
+           <img src="..." class="rounded mx-auto d-block pic-right" alt="...">
+           </h3>
+   </div>
+</div>
+
+
+<div class="panel panel-default align">
+<div class="panel-heading panel-heading-topnav">
+       <h3 class="panel-title text-center"></h3>
+</div>
+</div>
+<div class="wrapper">
+        <nav id="sidebar">
+            <!-- Sidebar Links -->
+            <ul class="list-unstyled components list-style text-left">
+                {% block page_title %}
+                    <p1></p1>
+                {% endblock %}
+                   <p>Administration</p>
+                <li><a href="{{url_for('users')}}">Users</a></li>
+                <li><a href="{{url_for('user_groups')}}">User Groups</a></li>
+                <li><a href="{{url_for('authentication')}}">User Authentication</a></li>
+                <li><a href="{{url_for('enrollment')}}">Device Enrollment</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+                <li class="active"><a href="{{url_for('support')}}">Support</a></li>
+                                <br>
+                    <p>Device Inventory</p>
+                <li><a href="{{url_for('devices')}}">Devices</a></li>
+                <li><a href="{{url_for('device_groups')}}">Device Groups</a></li>
+                                <br>
+                    <p>Template Inventory</p>
+                <li><a href="{{url_for('templates')}}">Templates</a></li>
+                <li><a href="{{url_for('parameters')}}">Parameters</a></li>
+                <li><a href="{{url_for('assignments')}}">Assignments</a></li>
+                                <br>
+                    <p>Reports</p>
+                <li><a href="{{url_for('deployments')}}">Deployments</a></li>
+                <li><a href="{{url_for('events_alarms')}}">Events/Alarms</a></li>
+            </ul>
+        </nav>
+        <div class="overlay"><div>
+
+
+</div>
+
+{% block body %}{% endblock %}
+
+
+</body>
+</html>

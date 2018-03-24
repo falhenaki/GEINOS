@@ -1,0 +1,22 @@
+
+{% extends "home.html" %}
+<script>  var data = {{ logs | tojson }}</script>
+<script type="text/javascript" src="../static/js/react.jsx" ></script>
+<link rel="stylesheet" type="text/css" href="../static/events_alarms.css">
+<script src="https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+<script src="https://fb.me/react-0.14.2.js"></script>
+<script src="https://fb.me/react-dom-0.14.2.js"></script>
+<script src="https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table.js"></script>
+
+<script src="../static/js/react.jsx" type="text/jsx"></script>
+{% block page_title %}
+    <p1>Events and alarms</p1>
+{% endblock %}
+
+{% block body %}
+<div class="LogTable" id="LogTable">
+</div>
+
+{% endblock %}
