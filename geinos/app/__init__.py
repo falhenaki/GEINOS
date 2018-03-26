@@ -7,6 +7,13 @@ from sqlalchemy import create_engine
 
 # Define the WSGI application object
 app = Flask(__name__)
+#Database Login Credentials
+import json
+datafile = "data.json"
+
+data_file_dir = os.path.join(app.root_path, 'static')
+data_file_path = os.path.join(data_file_dir, datafile)
+data = json.load(open(data_file_path))
 
 # Configurations
 app.config.from_object('config')
@@ -15,7 +22,7 @@ app.config.from_object('config')
 # by modules and controllers
 db = SQLAlchemy(app)
 
-engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project')
+engine = create_engine('mysql+mysqlconnector://' + str(data['login'][0]['user']) +':' + str(data['login'][0]['password']) +'@bitforcedev.se.rit.edu/se_project')
 
 # Sample HTTP error handling
 @app.errorhandler(404)
