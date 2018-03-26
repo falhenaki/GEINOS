@@ -5,4 +5,4 @@ To run on localhost (assuming requirements previously installed):
 4. enter: flask run
 
 This will add the app to pip as a package that is able to be run by flask. Once running any updates will automatically
-be loaded on refresh of the page
+be loaded on refresh of the page.
