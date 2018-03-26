@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 # Define the WSGI application object
 app = Flask(__name__)
 #Database Login Credentials
+import os
 import json
 datafile = "data.json"
 
