@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 # Define the WSGI application object
 app = Flask(__name__)
 #Database Login Credentials
+import sys
 import os
 import json
 datafile = "data.json"
@@ -16,14 +17,20 @@ data_file_dir = os.path.join(app.root_path, 'static')
 data_file_path = os.path.join(data_file_dir, datafile)
 data = json.load(open(data_file_path))
 
+print(data)
+
 # Configurations
 app.config.from_object('config')
 
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
-
-engine = create_engine('mysql+mysqlconnector://' + str(data['login'][0]['user']) +':' + str(data['login'][0]['password']) +'@bitforcedev.se.rit.edu/se_project')
+username = str(data['login'][0]['user'])
+password = str(data['login'][0]['password'])
+if username == "MYSQLUSERHERE" or password == "YOUR PASSWORD here":
+    print("Please update mysql credentials in the static/data.json")
+    sys.exit()
+engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@bitforcedev.se.rit.edu/se_project')
 
 # Sample HTTP error handling
 @app.errorhandler(404)
