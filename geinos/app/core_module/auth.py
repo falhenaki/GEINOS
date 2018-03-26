@@ -2,22 +2,28 @@ from flask import session
 from app.core_module import db_connector
 from datetime import datetime
 
-def login(username, password):
+
+
+def login(username_or_token, password):
     """
     checks user login and if it is legal sets the required session tokens appropriately
     :param username: username to login
     :param password: password to check
     :return: true if user is logged in false otherwise
     """
-    connector = db_connector.DB_User_Connection(username, password)
-    print(connector.is_legal())
-    if connector.is_legal():
-        session['username'] = username
-        session['user_role'] = connector.get_role()
-        connector.update_last_login(datetime.now)
-        return True
+    usr = db_connector.authenticate_token(username_or_token)
+    if not usr:
+        connector = db_connector.DB_User_Connection(username_or_token, password)
+        print(connector.is_legal())
+        if connector.is_legal():
+            session['username'] = username_or_token
+            session['user_role'] = connector.get_role()
+            connector.update_last_login(datetime.now)
+            return True
+        else:
+            return False
     else:
-        return False
+        return True
 
 def add_user(username, password, email, role_type):
     """

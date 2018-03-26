@@ -53,5 +53,5 @@ def add_User():
 def remove_User():
 
     POST_USERNAME = request.form['rmusr']
-    auth_module.remove_user(POST_USERNAME)
+    auth.remove_user(POST_USERNAME)
     return  render_template("home.html")

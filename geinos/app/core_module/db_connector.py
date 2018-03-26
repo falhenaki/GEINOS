@@ -4,6 +4,31 @@ from app import db, engine
 import json
 import datetime
 from math import floor
+from flask import Flask
+from flask_httpauth import HTTPBasicAuth
+
+authen = HTTPBasicAuth()
+
+@authen.verify_password
+def verify_password(username, password):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.username == username).first()
+    if not user or not user.verify_password(password):
+        return False
+    Flask.g.user = user
+    return True
+
+def authenticate_token(token):
+    user = User.verify_auth_token(token)
+    return User
+
+def get_user(username):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.username == username).first()
+    return user
+
 def add_user(username, password, email, role_type):
     """
     adds user to the database
@@ -17,6 +42,13 @@ def add_user(username, password, email, role_type):
     s = Session()
     user = User(username, password, email, role_type)
     s.add(user)
+    s.commit()
+
+def add_device(vend, sn, mn):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1')
+    s.add(dv)
     s.commit()
 
 def remove_user(username):
@@ -98,6 +130,15 @@ def get_all_users():
             userList.append([user.username, user.role_type, final_login])
 
     return userList
+
+def get_all_devices():
+    ret = []
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device)
+    for d in query:
+        ret.append([d.vendor_id, d.serial_number, d.model_number])
+    return ret
 
 def get_all_logs():
     Session = sessionmaker(bind=engine)
