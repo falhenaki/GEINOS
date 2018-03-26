@@ -7,6 +7,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config.update(dict(
     SECRET_KEY='something_secret',
     SQLALCHEMY_DATABASE_URI='mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project',
+    UPLOAD_FOLDER = '/uploaded_files',
+    ALLOWED_EXTENSIONS = set(['.xml']),
 ))
 from genios_app import views
 if __name__ == '__main__':
