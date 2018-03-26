@@ -2,3 +2,4 @@ Flask
 Flask-SqlAlchemy
 mysql-connector-python
 flask_httpauth
+flask_restful
