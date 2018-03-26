@@ -19,30 +19,29 @@
 }
 .role-input{
     width: max-content;
-    position: absolute;
-    top: 25%;
+    position: relative;
+    bottom: 80px;
 }
 .pass-input{
     width: 20%
 }
 .pass-verify-input{
-    position: absolute;
+    position: relative;
     width: 20%;
-    top: 16.8%;
+    bottom: 74.8px;
     left: 22%;
 }
 .button-submit{
-    position: absolute;
+    position: relative;
     width: fit-content;
-    top: 27.5%;
-    left: 10%;
+    bottom: 129px;
+    left: -35%;
 }
 .table-user{
     width: max-content;
-    position: absolute;
-    top: 40%;
-    left: 20%;
+    position: relative;
     height: content-box;
     padding-bottom: 10%;
+    text-align: left;
 
 }
