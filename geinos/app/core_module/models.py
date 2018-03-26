@@ -3,8 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
-from app import db
-
+from app import db,app
+from itsdangerous import (TimedJSONWebSignatureSerializer
+                          as Serializer, BadSignature, SignatureExpired)
 from werkzeug.security import generate_password_hash, check_password_hash
 
 #engine = create_engine('mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project', echo=True)
@@ -61,6 +62,22 @@ class User(Base):
     def change_role(self, role_type):
         self.role_type = role_type
 
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None  # valid token, but expired
+        except BadSignature:
+            return None  # invalid token
+        user = User.query.get(data['id'])
+        return user
+
 class User_Group(Base):
     """"""
     __tablename__ = "User_Groups"
@@ -95,7 +112,7 @@ class Device(Base):
     last_modified = Column(DateTime(timezone=false))
     IP = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, IP):
+    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified=null):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
