@@ -47,8 +47,15 @@ def add_user(username, password, email, role_type):
 def add_device(vend, sn, mn):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1')
+    dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now())
     s.add(dv)
+    s.commit()
+
+def add_device_group(name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dg = Device_Group(name,datetime.datetime.now())
+    s.add(dg)
     s.commit()
 
 def remove_user(username):
@@ -146,8 +153,50 @@ def get_all_logs():
     query = s.query(Log)
     logList=[]
     for log in query:
-        logList.append(log.user, log.log_message)
+        logList.append([log.user, log.log_message])
     return logList
+
+def get_all_parameters():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Parameter)
+    prms=[]
+    for pm in query:
+        prms.append(pm.param_name)
+    return prms
+
+def add_parameter(name,type,val):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dv = Parameter(name,val,type)
+    s.add(dv)
+    s.commit()
+
+def get_all_device_groups():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device_Group)
+    dgs=[]
+    for dg in query:
+        dgs.append(dg.device_group_name)
+    return dgs
+
+def add_devices_to_groups(group_name, att):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    if "-" in att: #raneg of ips
+        att = att.split('-')
+        query = s.query(Device).filter(Device.IP >= att[0], Device.IP <= att[1])
+        for q in query:
+            dig = Device_in_Group(group_name,q.vendor_id,q.serial_number,q.model_number)
+            s.add(dig)
+            s.commit()
+    else:
+        q = s.query(Device).filter(Device.IP == att).first()
+        dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
+        s.add(dig)
+        s.commit()
+
 
 def get_user_role(username):
     """
