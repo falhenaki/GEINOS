@@ -76,19 +76,11 @@ class Users(Resource):
             POST_RETYPE_PASS = request.form['retypepassword']
             POST_EMAIL = request.form['email']
             POST_ROLE = str(request.form['role'])
-            if POST_PASSWORD != POST_RETYPE_PASS:
-                user_added = False
-            else:
+            if POST_PASSWORD == POST_RETYPE_PASS:
                 if auth.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
                     auth.change_user_role(POST_USERNAME, POST_ROLE)
-                else:
-                    user_added = False
-        else:
-            user_added = False
-
-        if (user_added):
-            status=200,
-            message="User added"
+                    status=200
+                    message = "User added"
         return jsonify(
             status=status,
             message=message
@@ -120,8 +112,7 @@ class Devices(Resource):
         status = 400
         message = "Device not added"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            file = request.files['file']
-            if not file:
+            if 'file' not in request.files:
                 VENDOR_ID = request.form['vendor_id']
                 SERIAL_NUMBER = request.form['serial_num']
                 MODEL_NUMBER = request.form['model_num']
@@ -129,14 +120,82 @@ class Devices(Resource):
                 status=200
                 message="Device Added"
             else:
+                file = request.files['file']
                 file_data = file.readlines()
-                content = [x.strip() for x in file_data]
-                device_helpers.add_list_of_devices(content)
-                status=200
-                message="Devices Added"
+                content = [str(x,'utf-8').strip().split(',') for x in file_data]
+                if device_helpers.add_list_of_devices(content):
+                    status=200
+                    message="Devices Added"
         return jsonify(
             status=status,
             message=message
         )
 
+class Device_Groups(Resource):
+    def get(self):
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            dgs = db_connector.get_all_device_groups()
+            return jsonify(
+                status=200,
+                message="Sent Device Groups",
+                data=dgs
+            )
+        else:
+            return jsonify(
+                status=400,
+                message="Could not send device groups"
+            )
+    def put(self):
+        status=400
+        message="Device Group not added"
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            group_name = request.form["group_name"]
+            db_connector.add_device_group(group_name)
+            status=200
+            message="Device group added"
+        return jsonify(
+            status=status,
+            message=message
+        )
+    def post(self):
+        status = 400
+        message = "Device(s) not added to group"
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            group_name = request.form["group_name"]
+            atrbute = request.form["attribute"]
+            db_connector.add_devices_to_groups(group_name,atrbute)
+            status=200
+            message="Device(s) added to group"
+        return jsonify(
+            status=status,
+            message=message
+        )
 
+class Parameters(Resource):
+    def get(self):
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            prms = db_connector.get_all_parameters()
+            return jsonify(
+                status=200,
+                message="Sent Parameters",
+                data=prms
+            )
+        else:
+            return jsonify(
+                status=400,
+                message="Could not send parameters"
+            )
+    def put(self):
+        status = 400
+        message = "Parameter not added"
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            name = request.form["name"]
+            ptype = request.form["type"]
+            val = request.form["value"]
+            db_connector.add_parameter(name,ptype.upper(),val)
+            status = 200
+            message = "Parameter added"
+        return jsonify(
+            status=status,
+            message=message
+        )

@@ -63,7 +63,7 @@ def devices():
 	return render_template('devices.html', devices=devices)
 '''
 
-@app.route('/device_groups', methods=['GET', 'POST'])
+#@app.route('/device_groups', methods=['GET', 'POST'])
 def device_groups():
 	return render_template('device_groups.html')
 
@@ -87,7 +87,7 @@ def templates():
 def assignments():
 	return render_template('assignments.html')
 
-@app.route('/parameters', methods=['GET', 'POST'])
+#@app.route('/parameters', methods=['GET', 'POST'])
 def parameters():
 	return render_template('parameters.html')
 

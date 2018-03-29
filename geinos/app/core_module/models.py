@@ -112,7 +112,7 @@ class Device(Base):
     last_modified = Column(DateTime(timezone=false))
     IP = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified=null):
+    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
@@ -177,6 +177,29 @@ class Template(Base):
         self.date_created = date_created
         self.template_file = template_file
         self.name = name
+
+class Parameter(Base):
+    __tablename__ = "Parameters"
+    param_name = Column(String, primary_key=True)
+    start_value = Column(String)
+    end_value = Column(String)
+    param_type = Column(Enum('RANGE', 'SCALAR', 'LIST'))
+    date_created = Column(DateTime(timezone=false))
+    # ----------------------------------------------------------------------
+    def __init__(self, name,start,ptype,end=""):
+        self.param_name = name
+        self.start_value = start
+        self.end_value = end
+        self.param_type = ptype
+
+class ListParameter(Base):
+    __tablename__ = "ListParameters"
+    param_name = Column(String, primary_key=True)
+    param_value = Column(String, primary_key=True)
+    # ----------------------------------------------------------------------
+    def __init__(self,name,val):
+        self.param_name = name
+        self.param_value = val
 
 # create tables
 # Base.metadata.create_all(engine)

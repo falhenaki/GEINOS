@@ -8,3 +8,5 @@ def initialize_APIs():
     api.add_resource(api_plugs.Login, '/login', '/')
     api.add_resource(api_plugs.Users, '/users')
     api.add_resource(api_plugs.Devices, '/devices')
+    api.add_resource(api_plugs.Device_Groups, '/device_groups')
+    api.add_resource(api_plugs.Parameters, '/parameters')
