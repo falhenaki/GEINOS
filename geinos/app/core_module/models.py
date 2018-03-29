@@ -183,6 +183,7 @@ class Parameter(Base):
     param_name = Column(String, primary_key=True)
     start_value = Column(String)
     end_value = Column(String)
+    current_offset = Column(String)
     param_type = Column(Enum('RANGE', 'SCALAR', 'LIST'))
     date_created = Column(DateTime(timezone=false))
     # ----------------------------------------------------------------------
@@ -191,6 +192,7 @@ class Parameter(Base):
         self.start_value = start
         self.end_value = end
         self.param_type = ptype
+        self.current_offset = start
 
 class ListParameter(Base):
     __tablename__ = "ListParameters"
