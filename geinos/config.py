@@ -28,4 +28,5 @@ CSRF_SESSION_KEY = "secret"
 SECRET_KEY = "secret"
 
 # allowed file extensions
+UPLOADS_FOLDER = os.path.join(BASE_DIR, 'app/core_module/upload_folder/')
 ALLOWED_EXTENSIONS = set({'xml'})

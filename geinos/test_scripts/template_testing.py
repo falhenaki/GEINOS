@@ -17,5 +17,6 @@ test_upload()
 
 def test_jinjaconvert():
     r = requests.put('http://127.0.0.1:5000/uploaded_files/generate_jinja2/config_output.xml')
+    print(r.text)
 
-#test_jinjaconvert()
+test_jinjaconvert()
