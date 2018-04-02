@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from app.core_module import __init__, models, auth, genios_decorators, user_routing,db_connector, device_helpers
+from app.core_module import __init__, models, auth, genios_decorators, user_routing,db_connector, device_helpers, template_routing
 import datetime
 from app import app
 from werkzeug.security import generate_password_hash, check_password_hash

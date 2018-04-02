@@ -1,8 +1,9 @@
 import os
-from flask import Flask, request, redirect, url_for, flash, send_from_directory
+from os.path import realpath, join, dirname
+from flask import Flask, request, redirect, url_for, flash, send_from_directory, render_template, json
 from werkzeug.utils import secure_filename
-from genios_app import app
-from xml_templates import *
+from app import app
+from app.core_module import xml_templates
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -18,10 +19,15 @@ def upload_file():
 			flash('No file part')
 			return redirect(request.url)
 		file = request.files['file']
-		if file and allowed_file(file.file):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			return redirect(url_for('uploaded_file', filename=filename))
+		filename = secure_filename(file.filename)
+		xml_templates.store_file(filename, file)
+		response = app.response_class(
+			response=file,
+			status=200,
+			mimetype='application/json'
+		)
+		return response
+
 
 @app.route('/uploaded_files/<filename>', methods=['GET'])
 def uploaded_file(filename):
@@ -30,7 +36,13 @@ def uploaded_file(filename):
 	:param filename: filename to get
 	:return:
 	"""
-	return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+	file = xml_templates.get_file(filename)
+	response = app.response_class(
+		response=file,
+		status=200,
+		mimetype='application/json'
+	)
+	return response
 
 @app.route('/uploaded_files/generate_jinja2/<filename>', methods=['PUT'])
 def replace_jinja(filename):
@@ -40,8 +52,5 @@ def replace_jinja(filename):
 	:param filename: filename stored in server to have jinja templating applied to
 	:return: jinja2 formatted xml file
 	"""
-	file = send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-	if file == None:
-		flash("Given file does not exist")
-		return url_for('404')
-	return xml_templates.generate_jinja(file, 'NCServer')
+	replacement_test = ['template_ntp-server']
+	return xml_templates.generate_jinja(filename, replacement_test)
