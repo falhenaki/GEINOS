@@ -9,9 +9,9 @@ def test_upload():
     r = s.get('http://127.0.0.1:5000')
     r = s.post('http://127.0.0.1:5000/login', login)
     r = s.post('http://127.0.0.1:5000/uploaded_files', files=payload)
-    print(r.json())
+    print(r.text)
     r = s.get('http://127.0.0.1:5000/uploaded_files/config_output.xml')
-    print(r.json())
+    print(r.text)
 
 test_upload()
 

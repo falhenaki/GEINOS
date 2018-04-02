@@ -279,7 +279,7 @@ class DB_User_Connection():
 def add_file(file, filename):
     Session = sessionmaker(bind=engine)
     s = Session()
-    template = Template(filename, file, datetime.now())
+    template = Template(filename, file, datetime.datetime.now())
     s.add(template)
     s.commit()
 
