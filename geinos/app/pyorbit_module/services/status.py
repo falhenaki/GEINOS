@@ -4,7 +4,7 @@ from lxml import etree
 
 # package modules
 from .service import Service
-from pyorbit.exception import *
+from app.pyorbit_module.exception import *
 
 """
 Operational Status Service

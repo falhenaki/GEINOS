@@ -12,17 +12,6 @@ def request_wants_json():
         request.accept_mimetypes[best] > \
         request.accept_mimetypes['text/html']
 
-class HelloWorld(Resource):
-    def get(self):
-        dic = {"frst" : "Qasim", "last" : "Ali"}
-        dd = [["a","e"],["b"],"c","d"]
-        return jsonify(
-            hello = dd,
-            status = "success",
-            message = "nothin",
-        )
-        #return {'hello': 'world'}
-
 def user_logged_in():
     if not 'username' in session:
         return False
@@ -49,7 +38,11 @@ class Login(Resource):
                 status=400,
                 message="User not logged in."
             )
-
+    def get(self):
+        return jsonify(
+            status=200,
+            message="You are at the homepage"
+        )
 
 class Users(Resource):
     #@authen.login_required
