@@ -1,4 +1,4 @@
-import re
+import re, os
 import xmltodict
 import json
 from jinja2 import Template
@@ -6,7 +6,7 @@ from lxml import etree
 
 # package modules
 from .service import Service
-from pyorbit.exception import *
+from app.pyorbit_module.exception import *
 
 """
 Configuration Service
@@ -88,7 +88,7 @@ class Config(Service):
         try:
             rsp = self.dev._conn.get_config(source=source).data_xml
             if rsp_format == 'odict':
-                rsp = xmltodict.parse(out)
+                rsp = xmltodict.parse(rsp)
             if rsp_format == 'json':
                 rsp = json.dumps(xmltodict.parse(rsp))
         except Exception as err:
