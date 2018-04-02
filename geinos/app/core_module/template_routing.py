@@ -36,13 +36,7 @@ def uploaded_file(filename):
 	:param filename: filename to get
 	:return:
 	"""
-	file = xml_templates.get_file(filename)
-	response = app.response_class(
-		response=file,
-		status=200,
-		mimetype='application/json'
-	)
-	return response
+	return xml_templates.get_file(filename)
 
 @app.route('/uploaded_files/generate_jinja2/<filename>', methods=['PUT'])
 def replace_jinja(filename):

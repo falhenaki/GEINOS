@@ -209,7 +209,7 @@
     <ntp>
       <use-ntp>true</use-ntp>
       <ntp-server>
-        <address>172.18.175.46</address>
+        <address>template_ntp-server</address>
       </ntp-server>
     </ntp>
     <dns>
