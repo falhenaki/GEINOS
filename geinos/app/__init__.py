@@ -37,7 +37,7 @@ engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@b
 # Sample HTTP error handling
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html'), 404
+    return #render_template('404.html'), 404
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 from app.core_module.views import mod_auth as auth_mod
