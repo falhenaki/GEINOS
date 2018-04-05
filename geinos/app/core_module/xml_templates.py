@@ -4,19 +4,20 @@ import os
 from flask import send_from_directory
 
 
-def generate_jinja(xml_filename, replacements):
+def generate_jinja(xml_filename):
 	"""
 	method to replace the value of all attributes with a tag in replacements with jinja2 tags
 	:param xml_file: file to perform replacements on
 	:param replacements: xml tags that should have their values replaced with jinja2 tags
 	:return: xml file with desired replacements converted to jinja2 tags
 	"""
+	all_params = db_connector.get_all_parameters()
 	xml_file = os.path.join(app.config['UPLOADS_FOLDER'], xml_filename)
 	with open(xml_file, 'r') as f:
 		s = f.read()
 	with open(xml_file, 'w') as fout:
-		for replacement in replacements:
-			s = s.replace(replacement, '{{' + replacement + '}}')
+		for param in all_params:
+			s = s.replace(param, '{{' + param + '}}')
 		fout.write(s)
 	return send_from_directory(app.config['UPLOADS_FOLDER'], xml_filename)
 
