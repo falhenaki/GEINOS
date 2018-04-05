@@ -3,7 +3,8 @@ from os.path import realpath, join, dirname
 from flask import Flask, request, redirect, url_for, flash, send_from_directory, render_template, json
 from werkzeug.utils import secure_filename
 from app import app
-from app.core_module import xml_templates
+from flask import Response
+from app.core_module import xml_templates, genios_decorators
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -11,7 +12,7 @@ def allowed_file(filename):
 @app.route('/uploaded_files', methods=['POST'])
 def upload_file():
 	"""
-	routing to upload a new file
+	routing to upload a new file will overwite a file of the same name if it already exists
 	:return:
 	"""
 	if request.method == 'POST':
@@ -46,5 +47,10 @@ def replace_jinja(filename):
 	:param filename: filename stored in server to have jinja templating applied to
 	:return: jinja2 formatted xml file
 	"""
-	replacement_test = ['template_ntp-server']
-	return xml_templates.generate_jinja(filename, replacement_test)
+	return xml_templates.generate_jinja(filename)
+
+@app.route('/uploaded_files/<filenams>', methods=['DELETE'])
+def delete_file(filename):
+    if xml_templates.delete_file(filename):
+        return Response(status=201, mimetype='application/json')
+

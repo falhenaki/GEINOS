@@ -213,7 +213,7 @@
       </ntp-server>
     </ntp>
     <dns>
-      <server>172.18.175.48</server>
+      <server>something_new</server>
     </dns>
     <run-first-time-web-wizards xmlns="com:gemds:mds-system">false</run-first-time-web-wizards>
   </system>
