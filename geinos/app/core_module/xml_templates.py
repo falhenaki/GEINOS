@@ -13,7 +13,6 @@ def generate_jinja(xml_filename):
 	:return: xml file with desired replacements converted to jinja2 tags
 	"""
 	all_params = db_connector.get_all_parameters()
-	print(all_params)
 	xml_file = os.path.join(app.config['UPLOADS_FOLDER'], xml_filename)
 	with open(xml_file, 'r') as f:
 		s = f.read()

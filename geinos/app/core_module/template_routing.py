@@ -63,6 +63,5 @@ def assign_template(filename, group_name):
 	:return: status of operation
 	"""
 	template = xml_templates.render_template(filename)
-	print(template)
 	#TODO send this rendered template to devices
 	return Response(status=201, mimetype='application/json')
