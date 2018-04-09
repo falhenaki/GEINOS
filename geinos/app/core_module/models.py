@@ -194,6 +194,9 @@ class Parameter(Base):
         self.param_type = ptype
         self.current_offset = start
 
+    def get_next_value(self):
+        return "127.0.0.1"
+
 class ListParameter(Base):
     __tablename__ = "ListParameters"
     param_name = Column(String, primary_key=True)
