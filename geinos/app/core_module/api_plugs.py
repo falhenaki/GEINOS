@@ -197,7 +197,7 @@ class Parameters(Resource):
 
 class Device_Configs(Resource):
     def put(self):
-        status=400
+        status=200
         message = "Configs not created"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
             hst = request.form["host"]
@@ -208,3 +208,8 @@ class Device_Configs(Resource):
             with Config(dev) as cm:
                 out = cm.get(format='json')
                 print(out)
+                message="Yeh"
+        return jsonify(
+            status=status,
+            message=message
+        )
