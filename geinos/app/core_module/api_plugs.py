@@ -200,11 +200,25 @@ class Device_Configs(Resource):
         status=400
         message = "Configs not created"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            hst = request.form["host"]
-            usr = request.form["username"]
-            passw = request.form["pass"]
+            print("YEASH")
+            #hst = request.form["host"]
+            #usr = request.form["username"]
+            #passw = request.form["pass"]
+            hst = "192.168.1.1"
+            usr = "admin"
+            passw = "admin"
+            print(hst)
+            print(usr)
+            print(passw)
             dev = Device(host=hst,username=usr,password=passw)
+            print("00000000000000000000000000000000000000000000000")
             dev.open()
+            print("111111111111111111111111111111111111111111111111111111")
             with Config(dev) as cm:
                 out = cm.get(format='json')
                 print(out)
+                status=200
+        return jsonify(
+            status=status,
+            message=message
+        )
