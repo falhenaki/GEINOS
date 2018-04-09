@@ -227,3 +227,39 @@ class ConnectionClosedError(ConnectError):
     def __init__(self, dev):
         ConnectError.__init__(self, dev=dev)
         dev.connected = False
+
+class GetConfigError(Exception):
+
+    """
+    Generated if the specified host denies the NETCONF; could
+    be that the services is not enabled, or the host has
+    too many connections already.
+    """
+    pass
+
+class LoadError(Exception):
+
+    """
+    Generated if the specified host denies the NETCONF; could
+    be that the services is not enabled, or the host has
+    too many connections already.
+    """
+    pass
+
+class ArgError(Exception):
+
+    """
+    Generated if the specified host denies the NETCONF; could
+    be that the services is not enabled, or the host has
+    too many connections already.
+    """
+    pass
+
+class RollbackError(Exception):
+
+    """
+    Generated if the specified host denies the NETCONF; could
+    be that the services is not enabled, or the host has
+    too many connections already.
+    """
+    pass

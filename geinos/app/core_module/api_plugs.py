@@ -3,8 +3,10 @@ from flask import request, jsonify, session, render_template
 from app.core_module import auth,db_connector,device_helpers
 from app import app
 from flask_httpauth import HTTPBasicAuth
-authen = HTTPBasicAuth()
+from app.pyorbit_module import Device
+from app.pyorbit_module.services import Config
 
+authen = HTTPBasicAuth()
 def request_wants_json():
     best = request.accept_mimetypes \
         .best_match(['application/json', 'text/html'])
@@ -192,3 +194,17 @@ class Parameters(Resource):
             status=status,
             message=message
         )
+
+class Device_Configs(Resource):
+    def put(self):
+        status=400
+        message = "Configs not created"
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            hst = request.form["host"]
+            usr = request.form["username"]
+            passw = request.form["pass"]
+            dev = Device(host=hst,username=usr,password=passw)
+            dev.open()
+            with Config(dev) as cm:
+                out = cm.get(format='json')
+                print(out)
