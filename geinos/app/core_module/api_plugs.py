@@ -5,7 +5,6 @@ from app import app
 from flask_httpauth import HTTPBasicAuth
 from app.pyorbit_module import Device
 from app.pyorbit_module.services import Config
-from app.core_module.device_connector import *
 
 authen = HTTPBasicAuth()
 def request_wants_json():
@@ -197,90 +196,20 @@ class Parameters(Resource):
         )
 
 class Device_Configs(Resource):
-    def get(self):
-        status=400
+    def put(self):
+        status=200
         message = "Configs not created"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            print("YEASH")
-            #hst = request.form["host"]
-            #usr = request.form["username"]
-            #passw = request.form["pass"]
-            hst = "192.168.1.1"
-            usr = "admin"
-            passw = "admin"
-            
-            print(hst)
-            print(usr)
-            print(passw)
-            '''
+            hst = request.form["host"]
+            usr = request.form["username"]
+            passw = request.form["pass"]
             dev = Device(host=hst,username=usr,password=passw)
-            print("00000000000000000000000000000000000000000000000")
             dev.open()
-            print("111111111111111111111111111111111111111111111111111111")
             with Config(dev) as cm:
                 out = cm.get(format='json')
                 print(out)
-                status=200
-            '''
-            conf = get_config(hst,usr,passw)
-            status=200
-            message="ok"
+                message="Yeh"
         return jsonify(
             status=status,
             message=message
         )
-    def put(self):
-        t_config="""
-                <config>
-                    <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
-                        <ntp>
-                            <use-ntp>true</use-ntp>
-                            <ntp-server>
-                                <address>1.1.1.1</address>
-                            </ntp-server>
-                        </ntp>
-                    </system>
-                </config>
-                """
-        status = 400
-        message = "Not success"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
-            print("YEASH")
-            #hst = request.form["host"]
-            #usr = request.form["username"]
-            #passw = request.form["pass"]
-            hst = "192.168.1.1"
-            usr = "admin"
-            passw = "admin"
-            '''
-            dev = Device(host=hst,username=usr,password=passw)
-            print("00000000000000000000000000000000000000000000000")
-            dev.open()
-            print("111111111111111111111111111111111111111111111111111111")
-            with Config(dev) as cm:
-                rsp = cm.load(content=t_config)
-                print(rsp)
-                rsp = cm.validate()
-                print(rsp)
-                rsp = cm.commit()
-                print(rsp)
-                status=200
-                message="ok"
-            '''
-            set_config(hst,usr,passw,t_config)
-        return jsonify(
-            status=status,
-            message=message
-            )
-'''
-class Templates(Resource):
-    put(self):
-        status=200
-        message="whatever"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
-            #hst = request.form["host"]
-            #usr = request.form["username"]
-            #passw = request.form["pass"]
-            t_name = "192.168.1.1"
-            grp_name = "admin"
-'''
