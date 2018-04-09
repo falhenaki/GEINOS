@@ -54,3 +54,15 @@ def delete_file(filename):
     if xml_templates.delete_file(filename):
         return Response(status=201, mimetype='application/json')
 
+@app.route('/assign/<filename>/<group_name>', methods=['POST', 'PUT'])
+def assign_template(filename, group_name):
+	"""
+	route to render and apply a template to a device group
+	:param filename: name of template to apply
+	:param group_name: group to apply template to
+	:return: status of operation
+	"""
+	template = xml_templates.render_template(filename)
+	print(template)
+	#TODO send this rendered template to devices
+	return Response(status=201, mimetype='application/json')

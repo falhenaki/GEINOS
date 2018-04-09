@@ -165,6 +165,12 @@ def get_all_parameters():
         prms.append(pm.param_name)
     return prms
 
+def get_parameter_next_value(name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    param = s.query(Parameter).filter(Parameter.param_name == name).first()
+    return param.get_next_value()
+
 def add_parameter(name,type,val):
     Session = sessionmaker(bind=engine)
     s = Session()

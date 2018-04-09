@@ -209,7 +209,7 @@
     <ntp>
       <use-ntp>true</use-ntp>
       <ntp-server>
-        <address>template_ntp-server</address>
+        <address>param1</address>
       </ntp-server>
     </ntp>
     <dns>
