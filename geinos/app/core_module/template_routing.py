@@ -33,11 +33,8 @@ def upload_file():
 
 @app.route('/uploaded_files/<filename>', methods=['GET'])
 def uploaded_file(filename):
-	"""
-	routing to get a file previously uploaded
-	:param filename: filename to get
-	:return:
-	"""
+    if filename == None:
+        return True #add all templates here
 	return xml_templates.get_file(filename)
 
 @app.route('/uploaded_files/generate_jinja2/<filename>', methods=['PUT'])
