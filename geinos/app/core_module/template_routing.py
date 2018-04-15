@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from app import app
 from flask import Response
 from app.core_module import xml_templates, genios_decorators
+from app.core_module.device_connector import *
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -32,11 +33,8 @@ def upload_file():
 
 @app.route('/uploaded_files/<filename>', methods=['GET'])
 def uploaded_file(filename):
-	"""
-	routing to get a file previously uploaded
-	:param filename: filename to get
-	:return:
-	"""
+    if filename == None:
+        return True #add all templates here
 	return xml_templates.get_file(filename)
 
 @app.route('/uploaded_files/generate_jinja2/<filename>', methods=['PUT'])
@@ -56,12 +54,7 @@ def delete_file(filename):
 
 @app.route('/assign/<filename>/<group_name>', methods=['POST', 'PUT'])
 def assign_template(filename, group_name):
-	"""
-	route to render and apply a template to a device group
-	:param filename: name of template to apply
-	:param group_name: group to apply template to
-	:return: status of operation
-	"""
-	template = xml_templates.render_template(filename)
-	#TODO send this rendered template to devices
-	return Response(status=201, mimetype='application/json')
+    template = xml_templates.render_template(filename)
+    print(template)
+    set_config('192.168.1.1', 'admin', 'admin', template)
+    return Response(status=201, mimetype='application/json')
