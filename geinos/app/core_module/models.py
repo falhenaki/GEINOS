@@ -105,8 +105,8 @@ class User_in_Group(Base):
 class Device(Base):
     """"""
     __tablename__ = "Devices"
-    vendor_id = Column(Integer, primary_key=True)
-    serial_number = Column(Integer, primary_key=True)
+    vendor_id = Column(String, primary_key=True)
+    serial_number = Column(String, primary_key=True)
     model_number = Column(Integer, primary_key=True)
     device_status = Column(Enum('UNAUTHORIZED', 'AUTHORIZED', 'PROVISIONED'))
     last_modified = Column(DateTime(timezone=false))
