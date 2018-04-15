@@ -154,7 +154,7 @@ class Device(object):
                 hostkey_verify=False,
                 allow_agent=False,
                 look_for_keys=False,
-                device_params={'name': 'orbit', 'local': False})
+                device_params={'name': 'orbit', 'local': True})
 
             self._conn._session.add_listener(DeviceSessionListener(self))
         except NcErrors.AuthenticationError as err:

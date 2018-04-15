@@ -66,12 +66,12 @@ def get_uptime(host, user, passwd):
         print ("Cannot connect to device: {0}".format(err))
         return
 
-def set_config(host, user, passwd):
+def set_config(host, user, passwd, t_conf):
     try:
         dev = Device(host=host,username=user,password=passwd)
         dev.open()
         with Config(dev) as cm:
-            rsp = cm.load(content=config)
+            rsp = cm.load(content=t_conf)
             print(rsp)
             rsp = cm.validate()
             print(rsp)
