@@ -2,7 +2,8 @@ import requests
 
 def test_upload():
     file = open('config_output.xml')
-    payload = {'file': file, 'filename': 'config_output.xml'}
+    my_string = file.read()
+    payload = {'file': my_string, 'filename': 'config_output.xml'}
     login = {'username': 'test', 'password': 'password'}
     s = requests.session()
     r = s.get('http://127.0.0.1:5000')

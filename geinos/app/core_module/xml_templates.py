@@ -22,9 +22,6 @@ def generate_jinja(xml_filename):
 		fout.write(s)
 	return send_from_directory(app.config['UPLOADS_FOLDER'], xml_filename)
 
-def store_file(xml_filename, file):
-	file.save(os.path.join(app.config['UPLOADS_FOLDER'], xml_filename))
-
 def get_file(xml_filename):
 	return send_from_directory(app.config['UPLOADS_FOLDER'], xml_filename)
 
