@@ -33,8 +33,8 @@ def upload_file():
 
 @app.route('/uploaded_files/<filename>', methods=['GET'])
 def uploaded_file(filename):
-    if filename == None:
-        return True #add all templates here
+	if filename == None:
+		return True #add all templates here
 	return xml_templates.get_file(filename)
 
 @app.route('/uploaded_files/generate_jinja2/<filename>', methods=['PUT'])
@@ -49,12 +49,12 @@ def replace_jinja(filename):
 
 @app.route('/uploaded_files/<filenams>', methods=['DELETE'])
 def delete_file(filename):
-    if xml_templates.delete_file(filename):
-        return Response(status=201, mimetype='application/json')
+	if xml_templates.delete_file(filename):
+		return Response(status=201, mimetype='application/json')
 
 @app.route('/assign/<filename>/<group_name>', methods=['POST', 'PUT'])
 def assign_template(filename, group_name):
-    template = xml_templates.render_template(filename)
-    print(template)
-    set_config('192.168.1.1', 'admin', 'admin', template)
-    return Response(status=201, mimetype='application/json')
+	template = xml_templates.render_template(filename)
+	print(template)
+	set_config('192.168.1.1', 'admin', 'admin', template)
+	return Response(status=201, mimetype='application/json')
