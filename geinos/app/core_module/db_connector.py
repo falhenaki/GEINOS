@@ -162,7 +162,7 @@ def get_all_parameters():
     query = s.query(Parameter)
     prms=[]
     for pm in query:
-        prms.append(pm.param_name)
+        prms.append([pm.param_name,pm.param_type,pm.start_value])
     return prms
 
 def get_parameter_next_value(name):
