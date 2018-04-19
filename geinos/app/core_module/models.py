@@ -75,7 +75,8 @@ class User(Base):
             return None  # valid token, but expired
         except BadSignature:
             return None  # invalid token
-        user = User.query.get(data['id'])
+        user = s.query(User).get(data['id'])
+        #user = User.query.get(data['id'])
         return user
 
 class User_Group(Base):

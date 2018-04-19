@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, jsonify, session, render_template
-from app.core_module import auth,db_connector,device_helpers
+from app.core_module import auth,db_connector,device_helpers,genios_decorators
 from app import app
 from flask_httpauth import HTTPBasicAuth
 from app.pyorbit_module import Device
@@ -48,6 +48,7 @@ class Login(Resource):
 
 class Users(Resource):
     #@authen.login_required
+    #@genios_decorators.requires_roles("ADMIN")
     def get(self):
         if (auth.login(request.authorization["username"],request.authorization["password"])):
             all_users = db_connector.get_all_users()
