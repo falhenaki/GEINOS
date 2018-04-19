@@ -2,7 +2,7 @@
     "login": [
         {
             "_comment": "please change the user and password for mysql DB as needed",
-            "user": "root",
+            "user": "admin",
             "password": "password"
         }
     ]
