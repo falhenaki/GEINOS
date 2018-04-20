@@ -20,7 +20,6 @@ def simple_ping():
   """
   APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
   APP_STATIC = os.path.join(APP_ROUTE, 'static')
-  filepath = 'body.txt'
 
   with open(os.path.join(APP_STATIC, filepath)) as fh:
     data = fh.read()
@@ -108,7 +107,7 @@ class Device(Base):
     __tablename__ = "Devices"
     vendor_id = Column(String, primary_key=True)
     serial_number = Column(String, primary_key=True)
-    model_number = Column(Integer, primary_key=True)
+    model_number = Column(String, primary_key=True)
     device_status = Column(Enum('UNAUTHORIZED', 'AUTHORIZED', 'PROVISIONED'))
     last_modified = Column(DateTime(timezone=false))
     IP = Column(String)
@@ -137,9 +136,9 @@ class Device_in_Group(Base):
     """"""
     __tablename__ = "Devices_in_Groups"
     device_group_name = Column(String, primary_key=True)
-    vendor_id = Column(Integer, primary_key=True)
-    serial_number = Column(Integer, primary_key=True)
-    model_number = Column(Integer, primary_key=True)
+    vendor_id = Column(String, primary_key=True)
+    serial_number = Column(String, primary_key=True)
+    model_number = Column(String, primary_key=True)
     #----------------------------------------------------------------------
     def __init__(self, device_group_name, vendor_id, serial_number, model_number):
         """"""
