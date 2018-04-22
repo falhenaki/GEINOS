@@ -51,6 +51,5 @@ class User(Base):
             return None  # valid token, but expired
         except BadSignature:
             return None  # invalid token
-        user = s.query(User).get(data['id'])
-        #user = User.query.get(data['id'])
+        user = User.get(User.id == data['id'])
         return user
