@@ -1,11 +1,11 @@
-import os
-from os.path import realpath, join, dirname
-from flask import Flask, request, redirect, url_for, flash, send_from_directory, render_template, json
+from flask import request, redirect, flash
 from werkzeug.utils import secure_filename
-from app import app
+
 from flask import Response
-from app.core_module import xml_templates, genios_decorators
-from app.core_module.device_connector import *
+
+from app import app
+from app.core.template import xml_templates
+from app.core.device.device_access import *
 
 
 def allowed_file(filename):

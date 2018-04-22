@@ -7,7 +7,7 @@ from ncclient import *
 
 # package modules
 from .service import Service
-from app.pyorbit_module.exception import *
+from app.pyorbit.exception import *
 
 """
 Configuration Service

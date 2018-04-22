@@ -1,6 +1,6 @@
 
 # package modules
-from app.pyorbit_module.services.service import Service
+from app.pyorbit.services.service import Service
 
 """
 Firmware Service

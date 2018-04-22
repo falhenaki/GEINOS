@@ -1,5 +1,5 @@
-from app.pyorbit_module import Device
-from app.pyorbit_module.services import Config
+from app.pyorbit import Device
+from app.pyorbit.services import Config
 
 t_config="""
 <config>

@@ -1,12 +1,11 @@
-from sqlalchemy.orm import sessionmaker, session
-from app.core_module.models import *
-from app import db, engine
+from sqlalchemy.orm import sessionmaker
+from app.core.user.user import User
+from app import engine
 import json
 import datetime
-from math import floor
 from flask import Flask
 from flask_httpauth import HTTPBasicAuth
-
+from math import floor
 authen = HTTPBasicAuth()
 
 @authen.verify_password
@@ -44,19 +43,6 @@ def add_user(username, password, email, role_type):
     s.add(user)
     s.commit()
 
-def add_device(vend, sn, mn):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now())
-    s.add(dv)
-    s.commit()
-
-def add_device_group(name):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    dg = Device_Group(name,datetime.datetime.now())
-    s.add(dg)
-    s.commit()
 
 def remove_user(username):
     """
@@ -138,71 +124,6 @@ def get_all_users():
 
     return userList
 
-def get_all_devices():
-    ret = []
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Device)
-    for d in query:
-        ret.append([d.vendor_id, d.serial_number, d.model_number])
-    return ret
-
-def get_all_logs():
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Log)
-    logList=[]
-    for log in query:
-        logList.append([log.user, log.log_message])
-    return logList
-
-def get_all_parameters():
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Parameter)
-    prms=[]
-    for pm in query:
-        prms.append([pm.param_name,pm.param_type,pm.start_value])
-    return prms
-
-def get_parameter_next_value(name):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    param = s.query(Parameter).filter(Parameter.param_name == name).first()
-    return param.get_next_value()
-
-def add_parameter(name,type,val):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    dv = Parameter(name,val,type)
-    s.add(dv)
-    s.commit()
-
-def get_all_device_groups():
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Device_Group)
-    dgs=[]
-    for dg in query:
-        dgs.append(dg.device_group_name)
-    return dgs
-
-def add_devices_to_groups(group_name, att):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    if "-" in att: #raneg of ips
-        att = att.split('-')
-        query = s.query(Device).filter(Device.IP >= att[0], Device.IP <= att[1])
-        for q in query:
-            dig = Device_in_Group(group_name,q.vendor_id,q.serial_number,q.model_number)
-            s.add(dig)
-            s.commit()
-    else:
-        q = s.query(Device).filter(Device.IP == att).first()
-        dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
-        s.add(dig)
-        s.commit()
-
 
 def get_user_role(username):
     """
@@ -281,28 +202,3 @@ class DB_User_Connection():
 
     def update_last_login(self, login_datetime):
         self.this_user.update_last_login(login_datetime)
-
-def add_file(file, filename):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    template = Template(filename, file, datetime.datetime.now())
-    s.add(template)
-    s.commit()
-
-def get_file(filename):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Template).filter(Template.name == filename)
-    file = query.first()
-    if file:
-        return file
-    return None
-
-def replace_template(filename, file):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Template).filter(Template.name == filename)
-    xml_file = query.first()
-    xml_file.file = file
-    s.commit()
-

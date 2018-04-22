@@ -1,4 +1,4 @@
-from app.core_module import db_connector
+from app.core.parameter import parameter_connector
 from app import app
 import os
 from flask import send_from_directory
@@ -12,7 +12,7 @@ def generate_jinja(xml_filename):
 	:param replacements: xml tags that should have their values replaced with jinja2 tags
 	:return: xml file with desired replacements converted to jinja2 tags
 	"""
-	all_params = db_connector.get_all_parameters()
+	all_params = parameter_connector.get_all_parameters()
 	xml_file = os.path.join(app.config['UPLOADS_FOLDER'], xml_filename)
 	with open(xml_file, 'r') as f:
 		s = f.read()
@@ -40,7 +40,7 @@ def render_template(xml_filename):
 		all_vars.extend(meta.find_undeclared_variables(ast))
 	to_render = {}
 	for var in all_vars:
-		to_render[var] = db_connector.get_parameter_next_value(var)
+		to_render[var] = parameter_connector.get_parameter_next_value(var)
 	return render(xml_filename, to_render)
 
 def render(filename, context):

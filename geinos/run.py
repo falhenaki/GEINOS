@@ -1,6 +1,6 @@
 # Run a test server.
 from app import app
-from app.core_module import initialize
+from app.core.api import initialize
 
 initialize.initialize_APIs()
 

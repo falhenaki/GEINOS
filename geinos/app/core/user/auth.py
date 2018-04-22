@@ -1,5 +1,5 @@
 from flask import session
-from app.core_module import db_connector
+from app.core.user import user_connector
 from datetime import datetime
 
 
@@ -11,9 +11,9 @@ def login(username_or_token, password):
     :param password: password to check
     :return: true if user is logged in false otherwise
     """
-    usr = db_connector.authenticate_token(username_or_token)
+    usr = user_connector.authenticate_token(username_or_token)
     if not usr:
-        connector = db_connector.DB_User_Connection(username_or_token, password)
+        connector = user_connector.DB_User_Connection(username_or_token, password)
         print(connector.is_legal())
         if connector.is_legal():
             session['username'] = username_or_token
@@ -33,8 +33,8 @@ def add_user(username, password, email, role_type):
     :param email: user email
     :return: true if user is added false otherwise
     """
-    if db_connector.check_username_availability(username):
-        db_connector.add_user(username, password, email, role_type)
+    if user_connector.check_username_availability(username):
+        user_connector.add_user(username, password, email, role_type)
 
         return True
     return False
@@ -45,7 +45,7 @@ def remove_user(username):
     :param username: username to remove
     :return:
     """
-    db_connector.remove_user(username)
+    user_connector.remove_user(username)
 
 def change_user_role(username, new_role):
     """
@@ -54,7 +54,7 @@ def change_user_role(username, new_role):
     :param new_role: role to change user to
     :return:
     """
-    db_connector.change_user_role(username, new_role)
+    user_connector.change_user_role(username, new_role)
 
 def logout():
     """
@@ -65,10 +65,10 @@ def logout():
     session.pop('user_role', None)
 
 def check_username_availability(username):
-    return db_connector.check_username_availability(username)
+    return user_connector.check_username_availability(username)
 
 def get_user_role(username):
-    return db_connector.get_user_role(username)
+    return user_connector.get_user_role(username)
 
 def update_user_login(username):
-    db_connector.change_user_lastlogin(username)
+    user_connector.change_user_lastlogin(username)

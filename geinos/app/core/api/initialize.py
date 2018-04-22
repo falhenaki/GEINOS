@@ -1,6 +1,8 @@
 from flask_restful import Api
+
 from app import app
-from app.core_module import api_plugs
+from app.core.api import api_plugs
+
 
 def initialize_APIs():
     api = Api(app)

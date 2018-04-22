@@ -1,6 +1,6 @@
 import sys, os, warnings
-from app.pyorbit_module import Device, ConnectError
-from app.pyorbit_module.services import Config, Status
+from app.pyorbit import Device, ConnectError
+from app.pyorbit.services import Config, Status
 
 config="""
 <config>

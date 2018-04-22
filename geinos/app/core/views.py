@@ -1,9 +1,10 @@
 from flask import Blueprint
-from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
-from app.core_module import __init__, models, auth, genios_decorators, user_routing,db_connector, device_helpers, template_routing
-import datetime
+from flask import render_template, request, flash
+
+#from app.core import models, auth, db_connector
+from app.core.device import device_helpers
 from app import app
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 # Define the blueprint: 'auth', set its url prefix: app.url/auth

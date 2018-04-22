@@ -1,13 +1,14 @@
 from flask_restful import Resource
-from flask import request, jsonify, session, render_template
-from app.core_module import auth,db_connector,device_helpers,genios_decorators
-from app import app
+from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
-from app.pyorbit_module import Device
-from app.pyorbit_module.services import Config
-from app.core_module.device_connector import *
-
+from app.core.user import auth
+from app.core.user import user_connector
+from app.core.device import device_connector, device_helpers
+from app.core.device_group import device_group_connector
+from app.core.parameter import parameter_connector
+from app.core.device.device_access import *
 authen = HTTPBasicAuth()
+
 def request_wants_json():
     best = request.accept_mimetypes \
         .best_match(['application/json', 'text/html'])
@@ -28,7 +29,7 @@ class Login(Resource):
         POST_PASSWORD = request.authorization["password"]
         if auth.login(POST_USERNAME, POST_PASSWORD):
             auth.update_user_login(POST_USERNAME)
-            usr = db_connector.get_user(POST_USERNAME)
+            usr = user_connector.get_user(POST_USERNAME)
 
             return jsonify(
                 status=200,
@@ -52,7 +53,7 @@ class Users(Resource):
     #@genios_decorators.requires_roles("ADMIN")
     def get(self):
         if (auth.login(request.authorization["username"],request.authorization["password"])):
-            all_users = db_connector.get_all_users()
+            all_users = user_connector.get_all_users()
             return jsonify(
                 status=200,
                 message="Sent all users.",
@@ -94,7 +95,7 @@ class Users(Resource):
 class Devices(Resource):
     def get(self):
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            devices = db_connector.get_all_devices()
+            devices = device_connector.get_all_devices()
             return jsonify(
                 status=200,
                 message="Sent Devices",
@@ -113,7 +114,7 @@ class Devices(Resource):
                 VENDOR_ID = request.form['vendor_id']
                 SERIAL_NUMBER = request.form['serial_num']
                 MODEL_NUMBER = request.form['model_num']
-                db_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
+                device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
                 status=200
                 message="Device Added"
             else:
@@ -131,7 +132,7 @@ class Devices(Resource):
 class Device_Groups(Resource):
     def get(self):
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            dgs = db_connector.get_all_device_groups()
+            dgs = device_group_connector.get_all_device_groups()
             return jsonify(
                 status=200,
                 message="Sent Device Groups",
@@ -147,7 +148,7 @@ class Device_Groups(Resource):
         message="Device Group not added"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
             group_name = request.form["group_name"]
-            db_connector.add_device_group(group_name)
+            device_group_connector.add_device_group(group_name)
             status=200
             message="Device group added"
         return jsonify(
@@ -160,7 +161,7 @@ class Device_Groups(Resource):
         if (auth.login(request.authorization["username"], request.authorization["password"])):
             group_name = request.form["group_name"]
             atrbute = request.form["attribute"]
-            db_connector.add_devices_to_groups(group_name,atrbute)
+            device_group_connector.add_devices_to_groups(group_name,atrbute)
             status=200
             message="Device(s) added to group"
         return jsonify(
@@ -171,7 +172,7 @@ class Device_Groups(Resource):
 class Parameters(Resource):
     def get(self):
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            prms = db_connector.get_all_parameters()
+            prms = parameter_connector.get_all_parameters()
             return jsonify(
                 status=200,
                 message="Sent Parameters",
@@ -189,7 +190,7 @@ class Parameters(Resource):
             name = request.form["name"]
             ptype = request.form["type"]
             val = request.form["value"]
-            db_connector.add_parameter(name,ptype.upper(),val)
+            parameter_connector.add_parameter(name,ptype.upper(),val)
             status = 200
             message = "Parameter added"
         return jsonify(

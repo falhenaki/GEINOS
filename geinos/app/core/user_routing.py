@@ -1,9 +1,9 @@
 from flask import Flask, render_template, session, request, g, redirect, url_for, abort, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.core_module import __init__, models, auth, db_connector
+from app.core import __init__, models, auth, db_connector
 from sqlalchemy.orm import sessionmaker
-from app.core_module.models import *
-from app.core_module import genios_decorators
+from app.core.models import *
+from app.core import genios_decorators
 from app import app
 
 #engine = create_engine('sqlite:///genios_db.db', echo=True)
