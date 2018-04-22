@@ -1,3 +1,10 @@
+from flask_restful import Resource
+from flask import request, jsonify
+from flask_httpauth import HTTPBasicAuth
+from app.core.user import auth
+from app.core.user import user_connector
+
+authen = HTTPBasicAuth()
 
 class Login(Resource):
     #@app.route('/', methods=['POST'])

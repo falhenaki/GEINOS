@@ -1,0 +1,44 @@
+from flask_restful import Resource
+from flask import request, jsonify, session
+from flask_httpauth import HTTPBasicAuth
+from app.core.user import auth
+from app.core.device import device_connector, device_helpers
+
+authen = HTTPBasicAuth()
+class Devices(Resource):
+    def get(self):
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            devices = device_connector.get_all_devices()
+            return jsonify(
+                status=200,
+                message="Sent Devices",
+                data=devices
+            )
+        else:
+            return jsonify(
+                status=400,
+                message="Could not send devices"
+            )
+    def put(self):
+        status = 400
+        message = "Device not added"
+        if (auth.login(request.authorization["username"], request.authorization["password"])):
+            if 'file' not in request.files:
+                VENDOR_ID = request.form['vendor_id']
+                SERIAL_NUMBER = request.form['serial_num']
+                MODEL_NUMBER = request.form['model_num']
+                device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
+                status=200
+                message="Device Added"
+            else:
+                file = request.files['file']
+                file_data = file.readlines()
+                content = [str(x,'utf-8').strip().split(',') for x in file_data]
+                if device_helpers.add_list_of_devices(content):
+                    status=200
+                    message="Devices Added"
+        return jsonify(
+            status=status,
+            message=message
+        )
+
