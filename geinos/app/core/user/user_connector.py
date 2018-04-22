@@ -22,6 +22,12 @@ def authenticate_token(token):
     user = User.verify_auth_token(token)
     return User
 
+def get_user_by_id(id):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    user = s.query(User).filter(User.id == id).first()
+    return user
+
 def get_user(username):
     Session = sessionmaker(bind=engine)
     s = Session()
