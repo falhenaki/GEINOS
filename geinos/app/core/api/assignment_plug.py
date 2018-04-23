@@ -25,9 +25,9 @@ class Assign(Resource):
 			template = xml_templates.create_template(templ_name)
 			print(template)
 			dvs = device_group_connector.get_devices_in_group(group_name)
-			#for dv in dvs:
-				#set_config(dv.IP, dv.username, dv.password, template)
-			set_config('192.168.1.1', 'admin', 'admin', template)
+			for dv in dvs:
+				set_config(dv.IP, dv.username, dv.password, template)
+			#set_config('192.168.1.1', 'admin', 'admin', template)
 			return jsonify(
 				status=status,
 				message='Template assigned'

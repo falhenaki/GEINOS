@@ -28,10 +28,10 @@ def get_devices_in_group(g_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_in_Group).filter(Device_in_Group.device_group_name == g_name)
-    ret = []
-    for x in query:
-        ret.append([x.vendor_id, x.serial_number, x.model_number])
-    return ret
+    #ret = []
+    #for x in query:
+        #ret.append([x.vendor_id, x.serial_number, x.model_number])
+    return query
 
 def add_devices_to_groups(group_name, att, val):
     Session = sessionmaker(bind=engine)
