@@ -11,6 +11,8 @@ class Device(Base):
     model_number = Column(String, primary_key=True)
     device_status = Column(Enum('UNAUTHORIZED', 'AUTHORIZED', 'PROVISIONED'))
     last_modified = Column(DateTime(timezone=false))
+    username = Column(String)
+    password = Column(String)
     IP = Column(String)
     #----------------------------------------------------------------------
     def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified):

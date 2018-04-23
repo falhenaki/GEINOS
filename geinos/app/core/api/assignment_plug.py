@@ -20,6 +20,7 @@ class Assign(Resource):
 			group_name = args.get('group_name')
 			template = xml_templates.render_template(templ_name)
 			print(template)
+
 			set_config('192.168.1.1', 'admin', 'admin', template)
 			return jsonify(
 				status=status,
