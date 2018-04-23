@@ -12,9 +12,13 @@ def login(username_or_token, password):
     :return: true if user is logged in false otherwise
     """
     usr = user_connector.authenticate_token(username_or_token)
-    if not usr:
+    if usr:
+        return usr
+    elif not usr and password:
         connector = user_connector.DB_User_Connection(username_or_token, password)
+        print(0000)
         print(connector.is_legal())
+        print(0000)
         if connector.is_legal():
             session['username'] = username_or_token
             session['user_role'] = connector.get_role()
@@ -23,7 +27,7 @@ def login(username_or_token, password):
         else:
             return False
     else:
-        return True
+        return False
 
 def add_user(username, password, email, role_type):
     """

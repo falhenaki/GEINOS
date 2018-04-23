@@ -20,7 +20,7 @@ def verify_password(username, password):
 
 def authenticate_token(token):
     user = User.verify_auth_token(token)
-    return User
+    return user
 
 def get_user_by_id(id):
     Session = sessionmaker(bind=engine)
