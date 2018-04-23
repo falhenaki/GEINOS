@@ -8,7 +8,6 @@ from flask_httpauth import HTTPBasicAuth
 
 authen = HTTPBasicAuth()
 
-
 def add_device_group(name):
     Session = sessionmaker(bind=engine)
     s = Session()
