@@ -13,6 +13,15 @@ def get_all_parameters():
         prms.append([pm.param_name,pm.param_type,pm.start_value])
     return prms
 
+def get_all_parameter_names():
+	Session = sessionmaker(bind=engine)
+	s = Session()
+	query = s.query(Parameter)
+	param_names = []
+	for pm in query:
+		param_names.append(pm.param_name)
+	return param_names
+
 def get_parameter_next_value(name):
     Session = sessionmaker(bind=engine)
     s = Session()

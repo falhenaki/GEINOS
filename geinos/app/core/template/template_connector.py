@@ -6,10 +6,10 @@ from flask_httpauth import HTTPBasicAuth
 
 authen = HTTPBasicAuth()
 
-def add_file(file, filename):
+def add_file(path, filename):
     Session = sessionmaker(bind=engine)
     s = Session()
-    template = Template(filename, file, datetime.datetime.now())
+    template = Template(filename, path, datetime.datetime.now())
     s.add(template)
     s.commit()
 
@@ -21,14 +21,6 @@ def get_file(filename):
     if file:
         return file
     return None
-
-def replace_template(filename, file):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Template).filter(Template.name == filename)
-    xml_file = query.first()
-    xml_file.file = file
-    s.commit()
 
 def get_template_names():
     Session = sessionmaker(bind=engine)

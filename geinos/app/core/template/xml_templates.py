@@ -1,31 +1,50 @@
 from app.core.parameter import parameter_connector
+from app.core.template import template_connector
 from app import app
 import os
 from flask import send_from_directory
+from werkzeug.utils import secure_filename
 from jinja2 import Environment, meta, FileSystemLoader
 
 
-def generate_jinja(xml_filename):
+def save_with_jinja(xml_file, filename):
 	"""
 	method to replace the value of all attributes with a tag in replacements with jinja2 tags
 	:param xml_file: file to perform replacements on
 	:param replacements: xml tags that should have their values replaced with jinja2 tags
-	:return: xml file with desired replacements converted to jinja2 tags
+	:return: true if file is saved correctly
 	"""
-	all_params = parameter_connector.get_all_parameters()
-	xml_file = os.path.join(app.config['UPLOADS_FOLDER'], xml_filename)
-	with open(xml_file, 'r') as f:
+	all_params = []
+	all_params.extend(parameter_connector.get_all_parameter_names())
+	sec_filename = secure_filename(filename)
+	path = os.path.join(app.config['UPLOADS_FOLDER'], sec_filename)
+	xml_file.save(path)
+	with open(path, 'r') as f:
 		s = f.read()
-	with open(xml_file, 'w') as fout:
+	with open(path, 'w') as fout:
 		for param in all_params:
 			s = s.replace(param, '{{' + param + '}}')
 		fout.write(s)
-	return send_from_directory(app.config['UPLOADS_FOLDER'], xml_filename)
+		#template_connector.add_file(path, sec_filename)
+	return True
 
-def get_file(xml_filename):
-	return send_from_directory(app.config['UPLOADS_FOLDER'], xml_filename)
+def get_template(xml_filename):
+	"""
+	sends the xml template specified
+	:param xml_filename: filename to get
+	:return: specified filename
+	"""
+	sec_filename = secure_filename(xml_filename)
+	return send_from_directory(app.config['UPLOADS_FOLDER'], sec_filename)
 
-def render_template(xml_filename):
+def get_template_names():
+	"""
+	stubbed out method to get all template names
+	:return: 
+	"""
+	return template_connector.get_template_names()
+
+def create_template(xml_filename):
 	"""
 	method to pull all jinja variables from file and replace them with the appropriate values
 	:param xml_filename: file to replace jinja variables

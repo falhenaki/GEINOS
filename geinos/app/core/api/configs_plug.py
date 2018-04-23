@@ -3,13 +3,14 @@ from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 from app.core.user import auth
 from app.core.device.device_access import *
+from  app.core.api import request_parser
 authen = HTTPBasicAuth()
 
 class Device_Configs(Resource):
     def get(self):
         status=400
         message = "Configs not created"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             print("YEASH")
             #hst = request.form["host"]
             #usr = request.form["username"]

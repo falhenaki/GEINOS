@@ -1,14 +1,13 @@
 from flask_restful import Resource
 from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
-from app.core.user import auth
-
+from  app.core.api import request_parser
 from app.core.device_group import device_group_connector
 authen = HTTPBasicAuth()
 
 class Device_Groups(Resource):
     def get(self):
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             dgs = device_group_connector.get_all_device_groups()
             return jsonify(
                 status=200,
@@ -37,7 +36,7 @@ class Device_Groups(Resource):
     def post(self):
         status = 400
         message = "Device(s) not added to group"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             group_name = request.form["group_name"]
             atrbute = request.form["attribute"]
             valu = request.form["value"]
