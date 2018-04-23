@@ -18,6 +18,6 @@ def get_all_logs():
 def add_log(event_type, log_message, user, role):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dv = Log(event_type, log_message, user, role, datetime.datetime.now())
+    dv = Log(None, event_type, log_message, user, role, datetime.datetime.now())
     s.add(dv)
     s.commit()

@@ -35,6 +35,14 @@ def upload_file():
 	)
 	return response
 
+def upload_a_file(file):
+	"""
+	routing to upload a new file will overwite a file of the same name if it already exists
+	:return:
+	"""
+	filename = app.config["UPLOADS_FOLDER"] + secure_filename(file.filename)
+	with open(filename) as f:
+		f.write(file)
 
 @app.route('/uploaded_files/<filename>', methods=['GET'])
 def uploaded_file(filename):

@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 from app.core.user import auth
-from app.core.template import template_connector
+from app.core.template import template_connector, template_routing
 
 authen = HTTPBasicAuth()
 
@@ -34,9 +34,10 @@ class Templates(Resource):
             #parameter_connector.add_parameter(name,ptype.upper(),val)
             if 'file' in request.files:
                 file = request.files['file']
-                file_data = file.readlines()
-                content = [str(x,'utf-8').strip().split(',') for x in file_data]
-                print(content)
+                #file_data = file.readlines()
+                #content = [str(x,'utf-8').strip().split(',') for x in file_data]
+                #print(content)
+                template_routing.upload_a_file(file)
                 status=200
                 message="Template Added"
 
