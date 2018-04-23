@@ -17,28 +17,39 @@ def user_logged_in():
         return False
     else:
         return True
+def validateCreds(request):
+    if request.authorization:
+        if request.authorization["username"]:
+            username = request.authorization["username"]
+        if request.authorization["password"]:
+            password = request.authorization["password"]
+        else:
+            password = ""
+        return auth.login(username,password)
 
 class Users(Resource):
     #@authen.login_required
     #@genios_decorators.requires_roles("ADMIN")
     def get(self):
-        if (auth.login(request.authorization["username"],request.authorization["password"])):
+
+        #if (auth.login(request.authorization["username"],request.authorization["password"])):
+
+
+        if(validateCreds(request)):
             all_users = user_connector.get_all_users()
             return jsonify(
                 status=200,
                 message="Sent all users.",
                 data=all_users
             )
-        else:
-            return jsonify(
-                status=400,
-                message="Could not authenticate"
-            )
+        return jsonify(
+            status=400,
+            message="Could not authenticate"
+        )
     def put(self):
-        user_added = True
         status = 400
-        message = "User not added"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        message = "Could not authenticate"
+        if(validateCreds(request)):
             POST_USERNAME = request.form['usr']
             POST_PASSWORD = request.form['password']
             POST_RETYPE_PASS = request.form['retypepassword']
@@ -54,10 +65,14 @@ class Users(Resource):
             message=message
         )
     def delete(self):
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if(validateCreds(request)):
             POST_USERNAME = request.form['rmusr']
             auth.remove_user(POST_USERNAME)
             return jsonify(
                 status=200,
                 message="Users Deleted"
             )
+        return jsonify(
+            status=400,
+            message="Could not authenticate"
+        )

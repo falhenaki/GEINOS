@@ -192,10 +192,11 @@ class DB_User_Connection():
         """
         query = self.s.query(User).filter(User.username == username)
         user = query.first()
-        if user.check_password(password):
+        if user:
+            if user.check_password(password):
 
-            self.legal_user = True
-            self.this_user = user
+                self.legal_user = True
+                self.this_user = user
 
     def get_role(self):
         """

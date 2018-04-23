@@ -11,6 +11,7 @@ class Login(Resource):
     def post(self):
         POST_USERNAME = request.authorization["username"]
         POST_PASSWORD = request.authorization["password"]
+
         if auth.login(POST_USERNAME, POST_PASSWORD):
             auth.update_user_login(POST_USERNAME)
             usr = user_connector.get_user(POST_USERNAME)

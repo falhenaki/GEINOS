@@ -16,9 +16,7 @@ def login(username_or_token, password):
         return usr
     elif not usr and password:
         connector = user_connector.DB_User_Connection(username_or_token, password)
-        print(0000)
         print(connector.is_legal())
-        print(0000)
         if connector.is_legal():
             session['username'] = username_or_token
             session['user_role'] = connector.get_role()
