@@ -3,6 +3,7 @@ from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 from app.core.user import auth
 from app.core.template import template_connector, xml_templates
+from  app.core.api import request_parser
 
 authen = HTTPBasicAuth()
 
@@ -11,7 +12,7 @@ parser.add_argument('template_name')
 
 class Templates(Resource):
 	def get(self):
-		if (auth.login(request.authorization["username"], request.authorization["password"])):
+		if (request_parser.validateCreds(request)):
 			args = parser.parse_args()
 			tmp_name = args.get('template_name')
 			if tmp_name != '':
@@ -31,7 +32,7 @@ class Templates(Resource):
 	def post(self):
 		status = 400
 		message = "Parameter not added"
-		if (auth.login(request.authorization["username"], request.authorization["password"])):
+		if (request_parser.validateCreds(request)):
 			args = parser.parse_args()
 			tmp_name = args.get('template_name')
 			if 'file' in request.files:

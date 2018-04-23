@@ -3,6 +3,7 @@ from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 from app.core.user import auth
 from app.core.user import user_connector
+from  app.core.api import request_parser
 authen = HTTPBasicAuth()
 
 def request_wants_json():
@@ -22,7 +23,7 @@ class Users(Resource):
     #@authen.login_required
     #@genios_decorators.requires_roles("ADMIN")
     def get(self):
-        if (auth.login(request.authorization["username"],request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             all_users = user_connector.get_all_users()
             return jsonify(
                 status=200,
@@ -38,7 +39,7 @@ class Users(Resource):
         user_added = True
         status = 400
         message = "User not added"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             POST_USERNAME = request.form['usr']
             POST_PASSWORD = request.form['password']
             POST_RETYPE_PASS = request.form['retypepassword']
@@ -54,7 +55,7 @@ class Users(Resource):
             message=message
         )
     def delete(self):
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        if (request_parser.validateCreds(request)):
             POST_USERNAME = request.form['rmusr']
             auth.remove_user(POST_USERNAME)
             return jsonify(

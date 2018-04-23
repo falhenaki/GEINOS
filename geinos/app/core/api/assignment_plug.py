@@ -3,6 +3,7 @@ from flask import request, jsonify, session
 from flask_httpauth import HTTPBasicAuth
 from app.core.template import xml_templates
 from app.core.device.device_access import *
+from  app.core.api import request_parser
 
 authen = HTTPBasicAuth()
 
@@ -13,7 +14,7 @@ parser.add_argument('group_name')
 class Assign(Resource):
 	def post(self):
 		status = 400
-		if (auth.login(request.authorization["username"], request.authorization["password"])):
+		if (request_parser.validateCreds(request)):
 			args = parser.parse_args()
 			templ_name = args.get('temp_name')
 			group_name = args.get('group_name')
