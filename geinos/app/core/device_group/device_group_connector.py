@@ -8,7 +8,6 @@ from flask_httpauth import HTTPBasicAuth
 
 authen = HTTPBasicAuth()
 
-
 def add_device_group(name):
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -25,18 +24,16 @@ def get_all_device_groups():
         dgs.append(dg.device_group_name)
     return dgs
 
-def add_devices_to_groups(group_name, att):
+def add_devices_to_groups(group_name, att, val):
     Session = sessionmaker(bind=engine)
     s = Session()
-    if "-" in att: #raneg of ips
-        att = att.split('-')
-        query = s.query(Device).filter(Device.IP >= att[0], Device.IP <= att[1])
-        for q in query:
-            dig = Device_in_Group(group_name,q.vendor_id,q.serial_number,q.model_number)
-            s.add(dig)
-            s.commit()
-    else:
-        q = s.query(Device).filter(Device.IP == att).first()
+    query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
+    if query is None:
+        add_device_group(group_name)
+    if att == "model":
+        q = s.query(Device).filter(Device.model_number == val).first()
         dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
         s.add(dig)
         s.commit()
+    else:
+        print("Work in progress")

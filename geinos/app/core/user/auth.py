@@ -1,5 +1,6 @@
 from flask import session
 from app.core.user import user_connector
+from app.core.log import log_connector
 from datetime import datetime
 
 
@@ -39,7 +40,7 @@ def add_user(username, password, email, role_type):
     """
     if user_connector.check_username_availability(username):
         user_connector.add_user(username, password, email, role_type)
-
+        log_connector.add_log(1,"User added", session['username'], session['user_role'])
         return True
     return False
 
