@@ -1,4 +1,4 @@
-from app.core import Template
+from app.core.template.template import Template
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
@@ -30,3 +30,11 @@ def replace_template(filename, file):
     xml_file.file = file
     s.commit()
 
+def get_template_names():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Template)
+    ret=[]
+    for tm in query:
+        ret.append([tm.name])
+    return ret

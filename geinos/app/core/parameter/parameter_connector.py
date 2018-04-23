@@ -13,8 +13,6 @@ def get_all_parameters():
         prms.append([pm.param_name,pm.param_type,pm.start_value])
     return prms
 
-
-
 def get_parameter_next_value(name):
     Session = sessionmaker(bind=engine)
     s = Session()

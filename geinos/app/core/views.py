@@ -80,7 +80,7 @@ def enrollment():
 def support():
 	return render_template('layout.html')
 
-@app.route('/templates', methods=['GET', 'POST'])
+#@app.route('/templates', methods=['GET', 'POST'])
 def templates():
 	return render_template('templates.html')
 
