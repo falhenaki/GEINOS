@@ -25,16 +25,21 @@ class Templates(Resource):
                 status=400,
                 message="Could not send templates"
             )
-    def put(self):
+    def post(self):
         status = 400
         message = "Parameter not added"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
-            name = request.form["name"]
-            ptype = request.form["type"]
-            val = request.form["value"]
+            #args = parser.parse_args()
+            #tmp_name = args.get('template_name')
             #parameter_connector.add_parameter(name,ptype.upper(),val)
-            status = 200
-            message = "Parameter added"
+            if 'file' in request.files:
+                file = request.files['file']
+                file_data = file.readlines()
+                content = [str(x,'utf-8').strip().split(',') for x in file_data]
+                print(content)
+                status=200
+                message="Template Added"
+
         return jsonify(
             status=status,
             message=message
