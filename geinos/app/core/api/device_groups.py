@@ -20,6 +20,7 @@ class Device_Groups(Resource):
                 status=400,
                 message="Could not send device groups"
             )
+    '''
     def put(self):
         status=400
         message="Device Group not added"
@@ -32,13 +33,15 @@ class Device_Groups(Resource):
             status=status,
             message=message
         )
+    '''
     def post(self):
         status = 400
         message = "Device(s) not added to group"
         if (auth.login(request.authorization["username"], request.authorization["password"])):
             group_name = request.form["group_name"]
             atrbute = request.form["attribute"]
-            device_group_connector.add_devices_to_groups(group_name,atrbute)
+            valu = request.form["value"]
+            device_group_connector.add_devices_to_groups(group_name,atrbute, valu)
             status=200
             message="Device(s) added to group"
         return jsonify(
