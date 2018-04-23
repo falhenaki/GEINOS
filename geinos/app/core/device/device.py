@@ -15,7 +15,7 @@ class Device(Base):
     password = Column(String)
     IP = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified):
+    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified, username=None, password=None):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
@@ -23,3 +23,5 @@ class Device(Base):
         self.device_status = device_status
         self.last_modified = last_modified
         self.IP = IP
+        self.username = username
+        self.password = password
