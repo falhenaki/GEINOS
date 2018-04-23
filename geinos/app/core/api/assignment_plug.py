@@ -9,22 +9,25 @@ from app.core.device_group import device_group_connector
 authen = HTTPBasicAuth()
 
 parser = reqparse.RequestParser()
-parser.add_argument('temp_name')
-parser.add_argument('group_name')
+#parser.add_argument('temp_name')
+#parser.add_argument('group_name')
 
 class Assign(Resource):
 	def post(self):
+		print("AFTER POST")
 		status = 400
 		if (request_parser.validateCreds(request)):
+			print("AFTER AUTH")
 			args = parser.parse_args()
-			templ_name = args.get('temp_name')
-			group_name = args.get('group_name')
-			template = xml_templates.render_template(templ_name)
+			templ_name = request.form['temp_name']
+			group_name = request.form['group_name']
+			print(templ_name)
+			template = xml_templates.create_template(templ_name)
 			print(template)
 			dvs = device_group_connector.get_devices_in_group(group_name)
-			for dv in dvs:
-				set_config(dv.IP, dv.username, dv.password, template)
-			#set_config('192.168.1.1', 'admin', 'admin', template)
+			#for dv in dvs:
+				#set_config(dv.IP, dv.username, dv.password, template)
+			set_config('192.168.1.1', 'admin', 'admin', template)
 			return jsonify(
 				status=status,
 				message='Template assigned'

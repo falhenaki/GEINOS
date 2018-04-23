@@ -12,10 +12,10 @@ parser.add_argument('template_name')
 
 class Templates(Resource):
 	def get(self):
-		if (request_parser.validateCreds(request)):
+		if True :
 			args = parser.parse_args()
 			tmp_name = args.get('template_name')
-			if tmp_name != '':
+			if tmp_name is not None:
 				nms = xml_templates.get_template(tmp_name)
 			else:
 				nms = xml_templates.get_template_names()
@@ -34,10 +34,10 @@ class Templates(Resource):
 		message = "Parameter not added"
 		if (request_parser.validateCreds(request)):
 			args = parser.parse_args()
-			tmp_name = args.get('template_name')
+
 			if 'file' in request.files:
 				file = request.files['file']
-				if xml_templates.save_with_jinja(file, tmp_name):
+				if xml_templates.save_with_jinja(file, file.filename):
 					status=200
 					message="Template Added"
 
