@@ -9,9 +9,9 @@ class Template(Base):
     __tablename__ = "Templates"
     name = Column(String, primary_key=True)
     date_created = Column(DateTime(timezone=false))
-    template_file = Column(LargeBinary)
+    path = Column(String)
     # ----------------------------------------------------------------------
-    def __init__(self, name, template_file, date_created):
+    def __init__(self, name, path, date_created):
         self.date_created = date_created
-        self.template_file = template_file
         self.name = name
+        self.path = path
