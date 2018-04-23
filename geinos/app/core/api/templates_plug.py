@@ -11,7 +11,7 @@ parser.add_argument('template_name')
 
 class Templates(Resource):
 	def get(self):
-		if (True): #auth.login(request.authorization["username"], request.authorization["password"])):
+		if (auth.login(request.authorization["username"], request.authorization["password"])):
 			args = parser.parse_args()
 			tmp_name = args.get('template_name')
 			if tmp_name != '':
@@ -31,7 +31,7 @@ class Templates(Resource):
 	def post(self):
 		status = 400
 		message = "Parameter not added"
-		if True: #(auth.login(request.authorization["username"], request.authorization["password"])):
+		if (auth.login(request.authorization["username"], request.authorization["password"])):
 			args = parser.parse_args()
 			tmp_name = args.get('template_name')
 			if 'file' in request.files:
