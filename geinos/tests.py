@@ -66,13 +66,13 @@ class FlaskrTestCase(unittest.TestCase):
         data = json.loads(response.data)
         assert(data['status'] == 400)
         assert(data['message'] == 'User not logged in.')
-
+"""
 
     def test_get_users_no_auth_get(self):
         response = self.app.get('/users')
         print(response)
         assert
-        """
+        
         with app.app.app_context():
             assert response == jsonify(
                     status=400,
