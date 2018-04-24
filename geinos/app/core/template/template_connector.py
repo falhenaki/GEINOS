@@ -2,9 +2,6 @@ from app.core.template.template import Template
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
-from flask_httpauth import HTTPBasicAuth
-
-authen = HTTPBasicAuth()
 
 def add_file(path, filename):
     Session = sessionmaker(bind=engine)

@@ -1,10 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from app import engine
 from app.core.log.log import Log
-from flask_httpauth import HTTPBasicAuth
 import datetime
-
-authen = HTTPBasicAuth()
 
 def get_all_logs():
     Session = sessionmaker(bind=engine)

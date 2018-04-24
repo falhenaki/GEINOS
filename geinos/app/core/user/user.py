@@ -45,17 +45,13 @@ class User(Base):
 
     @staticmethod
     def verify_auth_token(token):
-        print("very")
         print(token)
         s = Serializer(app.config['SECRET_KEY'])
         try:
-            print(111)
             data = s.loads(token)
         except SignatureExpired:
-            print(22222)
             return None  # valid token, but expired
         except BadSignature:
-            print(33333)
             return None  # invalid token
         user = user_connector.get_user_by_id(data['id'])
         return user

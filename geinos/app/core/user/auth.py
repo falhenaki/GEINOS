@@ -3,8 +3,6 @@ from app.core.user import user_connector
 from app.core.log import log_connector
 from datetime import datetime
 
-
-
 def login(username_or_token, password):
     """
     checks user login and if it is legal sets the required session tokens appropriately
@@ -17,12 +15,7 @@ def login(username_or_token, password):
         return usr
     elif not usr and password:
         connector = user_connector.DB_User_Connection(username_or_token, password)
-        print(0000)
-        print(connector.is_legal())
-        print(0000)
         if connector.is_legal():
-            session['username'] = username_or_token
-            session['user_role'] = connector.get_role()
             connector.update_last_login(datetime.now)
             return True
         else:
@@ -60,14 +53,6 @@ def change_user_role(username, new_role):
     :return:
     """
     user_connector.change_user_role(username, new_role)
-
-def logout():
-    """
-    logs the user out of the current session
-    :return:
-    """
-    session.pop('username', None)
-    session.pop('user_role', None)
 
 def check_username_availability(username):
     return user_connector.check_username_availability(username)

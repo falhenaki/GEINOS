@@ -45,7 +45,7 @@ def get_template_names():
 	"""
 	return template_connector.get_template_names()
 
-def create_template(xml_filename):
+def apply_parameters(xml_filename):
 	"""
 	method to pull all jinja variables from file and replace them with the appropriate values
 	:param xml_filename: file to replace jinja variables
@@ -61,9 +61,9 @@ def create_template(xml_filename):
 	to_render = {}
 	for var in all_vars:
 		to_render[var] = parameter_connector.get_parameter_next_value(var)
-	return render(xml_filename, to_render)
+	return render_jinja(xml_filename, to_render)
 
-def render(filename, context):
+def render_jinja(filename, context):
 	env = Environment(loader=FileSystemLoader(app.config['UPLOADS_FOLDER']))
 	template = env.get_template(filename)
 	return template.render(context)

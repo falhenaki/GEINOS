@@ -19,20 +19,6 @@ class Device_Groups(Resource):
                 status=400,
                 message="Could not send device groups"
             )
-    '''
-    def put(self):
-        status=400
-        message="Device Group not added"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
-            group_name = request.form["group_name"]
-            device_group_connector.add_device_group(group_name)
-            status=200
-            message="Device group added"
-        return jsonify(
-            status=status,
-            message=message
-        )
-    '''
     def post(self):
         status = 400
         message = "Device(s) not added to group"
