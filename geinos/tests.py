@@ -1,17 +1,12 @@
 import os
-#from app import create_app, engine
-#from app.core.api import initialize
-#from app.core.user import auth, user_connector
+from geinos.app import create_app, engine
+from geinos.app.core_module import initialize, auth, db_connector
+import geinos.app
 import unittest
 import tempfile
-import app
-import base64
-from app.core.api import initialize
+from geinos.app import core_module
 from flask import jsonify, json
-from app.core.device import device_connector
-from werkzeug.datastructures import Headers
-failAuth = "Could not authenticate"
-from requests.auth import HTTPBasicAuth
+failAuth = "Could not authenticate."
 
 class FlaskrTestCase(unittest.TestCase):
 
@@ -19,79 +14,72 @@ class FlaskrTestCase(unittest.TestCase):
     def create_app(self):
 
         # pass in test configuration
-        return app.create_app(self)
+        return create_app(self)
 
     setup_done = False
     def setUp(self):
-        self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
-        print("here")
-        app.app.testing = True
-        self.app = app.app.test_client()
-        with app.app.app_context():
-            app.init_db()
+        self.db_fd, geinos.app.app.config['DATABASE'] = tempfile.mkstemp()
+        geinos.app.app.testing = True
+        self.app = geinos.app.app.test_client()
+        with geinos.app.app.app_context():
+            geinos.app.init_db()
        # print("setup")
         if not FlaskrTestCase.setup_done:
-            initialize.initialize_APIs()
+            geinos.app.core_module.initialize.initialize_APIs()
             FlaskrTestCase.setup_done = True
 
         ## adding users
 
-        app.core.user.auth.add_user("fawaz", "password","test@mail.edu", "ADMIN")
+        auth.add_user("fawaz", "password","test@mail.edu", "ADMIN")
 
     def tearDown(self):
         os.close(self.db_fd)
-        os.unlink(app.app.config['DATABASE'])
+        os.unlink(geinos.app.app.config['DATABASE'])
 
     def test_Dalive(self):
-        with app.app.test_client() as c:
+        with geinos.app.app.test_client() as c:
             rv = c.get('/')
             data = json.loads(rv.data)
 
         assert(data['status'] == 200)
         assert(str(data['message']) == str("You are at the homepage"))
 
-    def open_with_auth(self, url, method, username, password):
-        return self.app.open(url,
-            method=method,
-            headers={
-                'Authorization': b'Basic ' + base64.b64encode((username + b":" + password))
-            }
-        )
     def test_login_noauth_post(self):
         username = "test"
         password = "password"
-        response = self.open_with_auth('/login', 'POST', b'tesdst',
-                                  b'password')
+        print("55555555555")
+        response = self.app.post('/login', auth=('fawaz', 'test'), follow_redirects=True)
         data = json.loads(response.data)
         assert(data['status'] == 400)
         assert(data['message'] == 'User not logged in.')
 
-
     def test_get_users_no_auth_get(self):
         response = self.app.get('/users')
-        data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == failAuth)
-
+        assert response == jsonify(
+                status=400,
+                message=failAuth
+        )
     def test_users_no_auth_put(self):
         response = self.app.put('/users')
-        data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == failAuth)
+        assert response == jsonify(
+                status=400,
+                message=failAuth
+        )
 
     def test_users_auth_delete(self):
         response = self.app.delete('/users')
-        data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == failAuth)
+        assert response == jsonify(
+                status=400,
+                message=failAuth
+        )
 
     def test_users_no_auth_delete(self):
         response = self.app.delete('/users')
-        data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == failAuth)
+        assert response == jsonify(
+                status=400,
+                message=failAuth
+        )
 
-"""
 ##### Devices
     def test_Devices_no_auth_get(self):
         response = self.app.get('/devices')
@@ -230,7 +218,7 @@ class FlaskrTestCase(unittest.TestCase):
         assert(data['data'] != None)
         assert db_connector.get_all_devices() != None
 
-"""
+
 ####  Parameters
 
 if __name__ == '__main__':
