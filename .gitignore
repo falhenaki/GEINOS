@@ -104,5 +104,5 @@ ENV/
 /geinos/app/static/data.json
 
 #Pycharm
-.idea/
+.idea/*
 
