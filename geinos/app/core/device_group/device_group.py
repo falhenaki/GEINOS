@@ -9,9 +9,11 @@ class Device_Group(Base):
     __tablename__ = "Device_Groups"
     device_group_name = Column(String,primary_key=True)
     last_modified = Column(DateTime(timezone=false))
+    template_name = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, device_group_name, last_modified):
+    def __init__(self, device_group_name, last_modified, template_name=None):
         """"""
         self.device_group_name = device_group_name
         self.last_modified = last_modified
+        self.template_name = template_name
 
