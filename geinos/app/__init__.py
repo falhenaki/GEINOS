@@ -29,9 +29,11 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 username = str(data['login'][0]['user'])
 password = str(data['login'][0]['password'])
+
 if username == "MYSQLUSERHERE" or password == "YOUR PASSWORD here":
     print("Please update mysql credentials in the static/data.json")
     sys.exit()
+#engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@127.0.0.1/se_project')
 engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@bitforcedev.se.rit.edu/se_project')
 
 # Sample HTTP error handling
