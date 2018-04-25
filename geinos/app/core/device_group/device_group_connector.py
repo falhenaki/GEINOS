@@ -1,12 +1,9 @@
 from app.core.device.device import Device
 from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_in_group import Device_in_Group
-from sqlalchemy.orm import sessionmaker, session
+from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
-from flask_httpauth import HTTPBasicAuth
-
-authen = HTTPBasicAuth()
 
 def add_device_group(name):
     Session = sessionmaker(bind=engine)

@@ -1,13 +1,9 @@
 __author__ = 'Fawaz'
-from sqlalchemy.orm import sessionmaker, session
+from sqlalchemy.orm import sessionmaker
 from app.core.device.device import Device
-from app import db, engine
-import json
+from app import engine
 import datetime
-from flask import Flask
-from flask_httpauth import HTTPBasicAuth
 
-authen = HTTPBasicAuth()
 def add_device(vend, sn, mn):
     Session = sessionmaker(bind=engine)
     s = Session()

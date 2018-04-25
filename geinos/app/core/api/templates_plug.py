@@ -1,14 +1,10 @@
 from flask_restful import Resource, reqparse
-from flask import request, jsonify, session
-from flask_httpauth import HTTPBasicAuth
-from app.core.user import auth
-from app.core.template import template_connector, xml_templates
+from flask import request, jsonify
+from app.core.template import xml_templates
 from  app.core.api import request_parser
 
-authen = HTTPBasicAuth()
-
 parser = reqparse.RequestParser()
-parser.add_argument('template_name')
+#parser.add_argument('template_name')
 
 class Templates(Resource):
 	def get(self):
@@ -33,7 +29,7 @@ class Templates(Resource):
 		status = 400
 		message = "Parameter not added"
 		if (request_parser.validateCreds(request)):
-			args = parser.parse_args()
+			#args = parser.parse_args()
 
 			if 'file' in request.files:
 				file = request.files['file']

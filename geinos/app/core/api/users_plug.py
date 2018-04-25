@@ -1,27 +1,10 @@
 from flask_restful import Resource
-from flask import request, jsonify, session
-from flask_httpauth import HTTPBasicAuth
+from flask import request, jsonify
 from app.core.user import auth
 from app.core.user import user_connector
 from  app.core.api import request_parser
-authen = HTTPBasicAuth()
-
-def request_wants_json():
-    best = request.accept_mimetypes \
-        .best_match(['application/json', 'text/html'])
-    return best == 'application/json' and \
-        request.accept_mimetypes[best] > \
-        request.accept_mimetypes['text/html']
-
-def user_logged_in():
-    if not 'username' in session:
-        return False
-    else:
-        return True
 
 class Users(Resource):
-    #@authen.login_required
-    #@genios_decorators.requires_roles("ADMIN")
     def get(self):
         if (request_parser.validateCreds(request)):
             all_users = user_connector.get_all_users()
@@ -36,7 +19,6 @@ class Users(Resource):
                 message="Could not authenticate"
             )
     def put(self):
-        user_added = True
         status = 400
         message = "User not added"
         if (request_parser.validateCreds(request)):

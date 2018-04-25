@@ -1,8 +1,6 @@
 from app.core.parameter.parameter import Parameter
 from sqlalchemy.orm import sessionmaker
 from app import engine
-from flask_httpauth import HTTPBasicAuth
-authen = HTTPBasicAuth()
 
 def get_all_parameters():
     Session = sessionmaker(bind=engine)
