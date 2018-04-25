@@ -19,8 +19,10 @@ class Register(Resource):
             device_sn = request.form['serial-number']
             device_name = request.form['name']
             device_ip = request.form['device_ip']
-            device_usern = request.form['device_user']
-            device_pass = request.form['device_pass']
+            #device_usern = request.form['device_user']
+            device_usern = "admin"
+            #device_pass = request.form['device_pass']
+            device_pass = "admin"
             device_exists, has_template = device_connector.device_exists_and_templated(device_sn, device_name)
             if not device_exists:
                 return jsonify(
