@@ -66,6 +66,16 @@ class FlaskrTestCase(unittest.TestCase):
         data = json.loads(response.data)
         assert(data['status'] == 200)
         assert(data['message'] == 'User logged in.')
+    def test_login_noauthentication_post(self):
+        username = b"ss"
+        password = b"passworssddasd"
+        response = self.open_with_auth('/login', 'POST', username,
+                                  password)
+        print(response)
+        data = json.loads(response.data)
+        print(data)
+        assert(data['status'] == 400)
+        assert(data['message'] == 'User not logged in.')
 
 """
     def test_get_users_no_auth_get(self):

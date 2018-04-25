@@ -1,8 +1,8 @@
 To run on localhost (assuming requirements previously installed):
-1. Navigate to GEINOS/genios_app in terminal/cmd prompt
-2. enter: export FLASK_APP=genios_app    (this will be set instead of export on Windows
-3. enter: pip install -e .
-4. enter: flask run.
+1. Do "pip3 install -r requirements.txt"
+2. Navigate to geinos directory, run "source pyorbit/env-setup.sh"
+3. Update database location and credentials in app/__init__.py
+4. Run "python3 run.py"
 
 
 This will add the app to pip as a package that is able to be run by flask. Once running any updates will automatically

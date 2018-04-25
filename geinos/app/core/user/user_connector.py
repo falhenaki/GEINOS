@@ -171,6 +171,8 @@ class DB_User_Connection():
     """
     legal_user = False
     def __init__(self, username, password):
+        print("poipoipoi")
+        print(password)
         Session = sessionmaker(bind=engine)
         self.s = Session()
         self.check_legal(username, password)
@@ -190,12 +192,18 @@ class DB_User_Connection():
         :param password: password to check
         :return:
         """
+        print("xomxomxom")
+        print(username)
+        print(password)
         query = self.s.query(User).filter(User.username == username)
         user = query.first()
-        if user.check_password(password):
+        #if user exists
+        if user:
+            #check password
+            if user.check_password(password):
 
-            self.legal_user = True
-            self.this_user = user
+                self.legal_user = True
+                self.this_user = user
 
     def get_role(self):
         """

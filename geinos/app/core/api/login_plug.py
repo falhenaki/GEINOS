@@ -8,7 +8,10 @@ class Login(Resource):
         if request.authorization:
             POST_USERNAME = request.authorization["username"]
             POST_PASSWORD = request.authorization["password"]
-            if auth.login(POST_USERNAME, POST_PASSWORD):
+            # we are making sure username and password both exist before logging in
+            if POST_USERNAME and POST_PASSWORD and auth.login(POST_USERNAME, POST_PASSWORD):
+                print(POST_USERNAME)
+                print(POST_PASSWORD)
                 auth.update_user_login(POST_USERNAME)
                 usr = user_connector.get_user(POST_USERNAME)
 
