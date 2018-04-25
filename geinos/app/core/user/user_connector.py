@@ -171,8 +171,6 @@ class DB_User_Connection():
     """
     legal_user = False
     def __init__(self, username, password):
-        print("poipoipoi")
-        print(password)
         Session = sessionmaker(bind=engine)
         self.s = Session()
         self.check_legal(username, password)
@@ -182,7 +180,6 @@ class DB_User_Connection():
         getter for checking if login should be allowed
         :return: true if username and password were valid false otherwise
         """
-        print(self.legal_user)
         return self.legal_user
 
     def check_legal(self, username, password):
@@ -192,9 +189,6 @@ class DB_User_Connection():
         :param password: password to check
         :return:
         """
-        print("xomxomxom")
-        print(username)
-        print(password)
         query = self.s.query(User).filter(User.username == username)
         user = query.first()
         #if user exists

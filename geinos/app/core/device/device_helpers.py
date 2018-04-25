@@ -9,8 +9,7 @@ def add_list_of_devices(entries):
 
 def apply_template(sn, vn, ip, user, pw):
     template_name = device_group_connector.get_template_for_device(sn, vn)
-    print(template_name)
-    rendered_template = xml_templates.apply_parameters(template_name)
-    print(rendered_template)
+    rendered_template, applied_params = xml_templates.apply_parameters(template_name, sn, vn)
+    device_connector.set_rendered_params(sn, vn, applied_params)
     device_access.set_config(ip, user, pw, rendered_template)
     return True

@@ -1,8 +1,9 @@
 __author__ = 'Fawaz'
+import os
 from sqlalchemy.orm import sessionmaker
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.device.device import Device
-from app import engine
+from app import engine, app
 import datetime
 
 def add_device(vend, sn, mn):
@@ -35,3 +36,19 @@ def device_exists_and_templated(sn, name):
         if device_in_group != None:
             has_template = True
     return exists, has_template
+
+def set_rendered_params(sn, name, rendered_params):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
+    device = query.first()
+    write_string = ''
+    for param in rendered_params:
+        write_string += param + ':' + rendered_params[param] + '\n'
+    filename = device.vendor_id + device.serial_number +  device.model_number
+    print(filename)
+    save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
+    with open(save_path, 'w') as fout:
+        fout.write(write_string)
+    device.set_config_file(save_path)
+    return True

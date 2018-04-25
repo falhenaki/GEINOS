@@ -17,7 +17,6 @@ def save_with_jinja(xml_file, filename):
     all_params = []
     all_params.extend(parameter_connector.get_all_parameter_names())
     sec_filename = secure_filename(filename)
-
     path = os.path.join(app.config['UPLOADS_FOLDER'], sec_filename)
     xml_file.save(path)
     with open(path, 'r') as f:
@@ -43,7 +42,7 @@ def get_template_names():
     """
     return template_connector.get_template_names()
 
-def apply_parameters(xml_filename):
+def apply_parameters(xml_filename, device_sn, device_name):
     """
     method to pull all jinja variables from file and replace them with the appropriate values
     :param xml_filename: file to replace jinja variables
@@ -59,7 +58,7 @@ def apply_parameters(xml_filename):
     to_render = {}
     for var in all_vars:
         to_render[var] = parameter_connector.get_parameter_next_value(var)
-    return render_jinja(xml_filename, to_render)
+    return render_jinja(xml_filename, to_render), to_render
 
 def render_jinja(filename, context):
     env = Environment(loader=FileSystemLoader(app.config['UPLOADS_FOLDER']))

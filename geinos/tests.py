@@ -24,12 +24,10 @@ class FlaskrTestCase(unittest.TestCase):
     setup_done = False
     def setUp(self):
         self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
-        print("here")
         app.app.testing = True
         self.app = app.app.test_client()
         with app.app.app_context():
             app.init_db()
-       # print("setup")
         if not FlaskrTestCase.setup_done:
             initialize.initialize_APIs()
             FlaskrTestCase.setup_done = True
@@ -46,7 +44,6 @@ class FlaskrTestCase(unittest.TestCase):
 
         rv = self.app.get('/users')
         data = json.loads(rv.data)
-        print(data)
         assert(data['status'] == 400)
         assert(str(data['message']) == str("Could not authenticate"))
 
@@ -62,7 +59,6 @@ class FlaskrTestCase(unittest.TestCase):
         password = "password"
         response = self.open_with_auth('/login', 'POST', b'test',
                                   b'password')
-        print(response)
         data = json.loads(response.data)
         assert(data['status'] == 200)
         assert(data['message'] == 'User logged in.')
@@ -71,9 +67,7 @@ class FlaskrTestCase(unittest.TestCase):
         password = b"passworssddasd"
         response = self.open_with_auth('/login', 'POST', username,
                                   password)
-        print(response)
         data = json.loads(response.data)
-        print(data)
         assert(data['status'] == 400)
         assert(data['message'] == 'User not logged in.')
 
