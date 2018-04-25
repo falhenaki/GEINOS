@@ -15,7 +15,7 @@ class Register(Resource):
         200 if assignment was sucessful
         """
         status = 400
-        if True: # (request_parser.validateCreds(request)):
+        if (request_parser.validateCreds(request)):
             device_sn = request.form['serial-number']
             device_name = request.form['name']
             device_ip = request.form['device_ip']

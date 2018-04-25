@@ -14,8 +14,10 @@ class Device(Base):
     username = Column(String)
     password = Column(String)
     IP = Column(String)
+    config_file = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified, username=None, password=None):
+    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified, username=None, password=None,
+                 config_file=None):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
@@ -25,3 +27,8 @@ class Device(Base):
         self.IP = IP
         self.username = username
         self.password = password
+        self.config_file = config_file
+
+    def set_config_file(self, config_file):
+        self.config_file = config_file
+

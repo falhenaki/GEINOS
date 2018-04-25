@@ -17,15 +17,12 @@ def save_with_jinja(xml_file, filename):
     all_params = []
     all_params.extend(parameter_connector.get_all_parameter_names())
     sec_filename = secure_filename(filename)
-    print('filename coming from here')
-    print(sec_filename)
+
     path = os.path.join(app.config['UPLOADS_FOLDER'], sec_filename)
     xml_file.save(path)
     with open(path, 'r') as f:
         s = f.read()
     with open(path, 'w') as fout:
-        for param in all_params:
-            s = s.replace(param, '{{' + param + '}}')
         fout.write(s)
         template_connector.add_file(path, sec_filename)
     return True

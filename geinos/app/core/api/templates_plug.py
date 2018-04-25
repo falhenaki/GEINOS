@@ -9,6 +9,10 @@ parser = reqparse.RequestParser()
 # parser.add_argument('template_name')
 
 class Templates(Resource):
+    """
+    API to get template files. If no filename is specified will return all files currently saved, if a filename is
+    specified it will return the contents of that file
+    """
     def get(self):
         if True:
             args = parser.parse_args()
@@ -29,6 +33,10 @@ class Templates(Resource):
             )
 
     def post(self):
+        """
+        API to upload a new template file
+        :return:
+        """
         status = 400
         print('hit_correct_api')
         message = "Parameter not added"
