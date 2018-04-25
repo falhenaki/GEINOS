@@ -44,7 +44,8 @@ class FlaskrTestCase(unittest.TestCase):
         with app.app.test_client() as c:
             rv = c.get('/')
             data = json.loads(rv.data)
-
+            print("111111111")
+            print(data)
         assert(data['status'] == 200)
         assert(str(data['message']) == str("You are at the homepage"))
 
@@ -62,24 +63,12 @@ class FlaskrTestCase(unittest.TestCase):
                                   b'password')
         print(response)
         data = json.loads(response.data)
-<<<<<<< HEAD
         assert(data['status'] == 200)
         print(data['message'] )
         assert(data['message'] == 'User logged in.')
 
 
         """
-=======
-        assert(data['status'] == 400)
-        assert(data['message'] == 'User not logged in.')
-"""
-
-    def test_get_users_no_auth_get(self):
-        response = self.app.get('/users')
-        print(response)
-        assert
-        
->>>>>>> 23d0616ddbab7cb86744aaac7241946c93db3a97
         with app.app.app_context():
             assert response == jsonify(
                     status=400,
