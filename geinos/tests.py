@@ -27,8 +27,6 @@ class FlaskrTestCase(unittest.TestCase):
         print("here")
         app.app.testing = True
         self.app = app.app.test_client()
-        with app.app.app_context():
-            app.init_db()
        # print("setup")
         if not FlaskrTestCase.setup_done:
             initialize.initialize_APIs()
@@ -60,18 +58,15 @@ class FlaskrTestCase(unittest.TestCase):
     def test_login_noauth_post(self):
         username = "test"
         password = "password"
-        response = self.open_with_auth('/login', 'POST', b'tesdst',
+        response = self.open_with_auth('/login', 'POST', b'test',
                                   b'password')
         print(response)
         data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == 'User not logged in.')
+        assert(data['status'] == 200)
+        print(data['message'] )
+        assert(data['message'] == 'User logged in.')
 
 
-    def test_get_users_no_auth_get(self):
-        response = self.app.get('/users')
-        print(response)
-        assert
         """
         with app.app.app_context():
             assert response == jsonify(
