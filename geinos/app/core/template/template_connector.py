@@ -7,6 +7,7 @@ def add_file(path, filename):
     Session = sessionmaker(bind=engine)
     s = Session()
     template = Template(filename, path, datetime.datetime.now())
+    print('adding to db')
     s.add(template)
     s.commit()
 

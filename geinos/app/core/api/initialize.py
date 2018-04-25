@@ -1,7 +1,8 @@
 from flask_restful import Api
 
 from app import app
-from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, assignment_plug, logs_plugs
+from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, \
+    assignment_plug, logs_plugs, register
 
 def initialize_APIs():
     api = Api(app)
@@ -14,3 +15,4 @@ def initialize_APIs():
     api.add_resource(templates_plug.Templates, '/templates')
     api.add_resource(assignment_plug.Assign, '/assign')
     api.add_resource(logs_plugs.Logs, '/logs')
+    api.add_resource(register.Register, '/register')

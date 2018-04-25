@@ -43,3 +43,21 @@ def add_devices_to_groups(group_name, att, val):
         s.commit()
     else:
         print("Work in progress")
+
+def assign_template(group_name, template_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
+    if dg is None:
+        return False
+    dg.template_name = template_name
+    s.commit()
+
+def get_template_for_device(sn, vn):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device_in_Group).filter(Device_in_Group.serial_number == sn, Device_in_Group.vendor_id == vn)
+    device_in_group = query.first()
+    device_group_name = device_in_group.device_group_name
+    device_group = s.query(Device_Group).filter(Device_Group.device_group_name == device_group_name).first()
+    return device_group.template_name
