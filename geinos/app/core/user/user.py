@@ -19,6 +19,7 @@ class User(Base):
     passwordhash = Column(String)
     last_login = Column(DateTime(timezone=false))
     role_type = Column(Enum('ADMIN', 'OPERATOR'))
+    email = Column(String)
 
     #----------------------------------------------------------------------
     def __init__(self, username, password, email, role_type):
@@ -26,6 +27,7 @@ class User(Base):
         self.username = username
         self.hash_password(password)
         self.role_type = role_type
+        self.email = email
 
     def hash_password(self, password):
         self.passwordhash = generate_password_hash(password)

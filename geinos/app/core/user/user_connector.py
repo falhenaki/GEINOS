@@ -126,7 +126,7 @@ def get_all_users():
                             last_login_time = ' > days ago'
 
                 final_login = str(last_login) + last_login_time
-            userList.append([user.username, user.role_type, final_login])
+            userList.append([user.username, user.role_type, final_login, user.email])
 
     return userList
 
