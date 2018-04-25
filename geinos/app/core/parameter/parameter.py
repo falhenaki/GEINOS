@@ -20,4 +20,4 @@ class Parameter(Base):
         self.current_offset = start
 
     def get_next_value(self):
-        return "1.1.1.1"
+        return self.start_value
