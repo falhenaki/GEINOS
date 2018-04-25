@@ -27,6 +27,8 @@ class FlaskrTestCase(unittest.TestCase):
         print("here")
         app.app.testing = True
         self.app = app.app.test_client()
+        with app.app.app_context():
+            app.init_db()
        # print("setup")
         if not FlaskrTestCase.setup_done:
             initialize.initialize_APIs()
@@ -41,13 +43,12 @@ class FlaskrTestCase(unittest.TestCase):
         os.unlink(app.app.config['DATABASE'])
 
     def test_Dalive(self):
-        with app.app.test_client() as c:
-            rv = c.get('/')
-            data = json.loads(rv.data)
-            print("111111111")
-            print(data)
-        assert(data['status'] == 200)
-        assert(str(data['message']) == str("You are at the homepage"))
+
+        rv = self.app.get('/users')
+        data = json.loads(rv.data)
+        print(data)
+        assert(data['status'] == 400)
+        assert(str(data['message']) == str("Could not authenticate"))
 
     def open_with_auth(self, url, method, username, password):
         return self.app.open(url,
@@ -64,11 +65,13 @@ class FlaskrTestCase(unittest.TestCase):
         print(response)
         data = json.loads(response.data)
         assert(data['status'] == 200)
-        print(data['message'] )
         assert(data['message'] == 'User logged in.')
 
-
-        """
+"""
+    def test_get_users_no_auth_get(self):
+        response = self.app.get('/users')
+        print(response)
+        assert
         with app.app.app_context():
             assert response == jsonify(
                     status=400,
