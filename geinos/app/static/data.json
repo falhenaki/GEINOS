@@ -1,9 +1,0 @@
-{
-    "login": [
-        {
-            "_comment": "please change the user and password for mysql DB as needed",
-            "user": "admin",
-            "password": "password"
-        }
-    ]
-}
