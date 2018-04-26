@@ -25,8 +25,7 @@ class Templates(Resource):
     Failure: status= 400, message= "Could not send templates"
     """
     def get(self):
-        #TODO add authorization
-        if True:
+        if (request_parser.validateCreds(request)):
             args = parser.parse_args()
             tmp_name = args.get('template_name')
             if tmp_name is not None:
