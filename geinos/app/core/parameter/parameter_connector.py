@@ -2,6 +2,7 @@ from app.core.parameter.parameter import Parameter
 from app.core.parameter.list_parameter import ListParameter
 from sqlalchemy.orm import sessionmaker
 from app import engine
+import ipaddress
 
 def get_all_parameters():
     Session = sessionmaker(bind=engine)
@@ -25,7 +26,31 @@ def get_parameter_next_value(name):
     Session = sessionmaker(bind=engine)
     s = Session()
     param = s.query(Parameter).filter(Parameter.param_name == name).first()
-    return param.get_next_value()
+    ret_value = ""
+    if param.param_type == "RANGE":
+        if param.start_value.count('.') == 3: # ipv4 -- TODO better way
+            start = int(ipaddress.IPv4Address(param.start_value))
+            end = int(ipaddress.IPv4Address(param.end_value))
+            start = start + param.current_offset
+            if start > end:
+                param.current_offset = 1
+                ret_value = param.start_value
+            else:
+                ret_value = ipaddress.IPv4Address(start + param.current_offset)
+                param.current_offset = param.current_offset + 1
+        else:
+            ret_value = param.start_value + param.current_offset
+            param.current_offset = param.current_offset + 1
+    elif param.param_type == "LIST":
+        lst = s.query(ListParameter).filter(ListParameter.param_name == name)
+        if (param.current_offset >= len(lst)):
+            param.current_offset = 0
+        ret_value = lst[param.current_offset].param_value
+        param.current_offset = param.current_offset + 1
+    else:
+        ret_value = param.start_value
+    s.add(param)
+    s.commit()
 
 def add_parameter(name,type,val):
     Session = sessionmaker(bind=engine)

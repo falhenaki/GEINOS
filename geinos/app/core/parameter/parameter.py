@@ -18,6 +18,3 @@ class Parameter(Base):
         self.end_value = end
         self.param_type = ptype
         self.current_offset = start
-
-    def get_next_value(self):
-        return self.start_value
