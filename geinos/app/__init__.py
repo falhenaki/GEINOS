@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 
 # Define the WSGI application object
-app = Flask(__name__, static_folder='build/static', template_folder='build')
+app = Flask(__name__, static_folder='react/static', template_folder='react')
 CORS(app)
 #Database Login Credentials
 import sys
@@ -15,7 +15,7 @@ import os
 import json
 datafile = "data.json"
 
-data_file_dir = os.path.join(app.root_path, 'buld/static')
+data_file_dir = os.path.join(app.root_path, 'react/static')
 data_file_path = os.path.join(data_file_dir, datafile)
 data = json.load(open(data_file_path))
 
@@ -40,6 +40,10 @@ engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@b
 @app.errorhandler(404)
 def not_found(error):
     return #render_template('404.html'), 404
+
+@app.route('/')
+def hello_world():
+    return render_template('index.html')
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 #from app.core.views import mod_auth as auth_mod
