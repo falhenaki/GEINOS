@@ -16,7 +16,7 @@ def get_all_device_groups():
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_Group)
-    dgs={}
+    dgs=[]
     for dg in query:
         dgs.append([dg.device_group_name, dg.last_modified, dg.template_name])
     return dgs
