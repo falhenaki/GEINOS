@@ -18,7 +18,11 @@ def get_all_device_groups():
     query = s.query(Device_Group)
     dgs=[]
     for dg in query:
-        dgs.append([dg.device_group_name, dg.last_modified, dg.template_name])
+        if dg.template_name == None:
+            template_string = "None"
+        else:
+            template_string = dg.template_name
+        dgs.append([dg.device_group_name, dg.last_modified, template_string])
     return dgs
 
 def get_devices_in_group(g_name):
