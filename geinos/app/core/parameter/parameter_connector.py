@@ -1,4 +1,5 @@
 from app.core.parameter.parameter import Parameter
+from app.core.parameter.list_parameter import ListParameter
 from sqlalchemy.orm import sessionmaker
 from app import engine
 
@@ -29,6 +30,19 @@ def get_parameter_next_value(name):
 def add_parameter(name,type,val):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dv = Parameter(name,val,type)
-    s.add(dv)
+    if (type == "RANGE"):
+        val = val.split("-")
+        dv = Parameter(name,val[0],type,val[1])
+        s.add(dv)
+    elif (type == "LIST"):
+        val = val.split(",")
+        dv = Parameter(name,"",type)
+        dv.current_offset = 0
+        s.add(dv)
+        for value in val:
+            pm = ListParameter(name, value)
+            s.add(pm)
+    else: # scalar
+        dv = Parameter(name,val,type)
+        s.add(dv)
     s.commit()
