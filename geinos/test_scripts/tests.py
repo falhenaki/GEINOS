@@ -1,4 +1,5 @@
-import os
+import os,sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #from app import create_app, engine
 #from app.core.api import initialize
 #from app.core.user import auth, user_connector
