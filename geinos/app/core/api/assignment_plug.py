@@ -11,23 +11,29 @@ parser = reqparse.RequestParser()
 
 
 class Assign(Resource):
+    """
+    HTTP Method: POST
+    Authorization: Required
+    Authorization type: (auth token) OR (username and password)
+    Parameters(Form): temp_name (String), group_name (String)
+    Description : Assign a template with a given temp_name to a device group with group_name
+    :return:
+    Success: status: 200, message: "Template assigned"
+    Failure: status: 400
+    """
     def post(self):
-        """
-        API to assign a template to a device group
-        :return: 400 if failed 200 if sucessful
-        """
         print("AFTER POST")
         status = 400
         if (request_parser.validateCreds(request)):
             print("AFTER AUTH")
             args = parser.parse_args()
-            templ_name = request.form['temp_name']
-            group_name = request.form['group_name']
-            print(templ_name)
-            print(group_name)
-            device_group_connector.assign_template(group_name, templ_name)
+            if request.form['temp_name'] and request.form['group_name']:
+                templ_name = request.form['temp_name']
+                group_name = request.form['group_name']
+                device_group_connector.assign_template(group_name, templ_name)
             # set_config('192.168.1.1', 'admin', 'admin', template) default credentials for testing
             status = 200
+            #TODO Failure status
             return jsonify(
                 status=status,
                 message='Template assigned'

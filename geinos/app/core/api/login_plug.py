@@ -4,6 +4,15 @@ from app.core.user import auth
 from app.core.user import user_connector
 
 class Login(Resource):
+    """
+    HTTP Method: POST
+    Authorization: Required
+    Authorization type: (username and password)
+    Description : Login for user and privde authtoken
+    :return:
+    Success: status= 200, message= "User logged in.", auth_token= (generated token):unused
+    Failure: status: 400, "User not logged in."
+    """
     def post(self):
         if request.authorization:
             POST_USERNAME = request.authorization["username"]

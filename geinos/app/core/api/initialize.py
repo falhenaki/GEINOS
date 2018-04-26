@@ -3,7 +3,9 @@ from flask_restful import Api
 from app import app
 from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, \
     assignment_plug, logs_plugs, register
-
+"""
+API END POINTS
+"""
 def initialize_APIs():
     api = Api(app)
     api.add_resource(login_plug.Login, '/login', '/')
