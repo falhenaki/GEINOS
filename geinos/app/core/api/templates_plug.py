@@ -13,7 +13,19 @@ class Templates(Resource):
     API to get template files. If no filename is specified will return all files currently saved, if a filename is
     specified it will return the contents of that file
     """
+    """
+    HTTP Method: GET
+    Authorization: Required
+    Authorization type: (auth token) OR (username and password)
+    Parameters (json): template_name = Name of Template
+    Description : API to get template files. If no filename is specified will return all files currently saved, if a filename is
+    specified it will return the contents of that file
+    :return:
+    Success: status= 200, message= "Sent Templates", data= templates(json)
+    Failure: status= 400, message= "Could not send templates"
+    """
     def get(self):
+        #TODO add authorization
         if True:
             args = parser.parse_args()
             tmp_name = args.get('template_name')
@@ -34,14 +46,19 @@ class Templates(Resource):
 
     def post(self):
         """
-        API to upload a new template file
+        HTTP Method: PUT
+        Authorization: Required
+        Authorization type: (auth token) OR (username and password)
+        Parameters (file): file (file)
+        Description : upload a new template file
         :return:
+        Success: status= 200, message = 'Template Added'
+        Failure:
+            status: 400, message = 'Template not added'
         """
         status = 400
-        print('hit_correct_api')
-        message = "Parameter not added"
+        message = "Template not added"
         if (request_parser.validateCreds(request)):
-            # args = parser.parse_args()
 
             if 'file' in request.files:
                 file = request.files['file']

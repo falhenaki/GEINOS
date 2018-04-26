@@ -8,6 +8,19 @@ parser = reqparse.RequestParser()
 authen = HTTPBasicAuth()
 
 class Register(Resource):
+    """
+    HTTP Method: POST
+    Authorization: Required
+    Authorization type: (auth token) OR (username and password)
+    Parameters (form): serial-number (String), name (String), device_ip (String)
+    Description : API for devices to request templates to be applied based on their device group.
+    :return:
+    Success: status= 200, message = 'Template has been applied,
+    Failure:
+        status: 401, message = 'Device does not currently exist'
+        status: 402, message = "Device has not yet been assigned a template"
+
+    """
     def post(self):
         """
         API for devices to request templates to be applied based on their device group

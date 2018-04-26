@@ -6,6 +6,15 @@ from  app.core.api import request_parser
 
 authen = HTTPBasicAuth()
 class Devices(Resource):
+    """
+    HTTP Method: GET
+    Authorization: Required
+    Authorization type: (auth token) OR (username and password)
+    Description : Retrieves all devices
+    :return:
+    Success: status= 200, message= "Sent Devices", data= devices(json)
+    Failure: status= 400, message= "Could not send devices
+    """
     def get(self):
         if (request_parser.validateCreds(request)):
             devices = device_connector.get_all_devices()
@@ -19,6 +28,16 @@ class Devices(Resource):
                 status=400,
                 message="Could not send devices"
             )
+    """
+    HTTP Method: PUT
+    Authorization: Required
+    Authorization type: (auth token) OR (username and password)
+    Parameters (form): vendor_id (String), serial_num (String), model_num (String)
+    Description : Adds a new device to DB.
+    :return:
+    Success: status= 200, message = 'Device Added',
+    Failure: status: 400, message = 'Device not added'
+    """
     def put(self):
         status = 400
         message = "Device not added"
