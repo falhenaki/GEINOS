@@ -16,9 +16,11 @@ class Register(Resource):
         """
         status = 400
         if (request_parser.validateCreds(request)):
-            device_sn = request.form['serial-number']
-            device_name = request.form['name']
-            device_ip = request.form['device_ip']
+            content = request.get_json()
+            device_sn = content['serial-number']
+            device_name = content['name']
+            device_ip = content['device_ip']
+            print(content)
             #device_usern = request.form['device_user']
             device_usern = "admin"
             #device_pass = request.form['device_pass']
