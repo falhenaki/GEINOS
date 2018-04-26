@@ -16,9 +16,9 @@ def get_all_device_groups():
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_Group)
-    dgs=[]
+    dgs={}
     for dg in query:
-        dgs.append(dg.device_group_name)
+        dgs.append([dg.device_group_name, dg.last_modified, dg.template_name])
     return dgs
 
 def get_devices_in_group(g_name):
@@ -51,6 +51,7 @@ def assign_template(group_name, template_name):
     if dg is None:
         return False
     dg.template_name = template_name
+    dg.last_updated = datetime.datetime.now()
     s.commit()
 
 def get_template_for_device(sn, vn):
