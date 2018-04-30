@@ -1,7 +1,12 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+sys.path.append(os.getcwd() + '/app/pyorbit')
+
 # Run a test server.
 from app import app
 from app.core.api import initialize
-import os
+
 #import subprocess
 
 #subprocess.call(['app/pyorbit/tst_scr.sh'])
