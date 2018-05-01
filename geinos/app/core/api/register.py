@@ -27,12 +27,14 @@ class Register(Resource):
         :return: 402 if the device has not been added 401 if there is no template assigned to device group
         200 if assignment was sucessful
         """
+       
         status = 400
-        if (request_parser.validateCreds(request)):
+        if True:
             content = request.get_json()
+            print(content)
             device_sn = content['serial-number']
             device_name = content['name']
-            device_ip = content['device_ip']
+            device_ip = content['ip-address']
             print(content)
             #device_usern = request.form['device_user']
             device_usern = "admin"

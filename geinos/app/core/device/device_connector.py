@@ -42,13 +42,13 @@ def set_rendered_params(sn, name, rendered_params):
     s = Session()
     query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
     device = query.first()
-    write_string = ''
-    for param in rendered_params:
-        write_string += param + ':' + rendered_params[param] + '\n'
-    filename = device.vendor_id + device.serial_number +  device.model_number
-    print(filename)
-    save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
-    with open(save_path, 'w') as fout:
-        fout.write(write_string)
-    device.set_config_file(save_path)
+    #write_string = ''
+    #for param in rendered_params:
+    #    write_string += param + ':' + rendered_params[param] + '\n'
+    #filename = device.vendor_id + device.serial_number +  device.model_number
+   # print(filename)
+    #save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
+   # with open(save_path, 'w') as fout:
+    #    fout.write(write_string)
+    #device.set_config_file(save_path)
     return True

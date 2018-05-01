@@ -9,7 +9,12 @@ def add_file(path, filename):
     template = Template(filename, path, datetime.datetime.now())
     print('adding to db')
     s.add(template)
+    print(path)
+    print(template.name)
+    print(template.template_file)
     s.commit()
+    print('commit')
+    return True
 
 def get_file(filename):
     Session = sessionmaker(bind=engine)

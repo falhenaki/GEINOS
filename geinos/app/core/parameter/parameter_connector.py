@@ -33,7 +33,7 @@ def get_parameter_next_value(name):
             end = int(ipaddress.IPv4Address(param.end_value))
             start = start + param.current_offset
             if start > end:
-                param.current_offset = 1
+                param.current_offset = '1'
                 ret_value = param.start_value
             else:
                 ret_value = ipaddress.IPv4Address(start + param.current_offset)
@@ -51,6 +51,7 @@ def get_parameter_next_value(name):
         ret_value = param.start_value
     s.add(param)
     s.commit()
+    return ret_value
 
 def add_parameter(name,type,val):
     Session = sessionmaker(bind=engine)
