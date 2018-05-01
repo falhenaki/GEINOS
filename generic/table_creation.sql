@@ -186,7 +186,7 @@ DROP TABLE IF EXISTS `Templates`;
 CREATE TABLE `Templates` (
   `name` varchar(100) NOT NULL,
   `date_created` datetime DEFAULT NULL,
-  `template_file` varchar(50) DEFAULT NULL,
+  `template_file` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
