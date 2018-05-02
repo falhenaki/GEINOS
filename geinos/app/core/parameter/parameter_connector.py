@@ -79,5 +79,5 @@ def remove_parameter(param_name):
     param = s.query(Parameter).filter(Parameter.param_name == param_name).delete()
     if param is 0:
         return False
-    #s.commit()
+    s.commit()
     return True
