@@ -72,3 +72,12 @@ def add_parameter(name,type,val):
         dv = Parameter(name,val,type)
         s.add(dv)
     s.commit()
+
+def remove_parameter(param_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    param = s.query(Parameter).filter(Parameter.param_name == param_name).delete()
+    if param is 0:
+        return False
+    #s.commit()
+    return True

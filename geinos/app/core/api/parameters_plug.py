@@ -53,3 +53,17 @@ class Parameters(Resource):
             status=status,
             message=message
         )
+
+    def delete(self):
+        status=400
+        if (request_parser.validateCreds(request)):
+            PARAMETER_NAME = request.form['param_name']
+            if parameter_connector.remove_parameter(PARAMETER_NAME):
+                return jsonify(
+                    status=200,
+                    message="Group Deleted"
+                )
+            return jsonify(
+                status=status,
+                message="Failed to delete parameter or parameter does not exist"
+            )
