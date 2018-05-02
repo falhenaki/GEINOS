@@ -6,6 +6,7 @@ from app.core.device.device import Device
 from app import engine, app
 import datetime
 
+
 def add_device(vend, sn, mn):
     Session = sessionmaker(bind=engine)
     s = Session()

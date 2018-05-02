@@ -25,6 +25,9 @@ class Templates(Resource):
     Failure: status= 400, message= "Could not send templates"
     """
     def get(self):
+        status = 400
+        message="error"
+        data = []
         if (request_parser.validateCreds(request)):
             args = parser.parse_args()
             tmp_name = args.get('template_name')
@@ -32,16 +35,18 @@ class Templates(Resource):
                 nms = xml_templates.get_template(tmp_name)
             else:
                 nms = xml_templates.get_template_names()
-            return jsonify(
-                status=200,
-                message="Sent Templates",
-                data=nms
-            )
+            status=200,
+            message="Sent Templates"
+            data=nms
+
         else:
-            return jsonify(
-                status=400,
-                message="Could not send templates"
-            )
+            status=401
+            message="Unauthorized"
+        return jsonify(
+            status=status,
+            message=message,
+            data=data
+        )
 
     def post(self):
         """
@@ -62,9 +67,11 @@ class Templates(Resource):
             if 'file' in request.files:
                 file = request.files['file']
                 if xml_templates.save_with_jinja(file, file.filename):
-                    status = 200
-                    message = "Template Added"
-
+                   status = 200
+                   message = "Template Added"
+        else:
+            status=401
+            message = "Unauthorized"
         return jsonify(
             status=status,
             message=message

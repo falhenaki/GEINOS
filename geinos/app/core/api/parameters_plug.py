@@ -24,8 +24,8 @@ class Parameters(Resource):
             )
         else:
             return jsonify(
-                status=400,
-                message="Could not send parameters"
+                status=401,
+                message="Unauthorized"
             )
     """
     HTTP Method: PUT
@@ -49,6 +49,9 @@ class Parameters(Resource):
             parameter_connector.add_parameter(name,ptype.upper(),val)
             status = 200
             message = "Parameter added"
+        else:
+            status = 401
+            message = "Unauthorized"
         return jsonify(
             status=status,
             message=message
@@ -63,7 +66,14 @@ class Parameters(Resource):
                     status=200,
                     message="Group Deleted"
                 )
-            return jsonify(
-                status=status,
-                message="Failed to delete parameter or parameter does not exist"
-            )
+            else:
+                status = 412,
+                message = "Failed to delete parameter or parameter does not exist"
+
+        else:
+            status = 401
+            message = "Unauthorized"
+        return jsonify(
+            status=status,
+            message=message
+        )

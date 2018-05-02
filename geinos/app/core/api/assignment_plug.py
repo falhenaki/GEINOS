@@ -38,4 +38,9 @@ class Assign(Resource):
                 status=status,
                 message='Template assigned'
             )
+        else:
+            return jsonify(
+                status=401,
+                message="Unauthorized"
+            )
 

@@ -25,8 +25,8 @@ class Devices(Resource):
             )
         else:
             return jsonify(
-                status=400,
-                message="Could not send devices"
+                status=401,
+                message="Unauthorized"
             )
     """
     HTTP Method: PUT
@@ -35,8 +35,9 @@ class Devices(Resource):
     Parameters (form): vendor_id (String), serial_num (String), model_num (String)
     Description : Adds a new device to DB.
     :return:
-    Success: status= 200, message = 'Device Added',
+    Success: status= 201, message = 'Device Added',
     Failure: status: 400, message = 'Device not added'
+    Failure: status 401, message = 'Unauthorized'
     """
     def put(self):
         status = 400
@@ -47,15 +48,18 @@ class Devices(Resource):
                 SERIAL_NUMBER = request.form['serial_num']
                 MODEL_NUMBER = request.form['model_num']
                 device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
-                status=200
+                status=201
                 message="Device Added"
             else:
                 file = request.files['file']
                 file_data = file.readlines()
                 content = [str(x,'utf-8').strip().split(',') for x in file_data]
                 if device_helpers.add_list_of_devices(content):
-                    status=200
+                    status=201
                     message="Devices Added"
+        else:
+            status = 401
+            message = "Unauthorized"
         return jsonify(
             status=status,
             message=message

@@ -17,16 +17,21 @@ class Users(Resource):
     def get(self):
         if (request_parser.validateCreds(request)):
             all_users = user_connector.get_all_users()
-            return jsonify(
-                status=200,
-                message="Sent all users.",
-                data=all_users
-            )
+            status=200,
+            message="Sent all users.",
+            data=all_users
+
         else:
-            return jsonify(
-                status=400,
-                message="Could not authenticate"
-            )
+            status = 401
+            message = "Unathorized"
+            data = []
+        return jsonify(
+            status=400,
+            message= message,
+            data = data
+        )
+
+
     """
     HTTP Method: PUT
     Authorization: Required
@@ -51,6 +56,9 @@ class Users(Resource):
                     auth.change_user_role(POST_USERNAME, POST_ROLE)
                     status=200
                     message = "User added"
+        else:
+            status = 401
+            message = "Unauthorized"
         return jsonify(
             status=status,
             message=message
@@ -68,8 +76,14 @@ class Users(Resource):
         if (request_parser.validateCreds(request)):
             POST_USERNAME = request.form['rmusr']
             auth.remove_user(POST_USERNAME)
-            return jsonify(
-                status=200,
-                message="Users Deleted"
-            )
+            status=200,
+            message="Users Deleted"
+        else:
+            status=401
+            message="Unauthorized"
+        return jsonify(
+            status=status,
+            message=message
+        )
+
         #TODO handle failure message

@@ -25,8 +25,8 @@ class Device_Groups(Resource):
             )
         else:
             return jsonify(
-                status=400,
-                message="Could not send device groups"
+                status=401,
+                message="Unauthorized"
             )
     """
     HTTP Method: POST
@@ -35,7 +35,7 @@ class Device_Groups(Resource):
     Parameters (form): group_name (String), attribute (String), value -device model- (String)
     Description : Adds a new device to group.
     :return:
-    Success: status= 200, message = "Device(s) added to group"",
+    Success: status= 201, message = "Device(s) added to group"",
     Failure: status: 400, message = "Device(s) not added to group"
     """
     #TODO why are we using a post here but a put for all other "adds"
@@ -48,8 +48,11 @@ class Device_Groups(Resource):
             valu = request.form["value"]
             #TODO allow cases in which value is not just model
             device_group_connector.add_devices_to_groups(group_name,atrbute, valu)
-            status=200
+            status=201
             message="Device(s) added to group"
+        else:
+            status= 401
+            message = "Unauthorized"
         return jsonify(
             status=status,
             message=message
