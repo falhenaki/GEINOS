@@ -52,3 +52,12 @@ def set_rendered_params(sn, name, rendered_params):
     #    fout.write(write_string)
     #device.set_config_file(save_path)
     return True
+
+def remove_device(device_sn):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.serial_number == device_sn).delete()
+    if device is 0:
+        return False
+    s.commit()
+    return True

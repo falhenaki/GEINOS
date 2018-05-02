@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
-from  app.core.api import request_parser
+from app.core.api import request_parser
 from app.core.device_group import device_group_connector
 authen = HTTPBasicAuth()
 

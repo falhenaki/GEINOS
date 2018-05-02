@@ -29,6 +29,9 @@ class Register(Resource):
         """
        
         status = 400
+        """
+        TODO: Require authorization, needs to be changed in orbit device
+        """
         if True:
             content = request.get_json()
             print(content)

@@ -60,4 +60,16 @@ class Devices(Resource):
             status=status,
             message=message
         )
-
+    def delete(self):
+        status=400
+        if (request_parser.validateCreds(request)):
+            DEVICE_SN = request.form['serial_num']
+            if device_connector.remove_device(DEVICE_SN):
+                return jsonify(
+                    status=200,
+                    message="Device Deleted"
+                )
+            return jsonify(
+                status=status,
+                message="Failed to delete device or device does not exist"
+            )

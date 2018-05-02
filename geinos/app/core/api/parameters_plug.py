@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from app.core.user import auth
 from app.core.parameter import parameter_connector
-from  app.core.api import request_parser
+from app.core.api import request_parser
 
 class Parameters(Resource):
     """
