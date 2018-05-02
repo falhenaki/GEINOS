@@ -60,6 +60,7 @@ class Devices(Resource):
             status=status,
             message=message
         )
+
     def delete(self):
         status=400
         if (request_parser.validateCreds(request)):

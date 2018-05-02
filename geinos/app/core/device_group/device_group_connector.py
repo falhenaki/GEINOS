@@ -66,3 +66,12 @@ def get_template_for_device(sn, vn):
     device_group_name = device_in_group.device_group_name
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == device_group_name).first()
     return device_group.template_name
+
+def remove_group(group_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device_group = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).delete()
+    if device_group is 0:
+        return False
+    s.commit()
+    return True

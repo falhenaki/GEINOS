@@ -54,3 +54,17 @@ class Device_Groups(Resource):
             status=status,
             message=message
         )
+
+    def delete(self):
+        status=400
+        if (request_parser.validateCreds(request)):
+            GROUP = request.form['group_name']
+            if device_group_connector.remove_group(GROUP):
+                return jsonify(
+                    status=200,
+                    message="Group Deleted"
+                )
+            return jsonify(
+                status=status,
+                message="Failed to delete device group or device group does not exist"
+            )
