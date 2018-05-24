@@ -47,9 +47,15 @@ class Devices(Resource):
                 VENDOR_ID = request.form['vendor_id']
                 SERIAL_NUMBER = request.form['serial_num']
                 MODEL_NUMBER = request.form['model_num']
-                device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
-                status=201
-                message="Device Added"
+                devices = device_connector.get_all_devices()
+                for d in devices:
+                    if SERIAL_NUMBER in d:
+                        status = 402
+                        message = "Device not added. Device already exists"
+                if status is not 402:
+                    device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
+                    status=201
+                    message="Device Added"
             else:
                 file = request.files['file']
                 file_data = file.readlines()

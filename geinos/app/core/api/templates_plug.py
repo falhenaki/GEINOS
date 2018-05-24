@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import request, jsonify
 from app.core.template import xml_templates
 from app.core.api import request_parser
+from app.core.template import template_connector
 
 parser = reqparse.RequestParser()
 
@@ -63,9 +64,17 @@ class Templates(Resource):
         status = 400
         message = "Template not added"
         if (request_parser.validateCreds(request)):
-
             if 'file' in request.files:
                 file = request.files['file']
+                get_templates = template_connector.get_template_names()
+                templates = []
+                for t in get_templates:
+                    templates.append(t[0])
+                if file.filename in templates:
+                    return jsonify(
+                        status=402,
+                        message= "Cannot create template. Template already exists"
+                    )
                 if xml_templates.save_with_jinja(file, file.filename):
                    status = 200
                    message = "Template Added"

@@ -51,6 +51,13 @@ class Users(Resource):
             POST_RETYPE_PASS = request.form['retypepassword']
             POST_EMAIL = request.form['email']
             POST_ROLE = str(request.form['role'])
+            users = user_connector.get_all_users()
+            for u in users:
+                if POST_USERNAME in u:
+                    return jsonify(
+                        status=402,
+                        message= "Cannot create user. User already exists"
+                    )
             if POST_PASSWORD == POST_RETYPE_PASS:
                 if auth.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
                     auth.change_user_role(POST_USERNAME, POST_ROLE)

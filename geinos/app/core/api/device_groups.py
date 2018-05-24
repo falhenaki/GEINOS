@@ -37,6 +37,7 @@ class Device_Groups(Resource):
     :return:
     Success: status= 201, message = "Device(s) added to group"",
     Failure: status: 400, message = "Device(s) not added to group"
+    Failure: status: 402, message = "Device Group not created, group name or value already exists"
     """
     #TODO why are we using a post here but a put for all other "adds"
     def post(self):
@@ -46,7 +47,14 @@ class Device_Groups(Resource):
             group_name = request.form["group_name"]
             atrbute = request.form["attribute"]
             valu = request.form["value"]
+            groups = device_group_connector.get_all_device_groups()
             #TODO allow cases in which value is not just model
+            for g in groups:
+                if group_name in g or atrbute in g:
+                    return jsonify(
+                        status=402,
+                        message="Device Group not created, group name or value already exists"
+                    )
             device_group_connector.add_devices_to_groups(group_name,atrbute, valu)
             status=201
             message="Device(s) added to group"
@@ -57,6 +65,7 @@ class Device_Groups(Resource):
             status=status,
             message=message
         )
+
 
     def delete(self):
         status=400
