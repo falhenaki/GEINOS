@@ -4,6 +4,7 @@ from flask_httpauth import HTTPBasicAuth
 from app.core.api import request_parser
 from app.core.device import device_helpers, device_connector
 from app.core.device_group import device_group_connector
+from app.core.template import template_connector
 
 authen = HTTPBasicAuth()
 
@@ -23,24 +24,24 @@ class Assign(Resource):
     """
     def post(self):
         print("AFTER POST")
-        status = 400
+        status = 401
+        message = "Unauthorized"
         if (request_parser.validateCreds(request)):
-            print("AFTER AUTH")
             args = parser.parse_args()
             if request.form['temp_name'] and request.form['group_name']:
                 templ_name = request.form['temp_name']
                 group_name = request.form['group_name']
-                device_group_connector.assign_template(group_name, templ_name)
-            # set_config('192.168.1.1', 'admin', 'admin', template) default credentials for testing
-            status = 200
-            #TODO Failure status
-            return jsonify(
+                groups = device_group_connector.get_all_device_groups()
+                templates = template_connector.get_template_names()
+                if templ_name in templates and group_name in groups:
+                    device_group_connector.assign_template(group_name, templ_name)
+                    status = 200
+                    message = templ_name + " Assigned to " + group_name
+                else:
+                    status = 402
+                    message = "Template or Group does not exist"
+        return jsonify(
                 status=status,
-                message='Template assigned'
-            )
-        else:
-            return jsonify(
-                status=401,
-                message="Unauthorized"
+                message= message
             )
 
