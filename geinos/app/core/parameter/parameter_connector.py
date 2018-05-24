@@ -65,8 +65,8 @@ def add_parameter(name,type,val):
         dv = Parameter(name,"",type)
         dv.current_offset = 0
         s.add(dv)
-        for value in val:
-            pm = ListParameter(name, value)
+        for index,value in enumerate(val):
+            pm = ListParameter(name, value, index)
             s.add(pm)
     else: # scalar
         dv = Parameter(name,val,type)
