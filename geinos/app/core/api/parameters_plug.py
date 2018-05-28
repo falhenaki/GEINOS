@@ -67,7 +67,7 @@ class Parameters(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             PARAMETER_NAME = request.form['param_name']
-            if parameter_connector.remove_parameter(PARAMETER_NAME):
+            if parameter_connector.remove_parameter(PARAMETER_NAME, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Group Deleted"

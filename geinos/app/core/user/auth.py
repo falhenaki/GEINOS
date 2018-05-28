@@ -23,7 +23,7 @@ def login(username_or_token, password):
     else:
         return None
 
-def add_user(username, password, email, role_type):
+def add_user(username, password, email, role_type, curr_username, user_role, request_ip):
     """
     adds user with given username password and email
     :param username: username to add
@@ -33,16 +33,20 @@ def add_user(username, password, email, role_type):
     """
     if user_connector.check_username_availability(username):
         user_connector.add_user(username, password, email, role_type)
-        log_connector.add_log(1,"User added", session['username'], session['user_role'])
+        #log_connector.add_log(1,"User added", session['username'], session['user_role'])
+        log_connector.add_log(1, "Added new user: {}".format(username), curr_username, user_role, request_ip)
         return True
+    log_connector.add_log(1, "Failed to add user: {}".format(username), curr_username, user_role, request_ip)
     return False
 
-def remove_user(username):
+def remove_user(username, curr_username, user_role, request_ip):
     """
     removes user from database
     :param username: username to remove
     :return:
     """
+    #TODO: error checking
+    log_connector.add_log(1, "Removed user: {}".format(username), curr_username, user_role, request_ip)
     user_connector.remove_user(username)
 
 def change_user_role(username, new_role):

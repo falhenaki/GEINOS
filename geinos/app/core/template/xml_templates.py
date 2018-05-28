@@ -6,8 +6,9 @@ from flask import send_from_directory
 from werkzeug.utils import secure_filename
 from jinja2 import Environment, meta, FileSystemLoader
 from app.core.template import template_connector
+from app.core.log import log_connector
 
-def save_with_jinja(xml_file, filename):
+def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     """
     method to replace the value of all attributes with a tag in replacements with jinja2 tags
     :param xml_file: file to perform replacements on
@@ -15,6 +16,7 @@ def save_with_jinja(xml_file, filename):
     :return: true if file is saved correctly
     """
     if (template_connector.template_exists(filename)):
+        log_connector.add_log(1, "Failed to save template: ".format(filename), username, user_role, request_ip)
         return False
     all_params = []
     all_params.extend(parameter_connector.get_all_parameter_names())
@@ -27,6 +29,7 @@ def save_with_jinja(xml_file, filename):
     with open(path, 'w') as fout:
         fout.write(s)
         template_connector.add_file(path, sec_filename)
+    log_connector.add_log(1, "Saved template: ".format(filename), username, user_role, request_ip)
     return True
 
 def get_template(xml_filename):

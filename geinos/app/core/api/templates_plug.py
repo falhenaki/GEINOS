@@ -79,7 +79,7 @@ class Templates(Resource):
                         message= "Cannot create template. Template already exists"
                     )
                 '''
-                if xml_templates.save_with_jinja(file, file.filename):
+                if xml_templates.save_with_jinja(file, file.filename, logged_user.username, logged_user.role_type, request.remote_addr):
                    status = 200
                    message = "Template Added"
         else:

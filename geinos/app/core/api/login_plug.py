@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from app.core.user import auth
 from app.core.user import user_connector
+from app.core.log import log_connector
 
 class Login(Resource):
     """
@@ -23,13 +24,16 @@ class Login(Resource):
                 print(POST_PASSWORD)
                 auth.update_user_login(POST_USERNAME)
                 usr = user_connector.get_user(POST_USERNAME)
-
+                log_connector.add_log(1, "Logged in successfully", usr.username, usr.role_type, request.remote_addr)
                 return jsonify(
                     status=200,
                     message="User logged in.",
                     auth_token=usr.generate_auth_token().decode('ascii') + ":unused"
                 )
-
+            else:
+                log_connector.add_log(1, "Failed login attempt (username: {})".format(POST_USERNAME), None, None, request.remote_addr)
+        else:
+            log_connector.add_log(1, "Failed login attempt", None, None, request.remote_addr)
         return jsonify(
             status=400,
             message="User not logged in."

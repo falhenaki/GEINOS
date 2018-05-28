@@ -63,7 +63,7 @@ class Users(Resource):
                     )
             if POST_PASSWORD == POST_RETYPE_PASS:
             '''
-            if auth.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE):
+            if auth.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE, logged_user.username, logged_user.role_type, request.remote_addr):
                 auth.change_user_role(POST_USERNAME, POST_ROLE)
                 status=200
                 message = "User added"
@@ -87,7 +87,7 @@ class Users(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             POST_USERNAME = request.form['rmusr']
-            auth.remove_user(POST_USERNAME)
+            auth.remove_user(POST_USERNAME, logged_user.username, logged_user.role_type, request.remote_addr)
             status=200,
             message="Users Deleted"
         else:

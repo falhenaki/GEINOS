@@ -86,11 +86,13 @@ def add_parameter(name, type,val, username, user_role, request_ip):
         log_connector.add_log(1, "Failed to add the {} parameter".format(name), username, user_role, request_ip)
         return False
 
-def remove_parameter(param_name):
+def remove_parameter(param_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
     param = s.query(Parameter).filter(Parameter.param_name == param_name).delete()
     if param is 0:
+        log_connector.add_log(1, "Failed to delete parameter: {}".format(param_name), username, user_role, request_ip)
         return False
     s.commit()
+    log_connector.add_log(1, "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
     return True
