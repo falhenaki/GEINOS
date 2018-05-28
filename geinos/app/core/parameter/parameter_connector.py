@@ -13,6 +13,12 @@ def get_all_parameters():
         prms.append([pm.param_name,pm.param_type,pm.start_value])
     return prms
 
+def parameter_exists(parameter_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Parameter).filter(Parameter.param_name == parameter_name).first()
+    return (query is not None)
+
 def get_all_parameter_names():
 	Session = sessionmaker(bind=engine)
 	s = Session()
@@ -54,24 +60,28 @@ def get_parameter_next_value(name):
     return ret_value
 
 def add_parameter(name,type,val):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    if (type == "RANGE"):
-        val = val.split("-")
-        dv = Parameter(name,val[0],type,val[1])
-        s.add(dv)
-    elif (type == "LIST"):
-        val = val.split(",")
-        dv = Parameter(name,"",type)
-        dv.current_offset = 0
-        s.add(dv)
-        for index,value in enumerate(val):
-            pm = ListParameter(name, value, index)
-            s.add(pm)
-    else: # scalar
-        dv = Parameter(name,val,type)
-        s.add(dv)
-    s.commit()
+    if not parameter_exists(name):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        if (type == "RANGE"):
+            val = val.split("-")
+            dv = Parameter(name,val[0],type,val[1])
+            s.add(dv)
+        elif (type == "LIST"):
+            val = val.split(",")
+            dv = Parameter(name,"",type)
+            dv.current_offset = 0
+            s.add(dv)
+            for index,value in enumerate(val):
+                pm = ListParameter(name, value, index)
+                s.add(pm)
+        else: # scalar
+            dv = Parameter(name,val,type)
+            s.add(dv)
+        s.commit()
+        return True
+    else:
+        return False
 
 def remove_parameter(param_name):
     Session = sessionmaker(bind=engine)

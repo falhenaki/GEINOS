@@ -25,6 +25,12 @@ def get_file(filename):
         return file
     return None
 
+def template_exists(template_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Template).filter(Template.name == template_name)
+    return (query is not None)
+
 def get_template_names():
     Session = sessionmaker(bind=engine)
     s = Session()

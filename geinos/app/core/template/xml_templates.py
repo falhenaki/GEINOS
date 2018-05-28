@@ -5,7 +5,7 @@ import os
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 from jinja2 import Environment, meta, FileSystemLoader
-
+from app.core.template import template_connector
 
 def save_with_jinja(xml_file, filename):
     """
@@ -14,6 +14,8 @@ def save_with_jinja(xml_file, filename):
     :param replacements: xml tags that should have their values replaced with jinja2 tags
     :return: true if file is saved correctly
     """
+    if (template_connector.template_exists(filename)):
+        return False
     all_params = []
     all_params.extend(parameter_connector.get_all_parameter_names())
     sec_filename = secure_filename(filename)

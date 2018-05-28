@@ -45,19 +45,24 @@ class Device_Groups(Resource):
         message = "Device(s) not added to group"
         if (request_parser.validateCreds(request)):
             group_name = request.form["group_name"]
-            atrbute = request.form["attribute"]
-            valu = request.form["value"]
+            attribute = request.form["attribute"]
+            value = request.form["value"]
+            '''
             groups = device_group_connector.get_all_device_groups()
-            #TODO allow cases in which value is not just model
+            #TODO allow cases in which value is not just model, also take this logic out of here
             for g in groups:
-                if group_name in g or atrbute in g:
+                if group_name in g or attribute in g:
                     return jsonify(
                         status=402,
                         message="Device Group not created, group name or value already exists"
                     )
-            device_group_connector.add_devices_to_groups(group_name,atrbute, valu)
-            status=201
-            message="Device(s) added to group"
+            '''
+            if device_group_connector.add_devices_to_groups(group_name, attribute, value):
+                status=201
+                message="Device(s) added to group"
+            else:
+                status = 402
+                message = "Device Group not created, group name or value already exists"
         else:
             status= 401
             message = "Unauthorized"

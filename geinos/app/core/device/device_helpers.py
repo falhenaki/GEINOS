@@ -1,6 +1,7 @@
 from app.core.device import device_connector, device_access
 from app.core.device_group import device_group_connector
 from app.core.template import template_connector, xml_templates
+from app.core.device import device_connector
 
 def add_list_of_devices(entries):
     for entry in entries:
@@ -8,8 +9,11 @@ def add_list_of_devices(entries):
     return True
 
 def apply_template(sn, vn, ip, user, pw):
-    template_name = device_group_connector.get_template_for_device(sn, vn)
-    rendered_template, applied_params = xml_templates.apply_parameters(template_name, sn, vn)
-    device_connector.set_rendered_params(sn, vn, applied_params)
-    device_access.set_config(ip, user, pw, rendered_template)
-    return True
+    if device_connector.device_exists_and_templated(sn,vn, True):
+        template_name = device_group_connector.get_template_for_device(sn, vn)
+        rendered_template, applied_params = xml_templates.apply_parameters(template_name, sn, vn)
+        device_connector.set_rendered_params(sn, vn, applied_params)
+        device_access.set_config(ip, user, pw, rendered_template)
+        return True
+    else:
+        return False

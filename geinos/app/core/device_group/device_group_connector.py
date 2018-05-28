@@ -1,6 +1,7 @@
 from app.core.device.device import Device
 from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_in_group import Device_in_Group
+from app.core.template import template_connector
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
@@ -11,6 +12,12 @@ def add_device_group(name):
     dg = Device_Group(name,datetime.datetime.now())
     s.add(dg)
     s.commit()
+
+def device_group_exists(group_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).first()
+    return (query is not None)
 
 def get_all_device_groups():
     Session = sessionmaker(bind=engine)
@@ -40,24 +47,29 @@ def add_devices_to_groups(group_name, att, val):
     query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
     if query is None:
         add_device_group(group_name)
+    else:
+        return False
     if att == "model":
         devices = s.query(Device).filter(Device.model_number == val)
         for q in devices:
             dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
             s.add(dig)
         s.commit()
+        return True
     else:
         print("Work in progress")
+        return False
 
 def assign_template(group_name, template_name):
+    if group_name is None or template_name is None or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
+        return False
     Session = sessionmaker(bind=engine)
     s = Session()
     dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
-    if dg is None:
-        return False
     dg.template_name = template_name
     dg.last_updated = datetime.datetime.now()
     s.commit()
+    return True
 
 def get_template_for_device(sn, vn):
     Session = sessionmaker(bind=engine)

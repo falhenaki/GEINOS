@@ -23,7 +23,6 @@ class Assign(Resource):
     Failure: status: 400
     """
     def post(self):
-        print("AFTER POST")
         status = 401
         message = "Unauthorized"
         if (request_parser.validateCreds(request)):
@@ -31,16 +30,7 @@ class Assign(Resource):
             if request.form['temp_name'] and request.form['group_name']:
                 templ_name = request.form['temp_name']
                 group_name = request.form['group_name']
-                get_groups = device_group_connector.get_all_device_groups()
-                get_templates = template_connector.get_template_names()
-                groups=[]
-                templates=[]
-                for g in get_groups:
-                    groups.append(g[0])
-                for t in get_templates:
-                    templates.append(t[0])
-                if templ_name in templates and group_name in groups:
-                    device_group_connector.assign_template(group_name, templ_name)
+                if device_group_connector.assign_template(group_name, templ_name):
                     status = 200
                     message = templ_name + " Assigned to " + group_name
                 else:

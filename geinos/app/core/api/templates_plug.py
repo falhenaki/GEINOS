@@ -66,6 +66,7 @@ class Templates(Resource):
         if (request_parser.validateCreds(request)):
             if 'file' in request.files:
                 file = request.files['file']
+                '''
                 get_templates = template_connector.get_template_names()
                 templates = []
                 for t in get_templates:
@@ -75,6 +76,7 @@ class Templates(Resource):
                         status=402,
                         message= "Cannot create template. Template already exists"
                     )
+                '''
                 if xml_templates.save_with_jinja(file, file.filename):
                    status = 200
                    message = "Template Added"

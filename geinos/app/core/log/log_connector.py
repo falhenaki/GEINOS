@@ -12,9 +12,9 @@ def get_all_logs():
         logList.append([log.user, log.log_message])
     return logList
 
-def add_log(event_type, log_message, user, role):
+def add_log(event_type, log_message, user, role, ip):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dv = Log(None, event_type, log_message, user, role, datetime.datetime.now())
+    dv = Log(None, event_type, log_message, user, role, ip, datetime.datetime.now())
     s.add(dv)
     s.commit()

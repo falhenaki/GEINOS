@@ -33,8 +33,8 @@ password = "password"
 if username == "MYSQLUSERHERE" or password == "YOUR PASSWORD here":
     print("Please update mysql credentials in the static/data.json")
     sys.exit()
-#engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@127.0.0.1/se_project')
-engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@localhost/test')
+engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@127.0.0.1/se_project')
+#engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@localhost/test')
 
 # Sample HTTP error handling
 @app.errorhandler(404)

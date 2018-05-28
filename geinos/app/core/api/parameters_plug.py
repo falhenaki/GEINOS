@@ -46,9 +46,12 @@ class Parameters(Resource):
             ptype = request.form["type"]
             #TODO value?
             val = request.form["value"]
-            parameter_connector.add_parameter(name,ptype.upper(),val)
-            status = 200
-            message = "Parameter added"
+            if (parameter_connector.add_parameter(name,ptype.upper(),val)):
+                status = 200
+                message = "Parameter added"
+            else:
+                status = 400
+                message = "Parameter already exists"
         else:
             status = 401
             message = "Unauthorized"

@@ -10,9 +10,15 @@ import datetime
 def add_device(vend, sn, mn):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now())
-    s.add(dv)
-    s.commit()
+    #TODO what contitutes existing?
+    query = s.query(Device).filter(Device.serial_number == sn).first()
+    if query is None:
+        dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now())
+        s.add(dv)
+        s.commit()
+        return True
+    else:
+        return False
 
 def get_all_devices():
     ret = []
@@ -23,7 +29,7 @@ def get_all_devices():
         ret.append([d.vendor_id, d.serial_number, d.model_number])
     return ret
 
-def device_exists_and_templated(sn, name):
+def device_exists_and_templated(sn, name, do_both_exist=False):
     Session = sessionmaker(bind=engine)
     exists = False
     has_template = False
@@ -36,7 +42,10 @@ def device_exists_and_templated(sn, name):
         device_in_group = query.first()
         if device_in_group != None:
             has_template = True
-    return exists, has_template
+    if do_both_exist:
+        return exists and has_template
+    else:
+        return exists, has_template
 
 def set_rendered_params(sn, name, rendered_params):
     Session = sessionmaker(bind=engine)
