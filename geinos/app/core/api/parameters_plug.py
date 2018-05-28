@@ -15,7 +15,8 @@ class Parameters(Resource):
     Failure: status= 400, message= "Could not send Logs"
     """
     def get(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             prms = parameter_connector.get_all_parameters()
             return jsonify(
                 status=200,
@@ -41,12 +42,13 @@ class Parameters(Resource):
     def put(self):
         status = 400
         message = "Parameter not added"
-        if (auth.login(request.authorization["username"], request.authorization["password"])):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             name = request.form["name"]
             ptype = request.form["type"]
             #TODO value?
             val = request.form["value"]
-            if (parameter_connector.add_parameter(name,ptype.upper(),val)):
+            if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr)):
                 status = 200
                 message = "Parameter added"
             else:
@@ -62,7 +64,8 @@ class Parameters(Resource):
 
     def delete(self):
         status=400
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             PARAMETER_NAME = request.form['param_name']
             if parameter_connector.remove_parameter(PARAMETER_NAME):
                 return jsonify(

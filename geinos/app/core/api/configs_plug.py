@@ -17,7 +17,8 @@ class Device_Configs(Resource):
     def get(self):
         status=400
         message = "Configs not created"
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             hst = request.form["host"]
             usr = request.form["username"]
             passw = request.form["pass"]

@@ -17,11 +17,11 @@ def login(username_or_token, password):
         connector = user_connector.DB_User_Connection(username_or_token, password)
         if connector.is_legal():
             connector.update_last_login(datetime.now)
-            return True
+            return connector.this_user
         else:
-            return False
+            return None
     else:
-        return False
+        return None
 
 def add_user(username, password, email, role_type):
     """

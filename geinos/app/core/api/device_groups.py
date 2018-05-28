@@ -16,7 +16,8 @@ class Device_Groups(Resource):
     Failure: status= 400, message= "Could not send device groups
     """
     def get(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             dgs = device_group_connector.get_all_device_groups()
             return jsonify(
                 status=200,
@@ -43,7 +44,8 @@ class Device_Groups(Resource):
     def post(self):
         status = 400
         message = "Device(s) not added to group"
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             group_name = request.form["group_name"]
             attribute = request.form["attribute"]
             value = request.form["value"]
@@ -57,7 +59,7 @@ class Device_Groups(Resource):
                         message="Device Group not created, group name or value already exists"
                     )
             '''
-            if device_group_connector.add_devices_to_groups(group_name, attribute, value):
+            if device_group_connector.add_devices_to_groups(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
                 status=201
                 message="Device(s) added to group"
             else:
@@ -74,9 +76,10 @@ class Device_Groups(Resource):
 
     def delete(self):
         status=400
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             GROUP = request.form['group_name']
-            if device_group_connector.remove_group(GROUP):
+            if device_group_connector.remove_group(GROUP, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Group Deleted"

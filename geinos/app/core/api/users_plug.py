@@ -15,7 +15,8 @@ class Users(Resource):
     Failure: status= 400, message= "Could not authenticate"
     """
     def get(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             all_users = user_connector.get_all_users()
             status=200,
             message="Sent all users.",
@@ -45,7 +46,8 @@ class Users(Resource):
     def put(self):
         status = 400
         message = "User not added"
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             POST_USERNAME = request.form['usr']
             POST_PASSWORD = request.form['password']
             POST_RETYPE_PASS = request.form['retypepassword']
@@ -82,7 +84,8 @@ class Users(Resource):
     Success: status= 200, message = 'Users Deleted',
     """
     def delete(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             POST_USERNAME = request.form['rmusr']
             auth.remove_user(POST_USERNAME)
             status=200,

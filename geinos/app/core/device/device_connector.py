@@ -4,10 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.device.device import Device
 from app import engine, app
+from app.core.log import log_connector
 import datetime
 
 
-def add_device(vend, sn, mn):
+def add_device(vend, sn, mn, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
     #TODO what contitutes existing?
@@ -16,8 +17,10 @@ def add_device(vend, sn, mn):
         dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now())
         s.add(dv)
         s.commit()
+        log_connector.add_log(1, "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
         return True
     else:
+        log_connector.add_log(1, "Failed to add device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
         return False
 
 def get_all_devices():
@@ -63,11 +66,13 @@ def set_rendered_params(sn, name, rendered_params):
     #device.set_config_file(save_path)
     return True
 
-def remove_device(device_sn):
+def remove_device(device_sn, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn).delete()
     if device is 0:
+        log_connector.add_log(1, "Failed to delete device (sn={})".format(device_sn), username, user_role, request_ip)
         return False
+    log_connector.add_log(1, "Added device (sn={})".format(device_sn), username, user_role, request_ip)
     s.commit()
     return True

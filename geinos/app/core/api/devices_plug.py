@@ -16,7 +16,8 @@ class Devices(Resource):
     Failure: status= 400, message= "Could not send devices
     """
     def get(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             devices = device_connector.get_all_devices()
             return jsonify(
                 status=200,
@@ -42,7 +43,8 @@ class Devices(Resource):
     def put(self):
         status = 400
         message = "Device not added"
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             if 'file' not in request.files:
                 VENDOR_ID = request.form['vendor_id']
                 SERIAL_NUMBER = request.form['serial_num']
@@ -58,7 +60,7 @@ class Devices(Resource):
                     status=201
                     message="Device Added"
                 '''
-                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER):
+                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, logged_user.username, logged_user.role_type, request.remote_addr):
                     status = 201
                     message = "Device Added"
                 else:
@@ -68,7 +70,7 @@ class Devices(Resource):
                 file = request.files['file']
                 file_data = file.readlines()
                 content = [str(x,'utf-8').strip().split(',') for x in file_data]
-                if device_helpers.add_list_of_devices(content):
+                if device_helpers.add_list_of_devices(content, file.filename, logged_user.username, logged_user.role_type, request.remote_addr):
                     status=201
                     message="Devices Added"
                 else:
@@ -84,9 +86,10 @@ class Devices(Resource):
 
     def delete(self):
         status=400
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             DEVICE_SN = request.form['serial_num']
-            if device_connector.remove_device(DEVICE_SN):
+            if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Device Deleted"

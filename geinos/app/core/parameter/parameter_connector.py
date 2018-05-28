@@ -1,5 +1,6 @@
 from app.core.parameter.parameter import Parameter
 from app.core.parameter.list_parameter import ListParameter
+from app.core.log import log_connector
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import ipaddress
@@ -59,7 +60,7 @@ def get_parameter_next_value(name):
     s.commit()
     return ret_value
 
-def add_parameter(name,type,val):
+def add_parameter(name, type,val, username, user_role, request_ip):
     if not parameter_exists(name):
         Session = sessionmaker(bind=engine)
         s = Session()
@@ -79,8 +80,10 @@ def add_parameter(name,type,val):
             dv = Parameter(name,val,type)
             s.add(dv)
         s.commit()
+        log_connector.add_log(1, "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
     else:
+        log_connector.add_log(1, "Failed to add the {} parameter".format(name), username, user_role, request_ip)
         return False
 
 def remove_parameter(param_name):

@@ -29,7 +29,8 @@ class Templates(Resource):
         status = 400
         message="error"
         data = []
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             args = parser.parse_args()
             tmp_name = args.get('template_name')
             if tmp_name is not None:
@@ -63,7 +64,8 @@ class Templates(Resource):
         """
         status = 400
         message = "Template not added"
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             if 'file' in request.files:
                 file = request.files['file']
                 '''

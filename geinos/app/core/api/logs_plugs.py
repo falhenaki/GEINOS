@@ -14,7 +14,8 @@ class Logs(Resource):
     Failure: status= 400, message= "Could not send Logs"
     """
     def get(self):
-        if (request_parser.validateCreds(request)):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
             lgs = log_connector.get_all_logs()
             return jsonify(
                 status=200,
