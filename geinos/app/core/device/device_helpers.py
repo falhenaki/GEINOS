@@ -3,6 +3,7 @@ from app.core.device_group import device_group_connector
 from app.core.template import template_connector, xml_templates
 from app.core.device import device_connector
 from app.core.log import log_connector
+import datetime
 
 def add_list_of_devices(entries, filename, username, user_role, request_ip):
     for entry in entries:
@@ -16,6 +17,10 @@ def apply_template(sn, vn, ip, user, pw):
         rendered_template, applied_params = xml_templates.apply_parameters(template_name, sn, vn)
         device_connector.set_rendered_params(sn, vn, applied_params)
         device_access.set_config(ip, user, pw, rendered_template)
+
+        device_connector.update_device(sn, 'date_provisioned', datetime.datetime.now())
+        
+
         return True
     else:
         return False
