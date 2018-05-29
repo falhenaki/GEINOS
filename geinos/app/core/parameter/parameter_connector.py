@@ -40,9 +40,10 @@ def get_parameter_next_value(name, request_ip):
             end = int(ipaddress.IPv4Address(param.end_value))
             start = start + param.current_offset
             if start > end:
-                param.current_offset = '1'
-                ret_value = param.start_value
-                log_connector.add_log(1, "Ran out of params in range (param:). Starting over.".format(name), None, None, request_ip)
+                #param.current_offset = '1'
+                #ret_value = param.start_value
+                log_connector.add_log(1, "Ran out of params in range (param: {}). Starting over.".format(name), None, None, request_ip)
+                return None
             else:
                 ret_value = ipaddress.IPv4Address(start + param.current_offset)
                 param.current_offset = param.current_offset + 1
@@ -52,8 +53,9 @@ def get_parameter_next_value(name, request_ip):
     elif param.param_type == "LIST":
         lst = s.query(ListParameter).filter(ListParameter.param_name == name)
         if (param.current_offset >= len(lst)):
-            param.current_offset = 0
-            log_connector.add_log(1, "Ran out of params in list (param:). Starting over.".format(name), None, None, request_ip)
+            #param.current_offset = 0
+            log_connector.add_log(1, "Ran out of params in list (param: {}). Starting over.".format(name), None, None, request_ip)
+            return None
         ret_value = lst[param.current_offset].param_value
         param.current_offset = param.current_offset + 1
     else:

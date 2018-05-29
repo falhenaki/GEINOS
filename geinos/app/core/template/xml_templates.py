@@ -16,7 +16,7 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     :return: true if file is saved correctly
     """
     if (template_connector.template_exists(filename)):
-        log_connector.add_log(1, "Failed to save template: ".format(filename), username, user_role, request_ip)
+        log_connector.add_log(1, "Failed to save template: {}".format(filename), username, user_role, request_ip)
         return False
     all_params = []
     all_params.extend(parameter_connector.get_all_parameter_names())
@@ -29,7 +29,7 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     with open(path, 'w') as fout:
         fout.write(s)
         template_connector.add_file(path, sec_filename)
-    log_connector.add_log(1, "Saved template: ".format(filename), username, user_role, request_ip)
+    log_connector.add_log(1, "Saved template: {}".format(filename), username, user_role, request_ip)
     return True
 
 def get_template(xml_filename):
