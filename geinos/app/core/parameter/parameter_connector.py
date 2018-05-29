@@ -29,7 +29,7 @@ def get_all_parameter_names():
 		param_names.append(pm.param_name)
 	return param_names
 
-def get_parameter_next_value(name):
+def get_parameter_next_value(name, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
     param = s.query(Parameter).filter(Parameter.param_name == name).first()
@@ -42,6 +42,7 @@ def get_parameter_next_value(name):
             if start > end:
                 param.current_offset = '1'
                 ret_value = param.start_value
+                log_connector.add_log(1, "Ran out of params in range (param:). Starting over.".format(name), None, None, request_ip)
             else:
                 ret_value = ipaddress.IPv4Address(start + param.current_offset)
                 param.current_offset = param.current_offset + 1
@@ -52,6 +53,7 @@ def get_parameter_next_value(name):
         lst = s.query(ListParameter).filter(ListParameter.param_name == name)
         if (param.current_offset >= len(lst)):
             param.current_offset = 0
+            log_connector.add_log(1, "Ran out of params in list (param:). Starting over.".format(name), None, None, request_ip)
         ret_value = lst[param.current_offset].param_value
         param.current_offset = param.current_offset + 1
     else:

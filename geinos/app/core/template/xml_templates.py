@@ -48,7 +48,7 @@ def get_template_names():
     """
     return template_connector.get_template_names()
 
-def apply_parameters(xml_filename, device_sn, device_name):
+def apply_parameters(xml_filename, device_sn, device_name, request_ip):
     """
     method to pull all jinja variables from file and replace them with the appropriate values
     :param xml_filename: file to replace jinja variables
@@ -63,7 +63,11 @@ def apply_parameters(xml_filename, device_sn, device_name):
         all_vars.extend(meta.find_undeclared_variables(ast))
     to_render = {}
     for var in all_vars:
-        to_render[var] = parameter_connector.get_parameter_next_value(var)
+        if not parameter_connector.parameter_exists(var):
+            return None, None
+
+    for var in all_vars:
+        to_render[var] = parameter_connector.get_parameter_next_value(var, request_ip)
     return render_jinja(xml_filename, to_render), to_render
 
 def render_jinja(filename, context):

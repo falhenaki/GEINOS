@@ -53,7 +53,7 @@ class Register(Resource):
                     message="Device has not yet been assigned a template"
             '''
             if device_helpers.apply_template(device_sn, device_name, device_ip,
-                                             device_usern, device_pass):
+                                             device_usern, device_pass, request.remote_addr):
                 status = 200
                 message = "Device Configured"
 
