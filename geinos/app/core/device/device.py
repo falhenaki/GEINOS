@@ -18,9 +18,10 @@ class Device(Base):
     date_added = Column(DateTime(timezone=false))
     date_authorized = Column(DateTime(timezone=false))
     date_provisioned = Column(DateTime(timezone=false))
+    location = Column(String)
     #----------------------------------------------------------------------
     def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified, username=None, password=None,
-                 config_file=None, added_date=None):
+                 config_file=None, added_date=None, location=None):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
@@ -32,6 +33,7 @@ class Device(Base):
         self.password = password
         self.config_file = config_file
         self.date_added = added_date
+        self.location = location
 
     def set_config_file(self, config_file):
         self.config_file = config_file

@@ -7,7 +7,7 @@ import datetime
 
 def add_list_of_devices(entries, filename, username, user_role, request_ip):
     for entry in entries:
-        device_connector.add_device(int(entry[0]), int (entry[1]), int (entry[2]))
+        device_connector.add_device(entry[0], entry[1], entry[2], entry[3], username, user_role, request_ip)
     log_connector.add_log(1, "Added all devices from {} file".format(filename), username, user_role, request_ip)
     return True
 
