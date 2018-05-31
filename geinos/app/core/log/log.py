@@ -1,10 +1,10 @@
 from sqlalchemy import *
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-
+from app.core.sqlalchemy_base.augmented_base import CustomMixin
 Base = declarative_base()
 
-class Log(Base):
+class Log(CustomMixin, Base):
     """"""
     __tablename__ = "Logs"
     log_id = Column(Integer, primary_key=True)

@@ -9,7 +9,9 @@ def get_all_logs():
     query = s.query(Log)
     logList=[]
     for log in query:
-        logList.append([log.user, log.log_message])
+        print(log.as_dict())
+        logList.append(log.as_dict())
+        #logList.append([log.user, log.log_message])
     return logList
 
 def add_log(event_type, log_message, user, role, ip):
