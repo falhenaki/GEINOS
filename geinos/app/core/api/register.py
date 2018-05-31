@@ -43,7 +43,6 @@ class Register(Resource):
             device_usern = "admin"
             #device_pass = request.form['device_pass']
             device_pass = "admin"
-            '''
             device_exists, has_template = device_connector.device_exists_and_templated(device_sn, device_name)
             if not device_exists:
                     status=402
@@ -51,7 +50,6 @@ class Register(Resource):
             if not has_template:
                     status=401,
                     message="Device has not yet been assigned a template"
-            '''
             if device_helpers.apply_template(device_sn, device_name, device_ip,
                                              device_usern, device_pass, request.remote_addr):
                 status = 200

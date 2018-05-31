@@ -46,9 +46,11 @@ class Devices(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             if 'file' not in request.files:
-                VENDOR_ID = request.form['vendor_id']
-                SERIAL_NUMBER = request.form['serial_num']
-                MODEL_NUMBER = request.form['model_num']
+                content = request.get_json()
+                VENDOR_ID = content['vendor_id']
+                SERIAL_NUMBER = content['serial_num']
+                MODEL_NUMBER = content['model_num']
+                LOCATION = content['location']
                 '''
                 devices = device_connector.get_all_devices()
                 for d in devices:
@@ -60,7 +62,7 @@ class Devices(Resource):
                     status=201
                     message="Device Added"
                 '''
-                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, logged_user.username, logged_user.role_type, request.remote_addr):
+                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr):
                     status = 201
                     message = "Device Added"
                 else:
@@ -88,7 +90,8 @@ class Devices(Resource):
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            DEVICE_SN = request.form['serial_num']
+            content = request.get_json()
+            DEVICE_SN = content['serial_num']
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,

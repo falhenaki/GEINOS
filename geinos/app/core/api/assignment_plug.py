@@ -8,9 +8,6 @@ from app.core.template import template_connector
 
 authen = HTTPBasicAuth()
 
-parser = reqparse.RequestParser()
-
-
 class Assign(Resource):
     """
     HTTP Method: POST
@@ -27,10 +24,10 @@ class Assign(Resource):
         message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            args = parser.parse_args()
-            if request.form['temp_name'] and request.form['group_name']:
-                templ_name = request.form['temp_name']
-                group_name = request.form['group_name']
+            content = request.get_json()
+            if content['temp_name'] and content['group_name']:
+                templ_name = content['temp_name']
+                group_name = content['group_name']
                 if device_group_connector.assign_template(group_name, templ_name, logged_user.username, logged_user.role_type, request.remote_addr):
                     status = 200
                     message = templ_name + " Assigned to " + group_name

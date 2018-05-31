@@ -44,10 +44,11 @@ class Parameters(Resource):
         message = "Parameter not added"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            name = request.form["name"]
-            ptype = request.form["type"]
+            content = request.get_json()
+            name = content["name"]
+            ptype = content["type"]
             #TODO value?
-            val = request.form["value"]
+            val = content["value"]
             if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr)):
                 status = 200
                 message = "Parameter added"
@@ -66,7 +67,8 @@ class Parameters(Resource):
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            PARAMETER_NAME = request.form['param_name']
+            content = request.get_json()
+            PARAMETER_NAME = content['param_name']
             if parameter_connector.remove_parameter(PARAMETER_NAME, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,

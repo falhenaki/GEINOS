@@ -46,9 +46,10 @@ class Device_Groups(Resource):
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            group_name = request.form["group_name"]
-            attribute = request.form["attribute"]
-            value = request.form["value"]
+            content = request.get_json()
+            group_name = content["group_name"]
+            attribute = content["attribute"]
+            value = content["value"]
             '''
             groups = device_group_connector.get_all_device_groups()
             #TODO allow cases in which value is not just model, also take this logic out of here
@@ -78,7 +79,8 @@ class Device_Groups(Resource):
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            GROUP = request.form['group_name']
+            content = request.get_json()
+            GROUP = content['group_name']
             if device_group_connector.remove_group(GROUP, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,

@@ -19,9 +19,10 @@ class Device_Configs(Resource):
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            hst = request.form["host"]
-            usr = request.form["username"]
-            passw = request.form["pass"]
+            content = request.get_json()
+            hst = content["host"]
+            usr = content["username"]
+            passw = content["pass"]
             #TODO actually return configs, also, should device auth be passed in auth request?
             conf = get_config(hst,usr,passw)
             status=200

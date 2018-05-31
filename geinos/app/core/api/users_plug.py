@@ -48,11 +48,12 @@ class Users(Resource):
         message = "User not added"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            POST_USERNAME = request.form['usr']
-            POST_PASSWORD = request.form['password']
-            POST_RETYPE_PASS = request.form['retypepassword']
-            POST_EMAIL = request.form['email']
-            POST_ROLE = str(request.form['role'])
+            content = request.get_json()
+            POST_USERNAME = content['usr']
+            POST_PASSWORD = content['password']
+            POST_RETYPE_PASS = content['retypepassword']
+            POST_EMAIL = content['email']
+            POST_ROLE = str(content['role'])
             '''
             users = user_connector.get_all_users()
             for u in users:
@@ -86,7 +87,8 @@ class Users(Resource):
     def delete(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            POST_USERNAME = request.form['rmusr']
+            content = request.get_json()
+            POST_USERNAME = content['rmusr']
             auth.remove_user(POST_USERNAME, logged_user.username, logged_user.role_type, request.remote_addr)
             status=200,
             message="Users Deleted"
