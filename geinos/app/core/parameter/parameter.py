@@ -1,9 +1,10 @@
 from sqlalchemy import *
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
+from app.core.sqlalchemy_base.augmented_base import CustomMixin
 Base = declarative_base()
 
-class Parameter(Base):
+class Parameter(CustomMixin, Base):
     __tablename__ = "Parameters"
     param_name = Column(String, primary_key=True)
     start_value = Column(String)

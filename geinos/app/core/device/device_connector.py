@@ -36,7 +36,7 @@ def get_all_devices():
     s = Session()
     query = s.query(Device)
     for d in query:
-        ret.append([d.vendor_id, d.serial_number, d.model_number])
+        ret.append(d.as_dict())
     return ret
 
 def device_exists_and_templated(sn, name, do_both_exist=False):

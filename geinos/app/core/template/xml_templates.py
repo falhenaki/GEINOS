@@ -41,12 +41,12 @@ def get_template(xml_filename):
     sec_filename = secure_filename(xml_filename)
     return send_from_directory(app.config['UPLOADS_FOLDER'], sec_filename)
 
-def get_template_names():
+def get_templates():
     """
     stubbed out method to get all template names
     :return:
     """
-    return template_connector.get_template_names()
+    return template_connector.get_templates()
 
 def apply_parameters(xml_filename, device_sn, device_name, request_ip):
     """

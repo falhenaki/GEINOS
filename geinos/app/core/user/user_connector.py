@@ -100,6 +100,7 @@ def get_all_users():
     query = s.query(User)
     userList=[]
     for user in query:
+        '''
             last_login_time = 'min ago'
             #change_user_email(user.username, 'none@noemail')
             if user.last_login is None:
@@ -126,7 +127,8 @@ def get_all_users():
                             last_login_time = ' > days ago'
 
                 final_login = str(last_login) + last_login_time
-            userList.append([user.username, user.role_type, final_login, user.email])
+            '''
+        userList.append(user.as_dict())
 
     return userList
 

@@ -31,11 +31,11 @@ def template_exists(template_name):
     query = s.query(Template).filter(Template.name == template_name)
     return (query is not None)
 
-def get_template_names():
+def get_templates():
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Template)
     ret=[]
     for tm in query:
-        ret.append([tm.name])
+        ret.append(tm.as_dict())
     return ret

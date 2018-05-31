@@ -7,11 +7,12 @@ from app.core.user import user_connector
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from werkzeug.security import check_password_hash, generate_password_hash
+from app.core.sqlalchemy_base.augmented_base import CustomMixin
 
 Base = declarative_base()
 
 
-class User(Base):
+class User(CustomMixin, Base):
     """"""
     __tablename__ = "Users"
     id = Column(Integer, primary_key=True)

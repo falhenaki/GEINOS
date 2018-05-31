@@ -36,8 +36,8 @@ class Templates(Resource):
             if tmp_name is not None:
                 nms = xml_templates.get_template(tmp_name)
             else:
-                nms = xml_templates.get_template_names()
-            status=200,
+                nms = xml_templates.get_templates()
+            status=200
             message="Sent Templates"
             data=nms
 

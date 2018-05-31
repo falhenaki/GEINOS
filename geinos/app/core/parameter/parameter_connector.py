@@ -11,7 +11,7 @@ def get_all_parameters():
     query = s.query(Parameter)
     prms=[]
     for pm in query:
-        prms.append([pm.param_name,pm.param_type,pm.start_value])
+        prms.append(pm.as_dict())
     return prms
 
 def parameter_exists(parameter_name):

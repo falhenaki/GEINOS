@@ -18,8 +18,8 @@ class Users(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             all_users = user_connector.get_all_users()
-            status=200,
-            message="Sent all users.",
+            status=200
+            message="Sent all users."
             data=all_users
 
         else:
