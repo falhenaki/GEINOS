@@ -76,7 +76,6 @@ class Device_Groups(Resource):
 
 
     def delete(self):
-        status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
@@ -86,7 +85,3 @@ class Device_Groups(Resource):
                     status=200,
                     message="Group Deleted"
                 )
-            return jsonify(
-                status=status,
-                message="Failed to delete device group or device group does not exist"
-            )

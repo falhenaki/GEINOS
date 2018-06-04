@@ -3,6 +3,7 @@ from flask import request, jsonify
 from app.core.user import auth
 from app.core.parameter import parameter_connector
 from app.core.api import request_parser
+from app.core.exceptions.custom_exceptions import InvalidInput
 
 class Parameters(Resource):
     """
@@ -49,6 +50,8 @@ class Parameters(Resource):
             ptype = content["type"]
             #TODO value?
             val = content["value"]
+            if '-' in name:
+                raise InvalidInput("Parameter names may not have a '-' use '_' instead")
             if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr)):
                 status = 200
                 message = "Parameter added"
