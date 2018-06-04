@@ -18,6 +18,8 @@ class Assign(Resource):
     :return:
     Success: status: 200, message: "Template assigned"
     Failure: status: 400
+    Failure on missing group or template: 404
+    TODO perform parameter assignment here
     """
     def post(self):
         status = 401
@@ -32,8 +34,8 @@ class Assign(Resource):
                     status = 200
                     message = templ_name + " Assigned to " + group_name
                 else:
-                    status = 402
-                    message = "Template or Group does not exist"
+                    status = 400
+                    message = "Could not process request"
         return jsonify(
                 status=status,
                 message= message

@@ -1,19 +1,15 @@
 from app.core.template.template import Template
 from sqlalchemy.orm import sessionmaker
 from app import engine
+from app.core.exceptions.custom_exceptions import GeneralError, MissingResource, Conflict
 import datetime
 
 def add_file(path, filename):
     Session = sessionmaker(bind=engine)
     s = Session()
     template = Template(filename, path, datetime.datetime.now())
-    print('adding to db')
     s.add(template)
-    print(path)
-    print(template.name)
-    print(template.template_file)
     s.commit()
-    print('commit')
     return True
 
 def get_file(filename):
@@ -23,13 +19,15 @@ def get_file(filename):
     file = query.first()
     if file:
         return file
-    return None
+    else:
+        raise MissingResource("Could not get file location")
 
 def template_exists(template_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Template).filter(Template.name == template_name)
-    return (query is not None)
+    if query is None:
+        raise MissingResource("Template: {} could not be found", template_name)
 
 def get_templates():
     Session = sessionmaker(bind=engine)
