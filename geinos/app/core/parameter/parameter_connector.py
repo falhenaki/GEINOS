@@ -79,8 +79,8 @@ def add_parameter(name, type, val, username, user_role, request_ip):
         Session = sessionmaker(bind=engine)
         s = Session()
         if (type == "RANGE"):
-            val = val.split("-")
-            dv = Parameter(name, val[0], type, val[1])
+            ip = ipaddress.ip_network(val)
+            dv = Parameter(name, str(ip[0]), type, str(ip[-1]))
             s.add(dv)
         elif (type == "LIST"):
             val = val.split(",")
