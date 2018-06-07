@@ -8,13 +8,14 @@ authen = HTTPBasicAuth()
 
 def add_scep(server,username, password):
     """
-    adds user to the database
+    adds scep server to database. delete any existing servers first
     :param username: username to add
     :param password: password to attach to username
     :return:
     """
     Session = sessionmaker(bind=engine)
     s = Session()
+    s.query(Scep).delete()
     scep = Scep(server,username, password)
     s.add(scep)
     s.commit()

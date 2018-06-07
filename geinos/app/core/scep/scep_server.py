@@ -5,21 +5,21 @@ from app.core.log import log_connector
 
 """
 Gets the webpage of a scep server with a challenge password
-TODO: User defined name and password
 """
 
 def get_challenge_password():
     server = scep_connector.get_scep()
     if server is None:
         return "Error: No SCEP server defined"
+
     try:
         result = requests.get(server.server,
                           auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=1)
     except requests.exceptions.ConnectTimeout:
-        return "Connection to SCEP server timed out"
+        return "Error: Connection to SCEP server timed out"
 
     if result.status_code == 401:
-        return "Error 401: Unauthorized."
+        return "Error 401 fro SCEP server: Unauthorized."
 
     page = result.content.decode('UTF-16')
     if "cache is full" in page:
@@ -42,6 +42,6 @@ def add_scep(server,username, password):
     :param password: user password
     :return: true if server is added false otherwise
     """
-    if scep_connector.add_scep(server,username, password) :
+    if scep_connector.add_scep(server,username, password):
         return True
     return False

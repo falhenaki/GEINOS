@@ -26,9 +26,11 @@ class Scep(CustomMixin, Base):
         self.username = username
         self.hash_password(password)
         self.server = server
-
+    """
+    For Now do not salt password.    
+    """
     def hash_password(self, password):
-        self.passwordhash = generate_password_hash(password)
+        self.passwordhash = password
 
     def check_password(self, password):
         return check_password_hash(self.passwordhash, password)
