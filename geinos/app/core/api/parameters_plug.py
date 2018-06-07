@@ -4,6 +4,7 @@ from app.core.user import auth
 from app.core.parameter import parameter_connector
 from app.core.api import request_parser
 from app.core.exceptions.custom_exceptions import InvalidInput
+import ipaddress
 
 class Parameters(Resource):
     """
@@ -50,8 +51,15 @@ class Parameters(Resource):
             ptype = content["type"]
             #TODO value?
             val = content["value"]
-            if '-' in name:
-                raise InvalidInput("Parameter names may not have a '-' use '_' instead")
+            if 'RANGE' in ptype.toupper():
+                try:
+                    ip = ipaddress.ip_network(val)
+                except TypeError or ValueError:
+                    return jsonify(
+                        status= 403,
+                        message= "Invalid address or mask"
+                    )
+                val = ip
             if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr)):
                 status = 200
                 message = "Parameter added"
