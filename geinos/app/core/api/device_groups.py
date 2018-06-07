@@ -47,7 +47,7 @@ class Device_Groups(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            group_name = content["group_name"]
+            group_name = content["group_name"] #TODO api failing here
             attribute = content["attribute"]
             value = content["value"]
             '''
@@ -65,7 +65,7 @@ class Device_Groups(Resource):
                 message="Device(s) added to group"
             else:
                 status = 402
-                message = "Device Group not created, group name or value already exists"
+                message = "Device Group not created, group name or value already exists, or device could belong to multiple groups"
         else:
             status= 401
             message = "Unauthorized"
@@ -76,7 +76,6 @@ class Device_Groups(Resource):
 
 
     def delete(self):
-        status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
@@ -86,7 +85,3 @@ class Device_Groups(Resource):
                     status=200,
                     message="Group Deleted"
                 )
-            return jsonify(
-                status=status,
-                message="Failed to delete device group or device group does not exist"
-            )
