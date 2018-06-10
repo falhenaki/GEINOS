@@ -5,6 +5,7 @@ from app.core.api import request_parser
 from app.core.device import device_helpers, device_connector
 from app.core.device_group import device_group_connector
 from app.core.template import template_connector
+from app.core.assignment import assignment_connector
 
 authen = HTTPBasicAuth()
 
@@ -21,6 +22,22 @@ class Assign(Resource):
     Failure on missing group or template: 404
     TODO perform parameter assignment here
     """
+    def get(self):
+        status = 401
+        message = "Unauthorized"
+        data = None
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
+            asgns = assignment_connector.get_assignments()
+            status=200
+            message="Sent Assignments"
+            data=asgns
+        return jsonify(
+            status=status,
+            message=message,
+            data=data
+        )
+
     def post(self):
         status = 401
         message = "Unauthorized"
