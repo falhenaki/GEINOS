@@ -20,6 +20,7 @@ def initialize_APIs():
     api.add_resource(assignment_plug.Assign, '/assign')
     api.add_resource(logs_plugs.Logs, '/logs')
     api.add_resource(register.Register, '/register')
+    api.add_resource(login_plug.Login_Helper, '/verify_token')
 
     """
     Exception responses

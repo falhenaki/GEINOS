@@ -3,6 +3,7 @@ from flask import request, jsonify
 from app.core.user import auth
 from app.core.user import user_connector
 from app.core.log import log_connector
+from app.core.api import request_parser
 
 class Login(Resource):
     """
@@ -38,3 +39,8 @@ class Login(Resource):
             status=400,
             message="User not logged in."
         )
+
+class Login_Helper(Resource):
+    def post(self):
+        logged_user = request_parser.validateCreds(request)
+        return logged_user is not None
