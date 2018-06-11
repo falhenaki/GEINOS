@@ -7,14 +7,14 @@ from app.core.log import log_connector
 Gets the webpage of a scep server with a challenge password
 """
 
-def get_challenge_password():
+def get_thumbprint_and_otp():
     server = scep_connector.get_scep()
     if server is None:
         return "Error: No SCEP server defined"
 
     try:
         result = requests.get(server.server,
-                          auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=1)
+                          auth=HttpNtlmAuth('domain\\' + server.username, server.passwordhash), timeout=1)
     except requests.exceptions.ConnectTimeout:
         return "Error: Connection to SCEP server timed out"
 
@@ -27,13 +27,18 @@ def get_challenge_password():
 
     if not page.find("The enrollment challenge password is"):
         return "Error: Could not find challenge password"
-    str1 = 'The enrollment challenge password is: <B'
-    i = 0
+    pass_string = 'The enrollment challenge password is: <B'
+    thumbprint_string = 'The thumbprint (hash value) for the CA certificate is: <B'
+    pass_string_index = 0
+    thumbprint_string_index = 0
     for index,s in enumerate(page.split('>')):
-        if s.find(str1) is 1:
-            i = index + 1
-    password = page.split('>')[i]
-    return password
+        if s.find(pass_string) is 1:
+            pass_string_index = index + 1
+        if s.find(thumbprint_string) is 1:
+            thumbprint_string_index = index + 1
+    password = page.split('>')[pass_string_index].strip('</B')
+    thumbprint = page.split('>')[thumbprint_string_index].strip('</B')
+    return thumbprint + ':' + password
 
 def add_scep(server,username, password):
     """
