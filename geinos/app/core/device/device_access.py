@@ -1,5 +1,5 @@
-from app.pyorbit import Device, ConnectError
-from app.pyorbit.services import Config, Status
+from pyorbit import Device, ConnectError
+from pyorbit.services import Config, Status
 
 def get_uptime(host, user, passwd):
     try:
@@ -33,6 +33,8 @@ def get_config(host, user, passwd):
         dev.open()
         with Config(dev) as cm:
             out = cm.get(format='json')
+            ret = cm.send_cmd()
+            print(ret)
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return
