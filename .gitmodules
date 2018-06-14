@@ -1,3 +1,6 @@
 [submodule "UI"]
 	path = UI
 	url = https://github.com/bxy3204/geinos_WEBUI
+[submodule "geinos/app/pyorbit"]
+	path = geinos/app/pyorbit
+	url = https://github.com/agrewal707/pyorbit.git
