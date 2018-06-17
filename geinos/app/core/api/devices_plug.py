@@ -17,7 +17,7 @@ class Devices(Resource):
     """
     def get(self):
         logged_user = request_parser.validateCreds(request)
-        if (logged_user):
+        if True: # (logged_user):
             devices = device_connector.get_all_devices()
             return jsonify(
                 status=200,
