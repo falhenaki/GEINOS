@@ -24,7 +24,9 @@ def put(self):
         POST_USERNAME = content['usr']
         POST_PASSWORD = content['password']
         POST_SERVER = content['server']
-        if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD):
+        POST_DIGEST = content['digest']
+        POST_ENCRYPT = content['encrypt']
+        if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT):
             status = 200
             message = "SCEP server added"
         else:

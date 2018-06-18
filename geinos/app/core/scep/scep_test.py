@@ -2,8 +2,10 @@ from app.core.scep import scep_connector
 from sqlalchemy.orm import sessionmaker
 from app.core.scep.scep import Scep
 from app.core.scep import scep_server
+from app.core.scep import scep_config
 from app import engine
 from flask_httpauth import HTTPBasicAuth
+from app.core.device import device_access
 authen = HTTPBasicAuth()
 import unittest
 
@@ -31,8 +33,10 @@ class TestScep(unittest.TestCase):
     def test_get_scep_info(self):
         print(scep_server.get_thumbprint_and_otp())
 
-
-
+    def test_config_cert(self):
+        x =scep_config.format_config_cert_server("Test_CERT","192.1.2.3", "sha256", "3des_cbc")
+        device_access.set_config("192.168.1.1", "admin","admin",x)
+        self.assertTrue(True)
 
 if __name__ == '__main__':
     unittest.main()
