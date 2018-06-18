@@ -1,8 +1,9 @@
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
+from app.core.sqlalchemy_base.augmented_base import CustomMixin
 Base = declarative_base()
 
-class Device_in_Group(Base):
+class Device_in_Group(CustomMixin, Base):
     """"""
     __tablename__ = "Devices_in_Groups"
     device_group_name = Column(String, primary_key=True)
@@ -16,3 +17,4 @@ class Device_in_Group(Base):
         self.vendor_id = vendor_id
         self.serial_number = serial_number
         self.model_number = model_number
+

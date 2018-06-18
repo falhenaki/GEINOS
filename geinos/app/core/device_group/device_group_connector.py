@@ -11,12 +11,13 @@ import datetime
 def add_device_group(name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
-    if existence_check is not None:
-        raise Conflict("Device Group already exists")
+    #existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
+    #if existence_check is not None:
+        #raise Conflict("Device Group already exists")
     dg = Device_Group(name,datetime.datetime.now())
     s.add(dg)
     s.commit()
+    return True
 
 def device_group_exists(group_name):
     Session = sessionmaker(bind=engine)
@@ -37,13 +38,12 @@ def get_devices_in_group(g_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_in_Group).filter(Device_in_Group.device_group_name == g_name) #TODO return hash map not query
-    dev_group = query.first
-    if dev_group is None:
+    if query is None:
         raise MissingResource("Device Group does not exist")
-    #ret = []
-    #for x in query:
-        #ret.append([x.vendor_id, x.serial_number, x.model_number])
-    return query
+    ret = []
+    for x in query:
+        ret.append(x.as_dict())
+    return ret
 
 def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr):
     Session = sessionmaker(bind=engine)
@@ -56,9 +56,6 @@ def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr
     if att == "model":
         devices = s.query(Device).filter(Device.model_number == val)
         for q in devices:
-            device_group_check = s.query(Device_in_Group).filter(q.serial_number == dig.serial_number).first()
-            if(device_group_check is not None):
-                raise Conflict("A device can belong to more than one group")
             dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
             s.add(dig)
         s.commit()
@@ -72,7 +69,7 @@ def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr
         return False
 
 def assign_template(group_name, template_name, username, user_role, request_ip):
-    if group_name is None or template_name is None or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
+    if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
         log_connector.add_log(1, "Failed to assign {} to {}".format(template_name, group_name), username, user_role, request_ip)
         raise MissingResource("Template or device group does not exist")
     Session = sessionmaker(bind=engine)

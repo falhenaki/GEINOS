@@ -35,9 +35,9 @@ class Register(Resource):
         if True:
             content = request.get_json()
             print(content)
-            device_sn = "123"#content['serial-number']
-            device_name = "DEF"#content['name']
-            device_ip = "1.1.1.1"#content['ip-address']
+            device_sn = content['serial-number']
+            device_name = content['name']
+            device_ip = content['ip-address']
             print(content)
             #device_usern = request.form['device_user']
             device_usern = "admin"

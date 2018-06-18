@@ -14,13 +14,12 @@ def add_list_of_devices(entries, filename, username, user_role, request_ip):
 
 def apply_template(sn, vn, ip, user, pw, request_ip):
     if device_connector.device_exists_and_templated(sn,vn, True):
-        template_name = device_group_connector.get_template_for_device(sn, vn)
-        rendered_template = get_rendered_template(sn, vn)
+        config_path = get_rendered_template(sn, vn)
+        rendered_template = open(config_path)
 
         if (rendered_template) == (None):
             log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{}). Missing param(s)".format(sn, vn, ip, user), None, None, request_ip)
             return False
-
 
         device_access.set_config(ip, user, pw, rendered_template)
         device_connector.update_device(sn, 'date_provisioned', datetime.datetime.now())

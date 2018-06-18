@@ -45,7 +45,7 @@ class Device_Groups(Resource):
         status = 400
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
-        if (logged_user):
+        if True:# (logged_user):
             content = request.get_json()
             group_name = content["group_name"] #TODO api failing here
             attribute = content["attribute"]
@@ -60,9 +60,11 @@ class Device_Groups(Resource):
                         message="Device Group not created, group name or value already exists"
                     )
             '''
-            if device_group_connector.add_devices_to_groups(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
-                status=201
-                message="Device(s) added to group"
+            if device_group_connector.add_device_group(group_name):
+                print("Device group added")
+                if device_group_connector.add_devices_to_groups(group_name, attribute, value, 'doug', 'ADMIN', '1.1.1.1'):
+                    status=201
+                    message="Device(s) added to group"
             else:
                 status = 402
                 message = "Device Group not created, group name or value already exists, or device could belong to multiple groups"
