@@ -14,15 +14,15 @@ class Device_Configs(Resource):
     Success: status: 200, message: "ok", configs: tbd
     Failure: status: 400, message: "Configs not created"
     """
-    def get(self):
+    def put(self):
         status=400
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            hst = content["host"]
-            usr = content["username"]
-            passw = content["pass"]
+            hst = "192.168.1.1"
+            usr = "admin"
+            passw = "admin"
             #TODO actually return configs, also, should device auth be passed in auth request?
             conf = get_config(hst,usr,passw)
             status=200
