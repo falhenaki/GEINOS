@@ -65,7 +65,7 @@ class Templates(Resource):
         status = 400
         message = "Template not added"
         logged_user = request_parser.validateCreds(request)
-        if True:# (logged_user):
+        if (logged_user):
             if 'file' in request.files:
                 file = request.files['file']
                 '''

@@ -45,7 +45,7 @@ class Device_Groups(Resource):
         status = 400
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
-        if True:# (logged_user):
+        if (logged_user):
             content = request.get_json()
             group_name = content["group_name"] #TODO api failing here
             attribute = content["attribute"]
