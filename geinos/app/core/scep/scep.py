@@ -17,20 +17,17 @@ class Scep(CustomMixin, Base):
     __tablename__ = "Scep"
     id = Column(Integer, primary_key=True)
     username = Column(String)
-    passwordhash = Column(String)
+    password = Column(String)
     server = Column(String)
+    encryptalgo = Column(String)
+    digestalgo = Column(String)
+
 
     #----------------------------------------------------------------------
-    def __init__(self, server,username,password):
+    def __init__(self, server,username,password,digest,encrypt):
         """"""
         self.username = username
-        self.hash_password(password)
+        self.password = password
         self.server = server
-    """
-    For Now do not salt password.    
-    """
-    def hash_password(self, password):
-        self.passwordhash = password
-
-    def check_password(self, password):
-        return check_password_hash(self.passwordhash, password)
+        self.encryptalgo = encrypt
+        self.digestalgo = digest
