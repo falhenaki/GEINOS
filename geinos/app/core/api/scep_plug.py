@@ -20,7 +20,7 @@ def put(self):
     message = "SCEP Server not updated"
     logged_user = request_parser.validateCreds(request)
     if (logged_user):
-        content = request.get_json()
+        content = request.get_json(force=True)
         POST_USERNAME = content['usr']
         POST_PASSWORD = content['password']
         POST_SERVER = content['server']

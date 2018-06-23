@@ -43,7 +43,7 @@ class Assign(Resource):
         message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             if content['temp_name'] and content['group_name']:
                 templ_name = content['temp_name']
                 group_name = content['group_name']

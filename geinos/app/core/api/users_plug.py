@@ -48,7 +48,7 @@ class Users(Resource):
         message = "User not added"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             POST_USERNAME = content['usr']
             POST_PASSWORD = content['password']
             POST_RETYPE_PASS = content['retypepassword']
@@ -87,7 +87,7 @@ class Users(Resource):
     def delete(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             POST_USERNAME = content['rmusr']
             auth.remove_user(POST_USERNAME, logged_user.username, logged_user.role_type, request.remote_addr)
             status=200,

@@ -33,7 +33,7 @@ class Register(Resource):
         TODO: Require authorization, needs to be changed in orbit device
         """
         if True:
-            content = request.get_json()
+            content = request.get_json(force=True)
             print(content)
             device_sn = content['serial-number']
             device_name = content['name']
