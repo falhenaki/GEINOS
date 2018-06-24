@@ -13,29 +13,29 @@ from app.core.api import request_parser
  Success: status= 200, message = 'User added',
  Failure: status: 400, message = 'User not added'
  """
+class Scep(Resource):
 
-
-def put(self):
-    status = 400
-    message = "SCEP Server not updated"
-    logged_user = request_parser.validateCreds(request)
-    if (logged_user):
-        content = request.get_json(force=True)
-        POST_USERNAME = content['usr']
-        POST_PASSWORD = content['password']
-        POST_SERVER = content['server']
-        POST_DIGEST = content['digest']
-        POST_ENCRYPT = content['encrypt']
-        if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT):
-            status = 200
-            message = "SCEP server added"
+    def put(self):
+        status = 400
+        message = "SCEP Server not updated"
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
+            content = request.get_json(force=True)
+            POST_USERNAME = content['usr']
+            POST_PASSWORD = content['password']
+            POST_SERVER = content['server']
+            POST_DIGEST = content['digest']
+            POST_ENCRYPT = content['encrypt']
+            if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT):
+                status = 200
+                message = "SCEP server added"
+            else:
+                status = 403
+                message = "Error adding SCEP server to database"
         else:
-            status = 403
-            message = "Error adding SCEP server to database"
-    else:
-        status = 401
-        message = "Unauthorized"
-    return jsonify(
-        status=status,
-        message=message
-    )
+            status = 401
+            message = "Unauthorized"
+        return jsonify(
+            status=status,
+            message=message
+        )
