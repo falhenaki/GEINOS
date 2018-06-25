@@ -41,6 +41,17 @@ class Login(Resource):
         )
 
 class Login_Helper(Resource):
-    def post(self):
+    def get(self):
         logged_user = request_parser.validateCreds(request)
-        return logged_user is not None
+        print("do we")
+        print(logged_user)
+
+        if logged_user:
+            return jsonify(
+                status=200,
+                message="User logged in."
+            )
+        return jsonify(
+                status=403,
+                message="User not logged in."
+            )
