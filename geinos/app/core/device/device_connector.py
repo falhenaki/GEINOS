@@ -5,6 +5,7 @@ from app.core.device_group.device_in_group import Device_in_Group
 from app.core.device.device import Device
 from app import engine, app
 from app.core.log import log_connector
+from app.core.template import xml_templates
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError
 import datetime
 
@@ -56,22 +57,21 @@ def device_exists_and_templated(sn, name, do_both_exist=False):
         raise MissingResource("Device is not assigned to a group")
     return True
 
-def set_rendered_params(sn, name, rendered_params): #TODO add back in functionality to save params to a file
+def set_rendered_template(sn, name, template_name): #TODO add back in functionality to save params to a file
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
     device = query.first()
     if device is None:
         raise MissingResource()
-    #write_string = ''
-    #for param in rendered_params:
-    #    write_string += param + ':' + rendered_params[param] + '\n'
-    #filename = device.vendor_id + device.serial_number +  device.model_number
-   # print(filename)
-    #save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
-   # with open(save_path, 'w') as fout:
-    #    fout.write(write_string)
-    #device.set_config_file(save_path)
+    filename = device.vendor_id + device.serial_number +  device.model_number
+    print(filename)
+    rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1')
+    save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
+    with open(save_path, 'w') as fout:
+        fout.write(rendered_template[0])
+    device.set_config_file(save_path)
+    s.commit()
     return True
 
 def remove_device(device_sn, username, user_role, request_ip):
@@ -87,3 +87,9 @@ def remove_device(device_sn, username, user_role, request_ip):
     log_connector.add_log(1, "Added device (sn={})".format(device_sn), username, user_role, request_ip)
     s.commit()
     return True
+
+def get_device_template(device_sn):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.serial_number == device_sn)
+    return device.config_file

@@ -48,7 +48,7 @@ def get_templates():
     """
     return template_connector.get_templates()
 
-def apply_parameters(xml_filename, device_sn, device_name, request_ip):
+def apply_parameters(xml_filename, request_ip):
     """
     method to pull all jinja variables from file and replace them with the appropriate values
     :param xml_filename: file to replace jinja variables

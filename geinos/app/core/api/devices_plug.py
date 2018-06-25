@@ -17,8 +17,10 @@ class Devices(Resource):
     """
     def get(self):
         logged_user = request_parser.validateCreds(request)
+        print("Hit backend method")
         if (logged_user):
             devices = device_connector.get_all_devices()
+            print(devices)
             return jsonify(
                 status=200,
                 message="Sent Devices",
