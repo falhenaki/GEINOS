@@ -46,7 +46,7 @@ class Device_Groups(Resource):
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             group_name = content["group_name"] #TODO api failing here
             attribute = content["attribute"]
             value = content["value"]
@@ -80,7 +80,7 @@ class Device_Groups(Resource):
     def delete(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             GROUP = content['group_name']
             if device_group_connector.remove_group(GROUP, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(

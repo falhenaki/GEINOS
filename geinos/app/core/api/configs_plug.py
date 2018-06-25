@@ -19,7 +19,7 @@ class Device_Configs(Resource):
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             hst = "192.168.1.1"
             usr = "admin"
             passw = "admin"
