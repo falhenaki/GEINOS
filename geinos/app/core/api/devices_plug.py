@@ -48,7 +48,8 @@ class Devices(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             if 'file' not in request.files:
-                content = request.get_json()
+                content = request.get_json(force=True)
+                print(content)
                 VENDOR_ID = content['vendor_id']
                 SERIAL_NUMBER = content['serial_num']
                 MODEL_NUMBER = content['model_num']
@@ -92,7 +93,7 @@ class Devices(Resource):
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json()
+            content = request.get_json(force=True)
             DEVICE_SN = content['serial_num']
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(

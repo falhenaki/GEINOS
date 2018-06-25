@@ -3,7 +3,7 @@ from flask_restful import Api
 from app import app
 from flask import jsonify
 from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, \
-    assignment_plug, logs_plugs, register
+    assignment_plug, logs_plugs, register, scep_plug
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError, InvalidInput
 """
 API END POINTS
@@ -21,6 +21,7 @@ def initialize_APIs():
     api.add_resource(logs_plugs.Logs, '/logs')
     api.add_resource(register.Register, '/register')
     api.add_resource(login_plug.Login_Helper, '/verify_token')
+    api.add_resource(scep_plug.Scep, '/scep')
 
     """
     Exception responses
