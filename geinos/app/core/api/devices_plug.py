@@ -93,12 +93,9 @@ class Devices(Resource):
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-<<<<<<< HEAD
             content = request.get_json()
             print(content)
-=======
             content = request.get_json(force=True)
->>>>>>> 0fd4768b479df84318a7d1c9f4b4d81e2f19b088
             DEVICE_SN = content['serial_num']
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
