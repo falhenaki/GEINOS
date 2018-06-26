@@ -43,6 +43,11 @@ class Register(Resource):
             device_usern = "admin"
             #device_pass = request.form['device_pass']
             device_pass = "admin"
+            if device_connector.update_device(device_sn,"IP", device_ip) is not True:
+                return jsonify(
+                    status=402,
+                    message="Device could not be found"
+                )
             if device_connector.device_exists_and_templated(device_sn, device_name):
 
                 if device_helpers.apply_template(device_sn, device_name, device_ip,

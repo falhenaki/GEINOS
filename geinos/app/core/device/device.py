@@ -21,7 +21,7 @@ class Device(CustomMixin, Base):
     date_provisioned = Column(DateTime(timezone=false))
     location = Column(String)
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, IP, last_modified, username=None, password=None,
+    def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username=None, password=None,
                  config_file=None, added_date=None, location=None):
         """"""
         self.vendor_id = vendor_id
@@ -47,3 +47,5 @@ class Device(CustomMixin, Base):
 
     def set_provisioned_date(self, provisioned):
         self.date_provisioned = provisioned
+    def set_ip(self,ip):
+        self.IP = ip

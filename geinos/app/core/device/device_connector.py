@@ -16,6 +16,7 @@ def update_device(sn, attribute, value):
     device = s.query(Device).filter(Device.serial_number == sn).first()
     device.__setattr__(attribute, value)
     s.commit()
+    return True
 
 def add_device(vend, sn, mn, location, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
@@ -23,7 +24,7 @@ def add_device(vend, sn, mn, location, username, user_role, request_ip):
     #TODO what contitutes existing?
     query = s.query(Device).filter(Device.serial_number == sn).first()
     if query is None:
-        dv = Device(vend, sn, mn, 'UNAUTHORIZED','1.1.1.1', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location)
+        dv = Device(vend, sn, mn, 'UNAUTHORIZED', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location)
         s.add(dv)
         s.commit()
         log_connector.add_log(1, "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
