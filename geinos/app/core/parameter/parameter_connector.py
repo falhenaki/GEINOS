@@ -82,19 +82,21 @@ def add_parameter(name, type, val, username, user_role, request_ip):
         Session = sessionmaker(bind=engine)
         s = Session()
         if (type == "RANGE"):
-            dv = Parameter(name, str(val[0]), type, str(val[-1]))
+            dv = Parameter(name, str(val[0]), "RANGE", str(val[-1]))
             s.add(dv)
         elif (type == "LIST"):
             val = val.split(",")
-            dv = Parameter(name, "", type)
+            dv = Parameter(name, "", "LIST")
             dv.current_offset = 0
             s.add(dv)
             for index, value in enumerate(val):
                 pm = ListParameter(name, value, index)
                 s.add(pm)
-        else:  # scalar
+        elif (type == "LIST"):  # scalar
             dv = Parameter(name, val, type)
             s.add(dv)
+        else:
+            return False
         s.commit()
         log_connector.add_log(1, "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
