@@ -27,5 +27,17 @@ def get_scep():
     s = Session()
     scep = s.query(Scep).first()
     return scep
+"""
+Add thumprint to server. input is a Scep object, and a string
+
+"""
 
 
+def add_thumbprint(server,thumb):
+    Session = sessionmaker(bind=engine)
+    s = Session.object_session(server)
+    scep = server
+    scep.set_thumb(thumb)
+    s.add(scep)
+    s.commit()
+    return True

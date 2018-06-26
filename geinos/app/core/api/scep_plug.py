@@ -1,6 +1,5 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request, jsonify
-from app.core.template import xml_templates
 from app.core.scep import scep_server
 from app.core.api import request_parser
 """
@@ -13,6 +12,8 @@ from app.core.api import request_parser
  Success: status= 200,
  Failure: status: 400,
  """
+
+
 class Scep(Resource):
 
     def put(self):
@@ -34,7 +35,7 @@ class Scep(Resource):
             POST_LOCALE = content['locale']
             POST_ORGANIZATION = content ['organization']
             POST_ORG_UNIT = content['org_unit']
-            POST_CERT_SERVER_ID = content['cert_server_idd']
+            POST_CERT_SERVER_ID = content['cert_server_id']
             POST_KEY_ID = content['key_id']
             POST_CA_CERT_ID = content['ca_cert_id']
             POST_CLIENT_CERT_ID = content['client_cert_id']
@@ -42,8 +43,17 @@ class Scep(Resource):
                                     POST_CERT_INFO_ID,POST_CA_SERVER_ID,POST_COUNTRY,POST_STATE,POST_LOCALE,
                                     POST_ORGANIZATION,POST_ORG_UNIT,POST_CERT_SERVER_ID,POST_KEY_ID,POST_CA_CERT_ID,
                                     POST_CLIENT_CERT_ID):
-                status = 200
-                message = "SCEP server added"
+                thumb = scep_server.get_thumbprint()
+                if thumb is False:
+                    status = 405
+                    message = "Failed to obtain scep thumbprint"
+                elif "Error" in thumb:
+                    status = 406
+                    message = thumb
+                else:
+
+                    status = 200
+                    message = "SCEP server added"
             else:
                 status = 403
                 message = "Error adding SCEP server to database"

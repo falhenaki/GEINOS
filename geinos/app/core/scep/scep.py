@@ -1,24 +1,18 @@
-from sqlalchemy import *
-from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from app import db,app
-from app.core.user import user_connector
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
-from werkzeug.security import check_password_hash, generate_password_hash
 from app.core.sqlalchemy_base.augmented_base import CustomMixin
 
 Base = declarative_base()
 
 
 class Scep(CustomMixin, Base):
-    """"""
+
     __tablename__ = "Scep"
     id = Column(Integer, primary_key=True)
     username = Column(String)
     password = Column(String)
     server = Column(String)
+    #TODO make algo's enums instead of strings
     encryptalgo = Column(String)
     digestalgo = Column(String)
     cert_info_id = Column(String)
@@ -29,9 +23,10 @@ class Scep(CustomMixin, Base):
     organization = Column(String)
     org_unit = Column(String)
     cert_server_id  = Column(String)
-    key_id  = Column(String)
-    ca_cert_id  = Column(String)
-    client_cert_id  = Column(String)
+    key_id = Column(String)
+    ca_cert_id = Column(String)
+    client_cert_id = Column(String)
+    thumbprint = Column(String)
 
 
 
@@ -55,3 +50,6 @@ class Scep(CustomMixin, Base):
         self.key_id = key_id
         self.ca_cert_id = ca_cert_id
         self.client_cert_id = client_cert_id
+
+    def set_thumb(self,thumbprint):
+        self.thumbprint = thumbprint

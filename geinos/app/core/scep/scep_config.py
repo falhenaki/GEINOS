@@ -54,16 +54,20 @@ cert_info_config="""
 """
 
 
+# TODO check for valid digest and encrypt algo, return error if invalid
 def format_config_cert_server(server_name, cert_server, digest, encrypt):
     cfg = cert_server_config.format(server_name, cert_server, digest.lower(), encrypt.lower())
     return cfg
+
 
 def format_config_ca_server(ca_name,thumbprint):
 
     cfg = ca_server_config.format(ca_name, thumbprint)
     return cfg
 
-def format_config_cert_info(cert_name,serial):
-    cfg = cert_info_config.format(cert_name, "US", "NY", "Rochester", "GEMDS", "Org", serial,
+
+def format_config_cert_info(cert_name,serial,country,state,locale,organization,org_unit):
+    cfg = cert_info_config.format(cert_name, country, state, locale, organization, org_unit, serial,
                                   "DEVICE-1@ge.com")
     return cfg
+

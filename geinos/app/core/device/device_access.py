@@ -1,6 +1,6 @@
 from app.pyorbit import Device, ConnectError
 from app.pyorbit.services import Config, Status, PKI
-from app.core.scep import scep_config, scep_connector
+from app.core.scep import scep_config, scep_connector,scep_server
 import time
 
 def get_uptime(host, user, passwd):
@@ -30,7 +30,8 @@ def set_config(host, user, passwd, t_conf):
             print(rsp)
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
-        return
+        return False
+    return True
 
 def get_config(host, user, passwd):
     try:
@@ -43,16 +44,17 @@ def get_config(host, user, passwd):
         return
 
 
-def generate_private_key(dev):
+def generate_private_key(dev, key_name):
     try:
         dev.open()
+        state = "Failed to open connection to device"
         with PKI(dev) as pki:
             rsp = pki.get_priv_keys()
             print(rsp)
             # Generate private key
             print("GENERATING PRIVATE KEY...")
             # pki.cancel_priv_key_gen()
-            pki.gen_priv_key(key_id="DEVKEY", key_size="2048")
+            pki.gen_priv_key(key_id=key_name, key_size="2048")
             done = False
             while not done:
                 status = pki.get_priv_key_gen_status()
@@ -64,17 +66,17 @@ def generate_private_key(dev):
                     time.sleep(5)
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
-        return
+        return False
+    return state
 
 
-def get_ca_certs(dev, server_name, ca_name, cert_name):
+def get_ca_certs(dev,cert_id,cert_server_id, ca_server_id):
     try:
+        state = "failed to connect"
         dev.open()
         with PKI(dev) as pki:
             rsp = pki.get_ca_certs()
-            print(rsp)
-            print("IMPORT CA CERTS...")
-            pki.import_ca_cert_scep(cert_id= cert_name, cert_server_id=server_name, ca_server_id=ca_name)
+            pki.import_ca_cert_scep(cert_id= cert_id, cert_server_id=cert_server_id, ca_server_id=ca_server_id)
             done = False
             while not done:
                 status = pki.get_ca_cert_import_status()
@@ -88,48 +90,71 @@ def get_ca_certs(dev, server_name, ca_name, cert_name):
             print(rsp)
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
-        return
+        return False
+    return state
 
 
-def get_client_cert(dev,server_name, ca_name, cert_name, cert_info):
+def get_client_cert(dev, cert_server_id, ca_server_id, cert_id, cert_info_id, ca_cert_id, key_id, otp):
     try:
-
+        state = "failed to connect"
         dev.open()
         with PKI(dev) as pki:
             rsp = pki.get_client_certs()
             print(rsp)
-            print("IMPORT CLIENT CERTS...")
-            pki.import_client_cert_scep(cert_id= cert_name, cert_server_id=server_name, ca_server_id=ca_name,
-                                        cert_info_id=cert_info, cacert_id=ca_name, key_id="DEVKEY",
-                                        otp="4B7AC2AFC101104F06C88A174C88CD52")
+            pki.import_client_cert_scep(cert_id= cert_id, cert_server_id=cert_server_id, ca_server_id=ca_server_id,
+                                        cert_info_id=cert_info_id, cacert_id=ca_cert_id, key_id=key_id,
+                                        otp=otp)
             done = False
             while not done:
                 status = pki.get_client_cert_import_status()
-                print(status)
                 state = status['data']['pki']['client-certs']['import-status']['state']
                 if state in ['inactive', 'complete', 'cancelled', 'failed']:
                     done = True
                 else:
                     time.sleep(5)
             rsp = pki.get_client_certs()
-            print(rsp)
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
-        return
+        return False
+    return state
 
 
-def set_scep(host, user, passwd, serial, server_name,ca_name, cert_name):
+def set_scep(host, user, passwd, serial):
+    otp = scep_server.get_otp()
+    if "Error" in otp:
+        return otp
     dev = Device(host=host, username=user, password=passwd)
     scep_info = scep_connector.get_scep()
-    scep_thumb = "12345"
-    """server_name, cert_server, digest, encrypt"""
-    cert_server = scep_config.format_config_cert_server(server_name, scep_info.server, scep_info.digestalgo, scep_info.encryptalgo)
-    """ca_name,thumbprint"""
-    ca_server = scep_config.format_config_ca_server(ca_name,scep_thumb)
-    cert_info = scep_config.format_config_cert_info(cert_name, serial)
-    set_config(host, user, passwd, cert_server)
-    set_config(host, user, passwd, ca_server)
-    set_config(host, user, passwd, cert_info)
-    generate_private_key(dev)
-    get_ca_certs(dev, server_name, ca_name, cert_name)
-    get_client_cert(dev, server_name, ca_name, cert_name, cert_info)
+    if scep_info is None:
+        return "Error: SCEP information not in database"
+    scep_thumb = scep_info.thumbprint
+    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id, scep_info.server,
+                                                        scep_info.digestalgo, scep_info.encryptalgo)
+    ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
+    cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
+                                                    scep_info.locale,scep_info.organization,scep_info.org_unit)
+    cert_config = set_config(host, user, passwd, cert_server)
+    ca_config = set_config(host, user, passwd, ca_server)
+    cert_info_config = set_config(host, user, passwd, cert_info)
+    if cert_config is False:
+        return "Error: Failed to config Certificate server information"
+    if ca_config is False:
+        return "Error: Failed to config CA server information"
+    if cert_info_config is False:
+        return "Error: Failed to config Certificate Information"
+    pk = generate_private_key(dev,scep_info.key_id)
+    if pk is False:
+        return "Error: Failed to generate private key"
+    if pk is not "complete":
+        return "Error: Device returned the following status of the private key" + pk
+    ca_cert = get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
+    if ca_cert is False:
+        return "Error: Failed to get CA Cert"
+    if ca_cert is not "complete":
+        return "Error: Device returned the following when attempt to get a CA Cert:" + ca_cert
+    client_cert = get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
+                    scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
+    if client_cert is False:
+        return "Error: Failed to get Client Cert"
+    if client_cert is not "complete":
+        return "Error: Device returned the following when attempt to get a Client Cert:" + client_cert
