@@ -77,12 +77,12 @@ def get_parameter_next_value(name, request_ip, sn):
     return ret_value
 
 
-def add_parameter(name, type, val, username, user_role, request_ip, end_value=None):
+def add_parameter(name, type, val, username, user_role, request_ip):
     if not parameter_exists(name):
         Session = sessionmaker(bind=engine)
         s = Session()
         if (type == "RANGE"):
-            dv = Parameter(name, val, type, end_value)
+            dv = Parameter(name, str(val[0]), type, str(val[-1]))
             s.add(dv)
         elif (type == "LIST"):
             val = val.split(",")

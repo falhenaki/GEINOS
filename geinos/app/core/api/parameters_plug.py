@@ -60,21 +60,17 @@ class Parameters(Resource):
                     status = 400
                     message = "Parameter already exists"
             else:
-                end_value = None
+                val = content["value"]
                 if 'RANGE' in ptype.upper():
                     try:
-                        s_ip = ipaddress.ip_network(content["start_value"])
-                        e_value = ipaddress.ip_network(content["end_value"])
+                        ip = ipaddress.ip_network(val)
                     except TypeError or ValueError:
                         return jsonify(
-                            status= 403,
-                            message= "Invalid address or mask"
+                            status=403,
+                            message="Invalid address or mask"
                         )
-                    val = s_ip
-                    end_value = e_value
-                else:
-                    val = content["value"]
-                if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr, end_value)):
+                    val = ip
+                if (parameter_connector.add_parameter(name,ptype.upper(),val, logged_user.username, logged_user.role_type, request.remote_addr)):
                     status = 200
                     message = "Parameter added"
                 else:
