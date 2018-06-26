@@ -66,7 +66,7 @@ def set_rendered_template(sn, name, template_name): #TODO add back in functional
         raise MissingResource()
     filename = device.vendor_id + device.serial_number +  device.model_number
     print(filename)
-    rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1')
+    rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1', sn)
     save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
     with open(save_path, 'w') as fout:
         fout.write(rendered_template[0])

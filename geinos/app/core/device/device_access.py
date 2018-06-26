@@ -2,6 +2,7 @@ from pyorbit import Device, ConnectError
 from pyorbit.services import Config, Status, PKI
 from app.core.scep import scep_config, scep_connector,scep_server
 import time
+import json
 
 def get_uptime(host, user, passwd):
     try:
@@ -43,6 +44,20 @@ def get_config(host, user, passwd):
         print ("Cannot connect to device: {0}".format(err))
         return
 
+def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="LO1"):
+    try:
+        dev = Device(host="192.168.1.1", username="admin", password="admin")
+        dev.open()
+        with Status(dev) as st:
+            ipv4 = """/interfaces-state/interface[name='{}']/ipv4/address""".format(ifname)
+            # JSON
+            out = st.get(filter=('xpath', ipv4), format='json')
+            dt = json.loads(out)
+            #print(out)
+            ifip = dt['data']['interfaces-state']['interface']['ipv4']['address']['ip']
+            return
+    except:
+        print("COULD NOT GET IF ADDRESS")
 
 def generate_private_key(dev, key_name):
     try:

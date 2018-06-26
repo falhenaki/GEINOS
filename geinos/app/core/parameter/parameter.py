@@ -10,12 +10,14 @@ class Parameter(CustomMixin, Base):
     start_value = Column(String)
     end_value = Column(String)
     current_offset = Column(String)
-    param_type = Column(Enum('RANGE', 'SCALAR', 'LIST'))
+    param_type = Column(Enum('RANGE', 'SCALAR', 'LIST', 'DYNAMIC'))
     date_created = Column(DateTime(timezone=false))
+    interface = Column(String)
     # ----------------------------------------------------------------------
-    def __init__(self, name,start,ptype,end=""):
+    def __init__(self, name,start,ptype,end="", interface=None):
         self.param_name = name
         self.start_value = start
         self.end_value = end
         self.param_type = ptype
         self.current_offset = start
+        self.interface = interface
