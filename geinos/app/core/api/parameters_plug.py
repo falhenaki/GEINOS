@@ -61,7 +61,7 @@ class Parameters(Resource):
                     message = "Parameter already exists"
             else:
                 end_value = None
-                if 'RANGE' in ptype.toupper():
+                if 'RANGE' in ptype.upper():
                     try:
                         s_ip = ipaddress.ip_network(content["start_value"])
                         e_value = ipaddress.ip_network(content["end_value"])
