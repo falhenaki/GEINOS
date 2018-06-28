@@ -1,5 +1,5 @@
 from app.core.scep import scep_config
-pyorbit import Device
+from app.pyorbit import Device
 from app.core.device import device_access,device_connector
 from app.core.device.device import Device
 from sqlalchemy.orm import sessionmaker
