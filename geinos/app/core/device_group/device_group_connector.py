@@ -11,9 +11,9 @@ import datetime
 def add_device_group(name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    #existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
-    #if existence_check is not None:
-        #raise Conflict("Device Group already exists")
+    existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
+    if existence_check is not None:
+        raise Conflict("Device Group already exists")
     dg = Device_Group(name,datetime.datetime.now())
     s.add(dg)
     s.commit()
@@ -22,7 +22,7 @@ def add_device_group(name):
 def device_group_exists(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).first()
+    query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
     return (query is not None)
 
 def get_all_device_groups():
@@ -80,7 +80,7 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     s.commit()
     log_connector.add_log(1, "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     return True
-
+#TODO Should be SN only
 def get_template_for_device(sn, vn):
     Session = sessionmaker(bind=engine)
     s = Session()

@@ -24,12 +24,12 @@ class Users(Resource):
 
         else:
             status = 401
-            message = "Unathorized"
+            message = "Unauthorized"
             data = []
         return jsonify(
-            status=400,
-            message= message,
-            data = data
+            status=status,
+            message=message,
+            data=data
         )
 
 

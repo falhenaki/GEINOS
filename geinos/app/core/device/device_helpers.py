@@ -1,5 +1,5 @@
 from app.core.device import device_connector, device_access
-from pyorbit import Device, ConnectError
+from app.pyorbit import Device, ConnectError
 from app.core.device_group import device_group_connector
 from app.core.template import template_connector, xml_templates
 from app.core.device import device_connector
@@ -8,7 +8,7 @@ from app.core.exceptions.custom_exceptions import MissingResource
 from app.core.scep import scep_config,scep_connector,scep_server
 import datetime
 
-
+#TODO should be moved to device connector
 def add_list_of_devices(entries, filename, username, user_role, request_ip):
     for entry in entries:
         device_connector.add_device(entry[0], entry[1], entry[2], entry[3], username, user_role, request_ip)
@@ -22,6 +22,7 @@ def apply_template(sn, vn, ip, user, pw, request_ip):
         rendered_template = open(config_path)
 
         if (rendered_template) == (None):
+            #TODO Make this log message more meaningful
             log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{}). Missing param(s)".format(sn, vn, ip, user), None, None, request_ip)
             return False
 
@@ -34,15 +35,15 @@ def apply_template(sn, vn, ip, user, pw, request_ip):
         log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
         return False
 
-
-def get_rendered_template(sn, vn, ip, user, pw):
+#TODO Move to templates
+def get_rendered_template(sn, vn):
     if device_connector.device_exists_and_templated(sn, vn, True):
         device_template = device_connector.get_device_template(sn)
     else:
         raise MissingResource("Device does not have an assigned template")
     return device_template
 
-
+#TODO add logging and update device modified field
 def set_scep(host, user, passwd, serial):
     otp = scep_server.get_otp()
     if "Error" in otp:

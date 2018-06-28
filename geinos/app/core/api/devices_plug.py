@@ -20,6 +20,7 @@ class Devices(Resource):
         print("Hit backend method")
         if (logged_user):
             devices = device_connector.get_all_devices()
+            print("devices: ")
             print(devices)
             return jsonify(
                 status=200,

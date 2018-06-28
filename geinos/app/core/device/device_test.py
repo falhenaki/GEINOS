@@ -1,6 +1,9 @@
 from app.core.scep import scep_config
-from pyorbit import Device
-from app.core.device import device_access
+from app.pyorbit import Device
+from app.core.device import device_access,device_connector
+from app.core.device.device import Device
+from sqlalchemy.orm import sessionmaker
+from app import engine
 import unittest
 
 """
@@ -9,15 +12,42 @@ of 192.168.1.1, and the user name and password is admin. The scep tests
 require a scep server running, and the details must be filled in, such as
 OTP, thumbprint, and server address.
 """
-host = "192.168.1.1"
-username = "admin"
-password = "admin"
 
-otp = ""
-thumbprint = "thumb"
-cert_server = "192.168.1.6/certsrv/mscep/mscep.dll"
+
+
 
 class TesttDevice(unittest.TestCase):
+
+    def setUpModule(self):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        s.query(Device).delete()
+        s.commit()
+        username = "Setup"
+        vend = "Setup"
+        sn = "123456"
+        mn = "Orbit"
+        location = "Roch"
+        user_role = "Admin"
+        request_ip = "1.1.2.3"
+        device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
+
+        username = "ToBeDeleted"
+        vend = "ToBeDeleted"
+        sn = "0987"
+        mn = "Orbit"
+        location = "Roch"
+        user_role = "Admin"
+        request_ip = "1.1.2.3"
+        device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
+
+    def tearDown(self):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        s.query(Device).delete()
+        s.commit()
+
+
     @unittest.skip
     def test_set_private_key(self):
         dev = Device(host="192.168.1.1", username="admin", password="admin")
@@ -75,7 +105,55 @@ class TesttDevice(unittest.TestCase):
         x = device_access.get_client_cert(dev,cert_server_id,ca_server_id,cert_id,cert_info_id,ca_cert_id,key_id,challenpassword)
         self.assertEqual(x, "complete")
 
+    def test_add_device(self):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        s.commit()
+        username = "TestName"
+        vend = "AutoTest"
+        sn = "12345"
+        mn = "Orbit"
+        location = "Roch"
+        user_role = "Admin"
+        request_ip = "1.1.2.3"
+        add_result = device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
+        device = s.query(Device).filter(Device.serial_number == sn).first()
+        '''
+        Test device was added
+        '''
+        self.assertTrue(add_result, msg="Device could not be added")
+        '''
+        Verify device is in the database
+        '''
+        self.assertEqual(sn,device.serial_number, msg="Failed to find device in database from add_device")
+        with self.assertRaises(Exception):
+            device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
 
+    def test_update_device(self):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        sn = "123456"
+        mn = "Orbit ECR"
+        update = device_connector.update_device(sn,"model_number", mn)
+        update_fail = device_connector.update_device(sn, "model_naumber", mn)
+        device = s.query(Device).filter(Device.serial_number == sn).first()
+        self.assertTrue(update, msg="Failed to update a device")
+        self.assertEqual(mn,device.model_number, msg="Update to device cannot be found in database ")
+        self.assertFalse(update_fail, msg="Failed to identify attribute does not exist")
+
+    def test_remove_device(self):
+        Session = sessionmaker(bind=engine)
+        s = Session()
+        sn = "0987"
+        fake_sn = "0000"
+        remove_device = device_connector.remove_device(sn,"","ADMIN","")
+        device = s.query(Device).filter(Device.serial_number == sn).first()
+        self.assertTrue(remove_device, msg="Device was not removed from databse")
+        self.assertIsNone(device, msg="Device still in database after removal")
+        with self.assertRaises(Exception):
+            device_connector.remove_device(sn, "", "ADMIN", "")
+        with self.assertRaises(Exception):
+            device_connector.remove_device(sn, "", "ADMIN", "")
 
 if __name__ == '__main__':
     unittest.main()

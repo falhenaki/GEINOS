@@ -29,12 +29,12 @@ class Device(CustomMixin, Base):
         self.model_number = model_number
         self.device_status = device_status
         self.last_modified = last_modified
-        self.IP = IP
         self.username = username
         self.password = password
         self.config_file = config_file
         self.date_added = added_date
         self.location = location
+        self.IP = ""
 
     def set_config_file(self, config_file):
         self.config_file = config_file
@@ -47,5 +47,6 @@ class Device(CustomMixin, Base):
 
     def set_provisioned_date(self, provisioned):
         self.date_provisioned = provisioned
+
     def set_ip(self,ip):
         self.IP = ip
