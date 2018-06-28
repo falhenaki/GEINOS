@@ -1,10 +1,9 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.core.api import request_parser
-from app.core.device import device_helpers, device_connector
+from app.core.device import device_connector
 from app.core.device_group import device_group_connector
-from app.core.template import template_connector
 from app.core.assignment import assignment_connector
 
 authen = HTTPBasicAuth()
@@ -47,7 +46,7 @@ class Assign(Resource):
             if content['temp_name'] and content['group_name']:
                 templ_name = content['temp_name']
                 group_name = content['group_name']
-                if device_group_connector.assign_template(group_name, templ_name, "doug", "ADMIN", "1.1.1.1"):
+                if device_group_connector.assign_template(group_name, templ_name, logged_user.username, logged_user.role_type, request.remote_addr):
                     for dev in device_group_connector.get_devices_in_group(group_name):
                         device_connector.set_rendered_template(dev['serial_number'], dev['vendor_id'], templ_name)
                     status = 200

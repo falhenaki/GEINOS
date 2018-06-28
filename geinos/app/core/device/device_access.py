@@ -1,5 +1,5 @@
-from app.pyorbit import Device, ConnectError
-from app.pyorbit.services import Config, Status, PKI
+pyorbit import Device, ConnectError
+pyorbit.services import Config, Status, PKI
 from app.core.scep import scep_config, scep_connector,scep_server
 import time
 import json

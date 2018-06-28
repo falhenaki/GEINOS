@@ -2,8 +2,6 @@ from flask_restful import Resource, reqparse
 from flask import request, jsonify
 from app.core.template import xml_templates
 from app.core.api import request_parser
-from app.core.template import template_connector
-
 parser = reqparse.RequestParser()
 
 

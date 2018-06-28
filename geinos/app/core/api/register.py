@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse
 from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify
 from app.core.device import device_helpers, device_connector
-from app.core.api import request_parser
 
 parser = reqparse.RequestParser()
 authen = HTTPBasicAuth()
@@ -30,7 +29,7 @@ class Register(Resource):
        
         status = 400
         """
-        TODO: Require authorization, needs to be changed in orbit device
+        TODO: Require authorization, needs to be changed in orbit device. See if IP address can be obtained.
         """
         if True:
             content = request.get_json(force=True)

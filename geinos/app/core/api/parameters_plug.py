@@ -1,9 +1,7 @@
 from flask_restful import Resource
 from flask import request, jsonify
-from app.core.user import auth
 from app.core.parameter import parameter_connector
 from app.core.api import request_parser
-from app.core.exceptions.custom_exceptions import InvalidInput
 import ipaddress
 
 class Parameters(Resource):
@@ -42,8 +40,6 @@ class Parameters(Resource):
         status: 400, message = 'Parameter not added'
     """
     def put(self):
-        status = 400
-        message = "Parameter not added"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json(force=True)
@@ -85,7 +81,6 @@ class Parameters(Resource):
         )
 
     def delete(self):
-        status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json(force=True)

@@ -17,8 +17,6 @@ from app.core.api import request_parser
 class Scep(Resource):
 
     def put(self):
-        status = 400
-        message = "SCEP Server not updated"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json(force=True)
@@ -35,10 +33,10 @@ class Scep(Resource):
             POST_LOCALE = content['locale']
             POST_ORGANIZATION = content ['organization']
             POST_ORG_UNIT = content['org_unit']
-            POST_CERT_SERVER_ID = content['cert_server_id']
-            POST_KEY_ID = content['key_id']
-            POST_CA_CERT_ID = content['ca_cert_id']
-            POST_CLIENT_CERT_ID = content['client_cert_id']
+            POST_CERT_SERVER_ID = "GEINOS_CERT_SERVER"
+            POST_KEY_ID = "GEINOS_KEY"
+            POST_CA_CERT_ID = "GEINOS_CA_CERT "
+            POST_CLIENT_CERT_ID = "GEINOS_CLIENT_CERT"
             if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT,
                                     POST_CERT_INFO_ID,POST_CA_SERVER_ID,POST_COUNTRY,POST_STATE,POST_LOCALE,
                                     POST_ORGANIZATION,POST_ORG_UNIT,POST_CERT_SERVER_ID,POST_KEY_ID,POST_CA_CERT_ID,

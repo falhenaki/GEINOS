@@ -43,6 +43,7 @@ class Users(Resource):
     Success: status= 200, message = 'User added',
     Failure: status: 400, message = 'User not added'
     """
+    #TODO verify password and retype password are equal
     def put(self):
         status = 400
         message = "User not added"
