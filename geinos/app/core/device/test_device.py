@@ -14,38 +14,37 @@ OTP, thumbprint, and server address.
 """
 
 
+def setUpModule():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    s.query(Device).delete()
+    s.commit()
+    username = "Setup"
+    vend = "Setup"
+    sn = "123456"
+    mn = "Orbit"
+    location = "Roch"
+    user_role = "Admin"
+    request_ip = "1.1.2.3"
+    device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
 
+    username = "ToBeDeleted"
+    vend = "ToBeDeleted"
+    sn = "0987"
+    mn = "Orbit"
+    location = "Roch"
+    user_role = "Admin"
+    request_ip = "1.1.2.3"
+    device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
+
+
+def tearDown():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    s.query(Device).delete()
+    s.commit()
 
 class TesttDevice(unittest.TestCase):
-
-    def setUpModule(self):
-        Session = sessionmaker(bind=engine)
-        s = Session()
-        s.query(Device).delete()
-        s.commit()
-        username = "Setup"
-        vend = "Setup"
-        sn = "123456"
-        mn = "Orbit"
-        location = "Roch"
-        user_role = "Admin"
-        request_ip = "1.1.2.3"
-        device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
-
-        username = "ToBeDeleted"
-        vend = "ToBeDeleted"
-        sn = "0987"
-        mn = "Orbit"
-        location = "Roch"
-        user_role = "Admin"
-        request_ip = "1.1.2.3"
-        device_connector.add_device(vend, sn, mn, location, username, user_role, request_ip)
-
-    def tearDown(self):
-        Session = sessionmaker(bind=engine)
-        s = Session()
-        s.query(Device).delete()
-        s.commit()
 
 
     @unittest.skip

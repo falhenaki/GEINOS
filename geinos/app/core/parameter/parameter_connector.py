@@ -3,7 +3,7 @@ from app.core.parameter.list_parameter import ListParameter
 from app.core.log import log_connector
 from sqlalchemy.orm import sessionmaker
 from app import engine
-from app.core.exceptions.custom_exceptions import Conflict, GeneralError, MissingResource
+from app.core.exceptions.custom_exceptions import Conflict, GeneralError, MissingResource, InvalidInput
 import ipaddress
 from app.core.device.device import Device
 from app.core.device import device_access
@@ -81,10 +81,10 @@ def add_parameter(name, type, val, username, user_role, request_ip):
     if not parameter_exists(name):
         Session = sessionmaker(bind=engine)
         s = Session()
-        if (type == "RANGE"):
+        if (type.upper() == "RANGE"):
             dv = Parameter(name, str(val[0]), "RANGE", str(val[-1]))
             s.add(dv)
-        elif (type == "LIST"):
+        elif (type.upper() == "LIST"):
             val = val.split(",")
             dv = Parameter(name, "", "LIST")
             dv.current_offset = 0
@@ -92,17 +92,18 @@ def add_parameter(name, type, val, username, user_role, request_ip):
             for index, value in enumerate(val):
                 pm = ListParameter(name, value, index)
                 s.add(pm)
-        elif (type == "LIST"):  # scalar
+        elif (type.upper() == "SCALAR"):
             dv = Parameter(name, val, type)
             s.add(dv)
         else:
-            return False
+            raise InvalidInput("Invalid Parameter Type")
         s.commit()
         log_connector.add_log(1, "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
     else:
         log_connector.add_log(1, "Failed to add the {} parameter".format(name), username, user_role, request_ip)
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
+
 
 def add_dynamic_parameter(name, type, val, username, user_role, request_ip, interface):
     if not parameter_exists(name):
