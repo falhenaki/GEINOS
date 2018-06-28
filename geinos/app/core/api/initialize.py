@@ -12,7 +12,7 @@ def initialize_APIs():
     api = Api(app)
     api.add_resource(login_plug.Login, '/login', '/')
     api.add_resource(users_plug.Users, '/users')
-    api.add_resource(devices_plug.Devices, '/devices')
+    api.add_resource(devices_plug.Devices, '/devices/<device>','/devices')
     api.add_resource(device_groups.Device_Groups, '/device_groups')
     api.add_resource(parameters_plug.Parameters, '/parameters')
     api.add_resource(configs_plug.Device_Configs, '/configs')

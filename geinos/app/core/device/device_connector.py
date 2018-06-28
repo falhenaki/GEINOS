@@ -46,6 +46,15 @@ def get_all_devices():
         ret.append(d.as_dict())
     return ret
 
+def get_device(device):
+    ret = []
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device).filter(Device.serial_number == device)
+    for d in query:
+        ret.append(d.as_dict())
+    return ret
+
 def device_exists_and_templated(sn, name, do_both_exist=False):
     Session = sessionmaker(bind=engine)
     exists = False
