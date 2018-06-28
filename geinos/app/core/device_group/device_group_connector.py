@@ -3,7 +3,7 @@ from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.log import log_connector
 from app.core.template import template_connector
-from app.core.exceptions.custom_exceptions import Conflict, MissingResource
+from app.core.exceptions.custom_exceptions import Conflict, MissingResource, InvalidInput
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
@@ -63,10 +63,9 @@ def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr
                               role_type, remote_addr)
         return True
     else:
-        print("Work in progress")
         log_connector.add_log(1, "Failed to add devics (with {} = {}) to {} device group".format(att, val, group_name), username,
                               role_type, remote_addr)
-        return False
+        raise InvalidInput("Unable to group by that attribute")
 
 def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
@@ -93,7 +92,7 @@ def get_template_for_device(sn, vn):
     if device_group.template_name == None:
         raise MissingResource("Device group does not have an assigned template")
     return device_group.template_name
-
+#TODO Delete device_in_group
 def remove_group(group_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()

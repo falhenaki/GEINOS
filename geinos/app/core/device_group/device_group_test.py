@@ -2,6 +2,7 @@ from app.core.device.device import Device
 from app.core.device import device_connector
 from app.core.device_group import device_group_connector
 from app.core.device_group.device_group import Device_Group
+from app.core.device_group.device_in_group import Device_in_Group
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import unittest
@@ -16,6 +17,8 @@ class Test_Device_Group(unittest.TestCase):
         Session = sessionmaker(bind=engine)
         s = Session()
         s.query(Device_Group).delete()
+        s.commit()
+        s.query(Device_in_Group).delete()
         s.commit()
         s.query(Device).delete()
         s.commit()
@@ -45,6 +48,8 @@ class Test_Device_Group(unittest.TestCase):
         s.query(Device_Group).delete()
         s.commit()
         s.query(Device).delete()
+        s.commit()
+        s.query(Device_in_Group).delete()
         s.commit()
 
     def test_add_group(self):
@@ -89,6 +94,8 @@ class Test_Device_Group2(unittest.TestCase):
         s.commit()
         s.query(Device).delete()
         s.commit()
+        s.query(Device_in_Group).delete()
+        s.commit()
         name = "Exists"
         device_group_connector.add_device_group(name)
         username = "Setup"
@@ -116,13 +123,14 @@ class Test_Device_Group2(unittest.TestCase):
         s.commit()
         s.query(Device).delete()
         s.commit()
+        s.query(Device_in_Group).delete()
+        s.commit()
 
     def test_add_devices_to_group(self):
         Session = sessionmaker(bind=engine)
         s = Session()
         s.query(Device_Group).delete()
         s.commit()
-        print(s.query(Device_Group).first())
         group = "Test_Group"
         model ="Orbit"
         attr = "model"
@@ -137,9 +145,5 @@ class Test_Device_Group2(unittest.TestCase):
         self.assertTrue(add)
         with self.assertRaises(Exception):
             device_group_connector.add_devices_to_groups(no_group, attr, model, username, role_type, remote_addr)
-        '''
         with self.assertRaises(Exception):
             device_group_connector.add_devices_to_groups(group, bad_attr, model, username, role_type, remote_addr)
-        with self.assertRaises(Exception):
-            device_group_connector.add_devices_to_groups(group, attr, bad_model, username, role_type, remote_addr)
-        '''
