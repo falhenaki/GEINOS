@@ -1,5 +1,5 @@
 from app.core.device import device_connector, device_access
-from app.pyorbit import Device, ConnectError
+from pyorbit import Device, ConnectError
 from app.core.device_group import device_group_connector
 from app.core.template import template_connector, xml_templates
 from app.core.device import device_connector

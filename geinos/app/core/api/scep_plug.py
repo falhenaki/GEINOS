@@ -26,8 +26,8 @@ class Scep(Resource):
             POST_SERVER = content['server']
             POST_DIGEST = content['digest']
             POST_ENCRYPT = content['encrypt']
-            POST_CERT_INFO_ID = content['cert_info_id']
-            POST_CA_SERVER_ID = content['ca_server_id']
+            POST_CERT_INFO_ID = "GEINOS_CERT_ID"
+            POST_CA_SERVER_ID = "GEINOS_SERVER_ID"
             POST_COUNTRY = content['country']
             POST_STATE = content['state']
             POST_LOCALE = content['locale']
