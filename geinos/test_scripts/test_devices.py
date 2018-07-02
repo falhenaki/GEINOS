@@ -35,7 +35,7 @@ class FlaskrTestCase(unittest.TestCase):
 
         ## adding users
 
-        app.core.user.auth.add_user("fawaz", "password","test@mail.edu", "ADMIN")
+        app.core.user.auth.add_user("fawaz", "password","test@mail.edu", "ADMIN", "test", "ADMIN", "192.168.1.1")
 
     def tearDown(self):
         os.close(self.db_fd)
@@ -45,79 +45,25 @@ class FlaskrTestCase(unittest.TestCase):
 
         rv = self.app.get('/users')
         data = json.loads(rv.data)
-        assert(data['status'] == 400)
-        assert(str(data['message']) == str("Could not authenticate"))
-
-    def open_with_auth(self, url, method, username, password):
-        return self.app.open(url,
-            method=method,
-            headers={
-                'Authorization': b'Basic ' + base64.b64encode((username + b":" + password))
-            }
-        )
-    def test_login_noauth_post(self):
-        username = "test"
-        password = "password"
-        response = self.open_with_auth('/login', 'POST', b'test',
-                                  b'password')
-        data = json.loads(response.data)
-        assert(data['status'] == 200)
-        assert(data['message'] == 'User logged in.')
-    def test_login_noauthentication_post(self):
-        username = b"ss"
-        password = b"passworssddasd"
-        response = self.open_with_auth('/login', 'POST', username,
-                                  password)
-        data = json.loads(response.data)
-        assert(data['status'] == 400)
-        assert(data['message'] == 'User not logged in.')
-
-"""
-    def test_get_users_no_auth_get(self):
-        response = self.app.get('/users')
-        print(response)
-        assert
-        with app.app.app_context():
-            assert response == jsonify(
-                    status=400,
-                    message=failAuth
-            )"""
-"""
-    def test_users_no_auth_put(self):
-        response = self.app.put('/users')
-        assert response == jsonify(
-                status=400,
-                message=failAuth
-        )
-
-    def test_users_auth_delete(self):
-        response = self.app.delete('/users')
-        assert response == jsonify(
-                status=400,
-                message=failAuth
-        )
-
-    def test_users_no_auth_delete(self):
-        response = self.app.delete('/users')
-        assert response == jsonify(
-                status=400,
-                message=failAuth
-        )
+        print(data)
+        assert(data['status'] == 401)
+        assert(str(data['message']) == str("Unauthorized"))
 
 ##### Devices
     def test_Devices_no_auth_get(self):
         response = self.app.get('/devices')
-        assert response == jsonify(
-                status=400,
-                message=failAuth
-        )
+        data = json.loads(response.data)
+        print(data)
+        assert(data['status'] == 401)
+        assert(data['message'] == "Unauthorized")
+
     def test_Devices_no_auth_put(self):
         response = self.app.put('/devices')
-        assert response == jsonify(
-                status=400,
-                message=failAuth
-        )
-
+        data = json.loads(response.data)
+        print(data)
+        assert(data['status'] == 401)
+        assert(data['message'] == "Unauthorized")
+"""
 # Device Groups
     def test_get_Device_Groups_no_auth_post(self):
 
