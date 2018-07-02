@@ -15,7 +15,7 @@ class Devices(Resource):
     Success: status= 200, message= "Sent Devices", data= devices(json)
     Failure: status= 400, message= "Could not send devices
     """
-    def get(self,device):
+    def get(self,device=None):
         logged_user = request_parser.validateCreds(request)
         print("Hit backend method")
         if (logged_user):

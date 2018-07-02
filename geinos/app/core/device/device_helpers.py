@@ -53,7 +53,8 @@ def set_scep(host, user, passwd, serial):
     if scep_info is None:
         return "Error: SCEP information not in database"
     scep_thumb = scep_info.thumbprint
-    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id, scep_info.server,
+    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
+                                                        scep_info.server + "/certsrv/mscep/mscep.dll",
                                                         scep_info.digestalgo, scep_info.encryptalgo)
     ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
     cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
@@ -70,16 +71,16 @@ def set_scep(host, user, passwd, serial):
     pk = device_access.generate_private_key(dev,scep_info.key_id)
     if pk is False:
         return "Error: Failed to generate private key"
-    if pk is not "complete":
+    if "complete" not in pk:
         return "Error: Device returned the following status of the private key" + pk
     ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
     if ca_cert is False:
         return "Error: Failed to get CA Cert"
-    if ca_cert is not "complete":
+    if "complete" not in ca_cert:
         return "Error: Device returned the following when attempt to get a CA Cert:" + ca_cert
     client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
                     scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
     if client_cert is False:
         return "Error: Failed to get Client Cert"
-    if client_cert is not "complete":
+    if "complete" not in client_cert:
         return "Error: Device returned the following when attempt to get a Client Cert:" + client_cert

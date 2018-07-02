@@ -24,6 +24,7 @@ class TestScep(unittest.TestCase):
         Session = sessionmaker(bind=engine)
         s = Session()
         server = "http://192.168.56.102/certsrv/mscep_admin/"
+
         password = "Password12"
         user_name = "Administrator"
         digest = "a"
