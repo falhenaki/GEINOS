@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from jinja2 import Environment, meta, FileSystemLoader
 from app.core.template import template_connector
 from app.core.log import log_connector
+from app.core.exceptions.custom_exceptions import MissingResource
 
 def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     """
@@ -64,13 +65,28 @@ def apply_parameters(xml_filename, request_ip, sn):
     to_render = {}
     for var in all_vars:
         if not parameter_connector.parameter_exists(var):
-            return None, None
-
+            raise MissingResource('The parameter: %s required to add this template does not currently exist', var)
+    param_file = ''
     for var in all_vars:
         to_render[var] = parameter_connector.get_parameter_next_value(var, request_ip, sn)
-    return render_jinja(xml_filename, to_render), to_render
+    for rendered in to_render:
+        param_file += (rendered) + '=' + to_render[rendered] + '\n'
+    return param_file
 
 def render_jinja(filename, context):
     env = Environment(loader=FileSystemLoader(app.config['UPLOADS_FOLDER']))
     template = env.get_template(filename)
     return template.render(context)
+
+def parse_config_params(param_file, template_file, sn):
+    to_render = {}
+    with open(param_file, 'r') as fin:
+        s = fin.read()
+        for param_set in s.splitlines():
+            pair = param_set.split('=')
+            if pair[1] == '??dynamic??':
+                to_render[pair[0]] = parameter_connector.get_dynamic_parameter(pair[0], sn)
+            else:
+                to_render[pair[0]] = pair[1]
+
+    return render_jinja(template_file, to_render)

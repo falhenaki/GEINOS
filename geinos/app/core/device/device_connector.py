@@ -2,6 +2,7 @@ __author__ = 'Fawaz'
 import os
 from sqlalchemy.orm import sessionmaker
 from app.core.device_group.device_in_group import Device_in_Group
+from app.core.device_group import device_group_connector
 from app.core.device.device import Device
 from app import engine, app
 from app.core.log import log_connector
@@ -82,7 +83,7 @@ def set_rendered_template(sn, name, template_name): #TODO add back in functional
     rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1', sn)
     save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
     with open(save_path, 'w') as fout:
-        fout.write(rendered_template[0])
+        fout.write(rendered_template)
     device.set_config_file(save_path)
     s.commit()
     return True
@@ -106,4 +107,4 @@ def get_device_template(device_sn):
     Session = sessionmaker(bind=engine)
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn)
-    return device.config_file
+    return device.config_file, device_group_connector.get_template_for_device(device_sn)

@@ -1,7 +1,10 @@
 from flask_restful import Resource
 from flask import request, jsonify
+from flask_httpauth import HTTPBasicAuth
 from app.core.device.device_access import *
-from  app.core.api import request_parser
+from app.core.api import request_parser
+from app.core.device import device_connector
+from app.core.template import xml_templates
 
 class Device_Configs(Resource):
     """
@@ -19,15 +22,12 @@ class Device_Configs(Resource):
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json(force=True)
-            hst = "192.168.1.1"
-            usr = "admin"
-            passw = "admin"
-            #TODO actually return configs, also, should device auth be passed in auth request?
-            conf = get_config(hst,usr,passw)
-            status=200
-            message="ok"
+            content = request.parse_json()
+            device_sn = content['device_sn']
+            config_path, template_path = device_connector.get_device_template(device_sn)
+            rendered_template = xml_templates.parse_config_params(config_path, template_path, device_sn)
         return jsonify(
             status=status,
-            message=message
+            message=message,
+            data=rendered_template
         )

@@ -18,8 +18,8 @@ def add_list_of_devices(entries, filename, username, user_role, request_ip):
 
 def apply_template(sn, vn, ip, user, pw, request_ip):
     if device_connector.device_exists_and_templated(sn,vn, True):
-        config_path = get_rendered_template(sn, vn)
-        rendered_template = open(config_path)
+        config_path, template_path = device_connector.get_device_template(sn)
+        rendered_template = xml_templates.parse_config_params(config_path, template_path, sn)
 
         if (rendered_template) == (None):
             #TODO Make this log message more meaningful
@@ -34,14 +34,6 @@ def apply_template(sn, vn, ip, user, pw, request_ip):
     else:
         log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
         return False
-
-#TODO Move to templates
-def get_rendered_template(sn, vn):
-    if device_connector.device_exists_and_templated(sn, vn, True):
-        device_template = device_connector.get_device_template(sn)
-    else:
-        raise MissingResource("Device does not have an assigned template")
-    return device_template
 
 #TODO add logging and update device modified field
 def set_scep(host, user, passwd, serial):

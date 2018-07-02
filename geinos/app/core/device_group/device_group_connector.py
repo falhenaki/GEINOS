@@ -83,10 +83,10 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     log_connector.add_log(1, "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     return True
 #TODO Should be SN only
-def get_template_for_device(sn, vn):
+def get_template_for_device(sn):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_in_Group).filter(Device_in_Group.serial_number == sn, Device_in_Group.vendor_id == vn)
+    query = s.query(Device_in_Group).filter(Device_in_Group.serial_number == sn)
     device_in_group = query.first()
     device_group_name = device_in_group.device_group_name
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == device_group_name).first()

@@ -43,7 +43,7 @@ def get_parameter_next_value(name, request_ip, sn):
     param = s.query(Parameter).filter(Parameter.param_name == name).first()
     ret_value = ""
     if param.param_type == "DYNAMIC":
-        return get_dynamic_parameter(name, sn)
+        return '??dynamic??'
     elif param.param_type == "RANGE":
         if param.start_value.count('.') == 3:  # ipv4 -- TODO better way
             start = int(ipaddress.IPv4Address(param.start_value))
