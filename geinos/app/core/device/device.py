@@ -20,6 +20,7 @@ class Device(CustomMixin, Base):
     date_authorized = Column(DateTime(timezone=false))
     date_provisioned = Column(DateTime(timezone=false))
     location = Column(String)
+    cert_required = Column(Enum('TRUE','FALSE'))
     #----------------------------------------------------------------------
     def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username=None, password=None,
                  config_file=None, added_date=None, location=None):
@@ -35,6 +36,7 @@ class Device(CustomMixin, Base):
         self.date_added = added_date
         self.location = location
         self.IP = ""
+        self.cert_required = 'FALSE'
 
     def set_config_file(self, config_file):
         self.config_file = config_file
@@ -50,3 +52,5 @@ class Device(CustomMixin, Base):
 
     def set_ip(self,ip):
         self.IP = ip
+    def set_cert_req(self,required):
+        self.cert_required = required
