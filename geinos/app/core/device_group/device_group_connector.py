@@ -7,6 +7,12 @@ from app.core.exceptions.custom_exceptions import Conflict, MissingResource, Inv
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
+from app.core.parameter import parameter_connector
+from app import app
+import os
+from jinja2 import Environment, meta
+from app.core.log import log_connector
+
 
 def add_device_group(name):
     Session = sessionmaker(bind=engine)
@@ -74,6 +80,19 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
         log_connector.add_log(1, "Failed to assign {} to {}".format(template_name, group_name), username, user_role, request_ip)
         raise MissingResource("Template or device group does not exist")
+
+    xml_file = os.path.join(app.config['UPLOADS_FOLDER'], template_name)
+    all_vars = []
+    with open(xml_file, 'r') as f:
+        env = Environment()
+        s = f.read()
+        ast = env.parse(s)
+        all_vars.extend(meta.find_undeclared_variables(ast))
+    devs_in_groups = number_of_devices_in_group(group_name)
+    for var in all_vars:
+        if not parameter_connector.parameter_exists(var) or (parameter_connector.number_of_parameter(var) != 1 and parameter_connector.number_of_parameter(var) < devs_in_groups):
+            return False
+
     Session = sessionmaker(bind=engine)
     s = Session()
     dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
@@ -82,6 +101,12 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     s.commit()
     log_connector.add_log(1, "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     return True
+
+def number_of_devices_in_group(group_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    return s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).count()
+
 #TODO Should be SN only
 def get_template_for_device(sn, vn):
     Session = sessionmaker(bind=engine)

@@ -152,3 +152,22 @@ def remove_parameter(param_name, username, user_role, request_ip):
     s.commit()
     log_connector.add_log(1, "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
     return True
+
+
+def number_of_parameter(param_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    param = s.query(Parameter).filter(Parameter.param_name == param_name)
+    if param is None:
+        raise MissingResource("Parameter to be removed did not exist")
+    if (param.param_type is 'SCALAR' or (param.param_type is 'DYNAMIC')):
+        return -1
+    elif (param.param_type is 'LIST'):
+        return s.query(ListParameter).filter(ListParameter.param_name == param_name).count()
+    elif (param.param_type is 'RANGE'):
+        if (ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset) > 0:
+            return ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset
+        else:
+            return 0
+    else:
+        return 0
