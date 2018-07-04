@@ -23,7 +23,7 @@ class Device(CustomMixin, Base):
     cert_required = Column(Enum('TRUE','FALSE'))
     #----------------------------------------------------------------------
     def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username=None, password=None,
-                 config_file=None, added_date=None, location=None):
+                 config_file=None, added_date=None, location=None, cert_required = 'FALSE'):
         """"""
         self.vendor_id = vendor_id
         self.serial_number = serial_number
@@ -36,7 +36,7 @@ class Device(CustomMixin, Base):
         self.date_added = added_date
         self.location = location
         self.IP = ""
-        self.cert_required = 'FALSE'
+        self.cert_required = cert_required
 
     def set_config_file(self, config_file):
         self.config_file = config_file
