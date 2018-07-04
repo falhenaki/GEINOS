@@ -57,6 +57,7 @@ class Devices(Resource):
                 SERIAL_NUMBER = content['serial_num']
                 MODEL_NUMBER = content['model_num']
                 LOCATION = content['location']
+                cert_required = content['scep']
                 '''
                 devices = device_connector.get_all_devices()
                 for d in devices:
@@ -68,7 +69,7 @@ class Devices(Resource):
                     status=201
                     message="Device Added"
                 '''
-                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr):
+                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr, cert_required.upper()):
                     status = 201
                     message = "Device Added"
                 else:

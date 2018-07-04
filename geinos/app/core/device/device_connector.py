@@ -22,13 +22,13 @@ def update_device(sn, attribute, value):
     s.commit()
     return True
 
-def add_device(vend, sn, mn, location, username, user_role, request_ip):
+def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
     Session = sessionmaker(bind=engine)
     s = Session()
     #TODO what contitutes existing?
     query = s.query(Device).filter(Device.serial_number == sn).first()
     if query is None:
-        dv = Device(vend, sn, mn, 'UNAUTHORIZED', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location)
+        dv = Device(vend, sn, mn, 'UNAUTHORIZED', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location, cert_required=cert)
         s.add(dv)
         s.commit()
         log_connector.add_log(1, "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
@@ -41,9 +41,14 @@ def get_all_devices():
     ret = []
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device)
+    query = s.query(Device).with_entities(Device.vendor_id, Device.model_number, Device.serial_number)
+    ret = []
+    atts_returned = ['vendor_id', 'model_number', 'serial_number']
     for d in query:
-        ret.append(d.as_dict())
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
     return ret
 
 def get_device(device):

@@ -11,11 +11,15 @@ from app.core.device import device_access
 def get_all_parameters():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Parameter)
-    prms = []
-    for pm in query:
-        prms.append(pm.as_dict())
-    return prms
+    query = s.query(Parameter).with_entities(Parameter.param_name, Parameter.param_type, Parameter.start_value)
+    ret = []
+    atts_returned = ['param_name', 'param_type', 'start_value']
+    for d in query:
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
+    return ret
 
 
 def parameter_exists(parameter_name):
@@ -152,3 +156,22 @@ def remove_parameter(param_name, username, user_role, request_ip):
     s.commit()
     log_connector.add_log(1, "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
     return True
+
+
+def number_of_parameter(param_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    param = s.query(Parameter).filter(Parameter.param_name == param_name)
+    if param is None:
+        raise MissingResource("Parameter to be removed did not exist")
+    if (param.param_type is 'SCALAR' or (param.param_type is 'DYNAMIC')):
+        return -1
+    elif (param.param_type is 'LIST'):
+        return s.query(ListParameter).filter(ListParameter.param_name == param_name).count()
+    elif (param.param_type is 'RANGE'):
+        if (ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset) > 0:
+            return ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset
+        else:
+            return 0
+    else:
+        return 0
