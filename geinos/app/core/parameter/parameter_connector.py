@@ -11,11 +11,15 @@ from app.core.device import device_access
 def get_all_parameters():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Parameter)
-    prms = []
-    for pm in query:
-        prms.append(pm.as_dict())
-    return prms
+    query = s.query(Parameter).with_entities(Parameter.param_name, Parameter.param_type, Parameter.start_value)
+    ret = []
+    atts_returned = ['param_name', 'param_type', 'start_value']
+    for d in query:
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
+    return ret
 
 
 def parameter_exists(parameter_name):

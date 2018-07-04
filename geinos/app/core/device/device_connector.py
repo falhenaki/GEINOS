@@ -41,9 +41,14 @@ def get_all_devices():
     ret = []
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device)
+    query = s.query(Device).with_entities(Device.vendor_id, Device.model_number, Device.serial_number)
+    ret = []
+    atts_returned = ['vendor_id', 'model_number', 'serial_number']
     for d in query:
-        ret.append(d.as_dict())
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
     return ret
 
 def get_device(device):

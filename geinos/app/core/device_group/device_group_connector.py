@@ -34,11 +34,15 @@ def device_group_exists(group_name):
 def get_all_device_groups():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_Group)
-    dgs=[]
-    for dg in query:
-        dgs.append(dg.as_dict())
-    return dgs
+    query = s.query(Device_Group).with_entities(Device_Group.device_group_name, Device_Group.template_name, Device_Group.last_modified)
+    ret = []
+    atts_returned = ['device_group_name', 'template_name', 'last_modified']
+    for d in query:
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
+    return ret
 
 def get_devices_in_group(g_name):
     Session = sessionmaker(bind=engine)
