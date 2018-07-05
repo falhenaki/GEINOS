@@ -61,7 +61,7 @@ def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr
     query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
     if query is None:
         add_device_group(group_name)
-        log_connector.add_log(1, "Added {} device group (att: {}, value:{})".format(group_name, att, val), username, role_type, remote_addr)
+        log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {}, value:{})".format(group_name, att, val), username, role_type, remote_addr)
         raise MissingResource("Device group does not exist")
     query_devices_in_groups = s.query(Device_in_Group).filter(Device_in_Group.model_number == val).first()
     if query_devices_in_groups is not None:
@@ -72,17 +72,17 @@ def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr
             dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
             s.add(dig)
         s.commit()
-        log_connector.add_log(1, "Added devices with {} = {} to {} device group".format(att, val, group_name), username,
+        log_connector.add_log('ADD DEVICE GROUP', "Added devices with {} = {} to {} device group".format(att, val, group_name), username,
                               role_type, remote_addr)
         return True
     else:
-        log_connector.add_log(1, "Failed to add devics (with {} = {}) to {} device group".format(att, val, group_name), username,
+        log_connector.add_log('ADD DEVICE GROUP FAIL', "Failed to add devics (with {} = {}) to {} device group".format(att, val, group_name), username,
                               role_type, remote_addr)
         raise InvalidInput("Unable to group by that attribute")
 #TODO Check groups and templates exist
 def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
-        log_connector.add_log(1, "Failed to assign {} to {}".format(template_name, group_name), username, user_role, request_ip)
+        log_connector.add_log('ASSIGN FAIL', "Failed to assign {} to {}".format(template_name, group_name), username, user_role, request_ip)
         raise MissingResource("Template or device group does not exist")
 
     xml_file = os.path.join(app.config['UPLOADS_FOLDER'], template_name)
@@ -103,7 +103,7 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     dg.template_name = template_name
     dg.last_updated = datetime.datetime.now()
     s.commit()
-    log_connector.add_log(1, "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
+    log_connector.add_log('ASSIGN', "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     return True
 
 def number_of_devices_in_group(group_name):
@@ -131,13 +131,13 @@ def remove_group(group_name, username, user_role, request_ip):
     s = Session()
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
     if device_group.first() is None:
-        log_connector.add_log(1, "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
+        log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
         raise MissingResource("Device group being removed does not exist")
     s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).delete()
     device_group.delete()
     if device_group is 0:
-        log_connector.add_log(1, "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
+        log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
         return False
     s.commit()
-    log_connector.add_log(1, "Removed {} device group".format(group_name), username, user_role, request_ip)
+    log_connector.add_log('DELETE DEVICE GROUP', "Removed {} device group".format(group_name), username, user_role, request_ip)
     return True
