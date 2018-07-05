@@ -31,10 +31,10 @@ def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
         dv = Device(vend, sn, mn, 'UNAUTHORIZED', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location, cert_required=cert)
         s.add(dv)
         s.commit()
-        log_connector.add_log(1, "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
+        log_connector.add_log('ADD DEVICE', "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
         return True
     else:
-        log_connector.add_log(1, "Failed to add device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
+        log_connector.add_log('ADD DEVICE FAIL', "Failed to add device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
         raise Conflict("Device already exists in system")
 
 def get_all_devices():
@@ -97,13 +97,10 @@ def remove_device(device_sn, username, user_role, request_ip):
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn)
     if device.count() is 0:
+        log_connector.add_log('DELETE DEVICE FAIL', "Failed to remove device (sn={})".format(device_sn), username, user_role, request_ip)
         raise MissingResource("Device to be removed did not previously exist")
     device.delete()
-    #TODO What does it mean if device is 0?
-    if device is 0:
-        log_connector.add_log(1, "Failed to delete device (sn={})".format(device_sn), username, user_role, request_ip)
-        raise GeneralError("Device could not be removed")
-    log_connector.add_log(1, "Added device (sn={})".format(device_sn), username, user_role, request_ip)
+    log_connector.add_log('DELETE DEVICE', "Removed device (sn={})".format(device_sn), username, user_role, request_ip)
     s.commit()
     return True
 

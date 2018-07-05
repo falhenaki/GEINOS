@@ -56,7 +56,7 @@ def get_parameter_next_value(name, request_ip, sn):
             if start > end:
                 # param.current_offset = '1'
                 # ret_value = param.start_value
-                log_connector.add_log(1, "Ran out of params in range (param: {}). Starting over.".format(name), None,
+                log_connector.add_log('PARAM OVERFLOW', "Ran out of params in range (param: {}). Starting over.".format(name), None,
                                       None, request_ip)
                 raise Conflict("Ran out of parameters to assign")
             else:
@@ -69,7 +69,7 @@ def get_parameter_next_value(name, request_ip, sn):
         lst = s.query(ListParameter).filter(ListParameter.param_name == name)
         if (param.current_offset >= len(lst)):
             # param.current_offset = 0
-            log_connector.add_log(1, "Ran out of params in list (param: {}). Starting over.".format(name), None, None,
+            log_connector.add_log('PARAM OVERFLOW', "Ran out of params in list (param: {}). Starting over.".format(name), None, None,
                                   request_ip)
             raise Conflict("Ran out of parameters to assign")
         ret_value = lst[param.current_offset].param_value
@@ -102,10 +102,10 @@ def add_parameter(name, type, val, username, user_role, request_ip):
         else:
             raise InvalidInput("Invalid Parameter Type")
         s.commit()
-        log_connector.add_log(1, "Added the {} parameter".format(name), username, user_role, request_ip)
+        log_connector.add_log('ADD PARAM', "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
     else:
-        log_connector.add_log(1, "Failed to add the {} parameter".format(name), username, user_role, request_ip)
+        log_connector.add_log('ADD PARAM FAIL', "Failed to add the {} parameter".format(name), username, user_role, request_ip)
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
 
 
@@ -116,10 +116,10 @@ def add_dynamic_parameter(name, type, val, username, user_role, request_ip, inte
         param = Parameter(name, val, type, None, interface)
         s.add(param)
         s.commit()
-        log_connector.add_log(1, "Added the {} parameter".format(name), username, user_role, request_ip)
+        log_connector.add_log('ADD PARAM', "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
     else:
-        log_connector.add_log(1, "Failed to add the {} parameter".format(name), username, user_role, request_ip)
+        log_connector.add_log('ADD PARAM FAIL', "Failed to add the {} parameter".format(name), username, user_role, request_ip)
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
 
 def get_dynamic_parameter(name, sn):
@@ -151,10 +151,10 @@ def remove_parameter(param_name, username, user_role, request_ip):
         raise MissingResource("Parameter to be removed did not exist")
     param.delete()
     if param is 0:
-        log_connector.add_log(1, "Failed to delete parameter: {}".format(param_name), username, user_role, request_ip)
+        log_connector.add_log('DELETE PARAM', "Failed to delete parameter: {}".format(param_name), username, user_role, request_ip)
         raise GeneralError("Parameter could not be removed for unknown reasons")
     s.commit()
-    log_connector.add_log(1, "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
+    log_connector.add_log('DELETE PARAM FAIL', "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
     return True
 
 

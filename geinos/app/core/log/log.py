@@ -8,7 +8,7 @@ class Log(CustomMixin, Base):
     """"""
     __tablename__ = "Logs"
     log_id = Column(Integer, primary_key=True)
-    event_type = Column(Integer)
+    event_type = Column(String)
     log_message = Column(String)
     user = Column(String)
     role = Column(Enum('ADMIN', 'OPERATOR'))
