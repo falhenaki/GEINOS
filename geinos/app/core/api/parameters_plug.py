@@ -42,7 +42,7 @@ class Parameters(Resource):
     def put(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json(force=True)
+            content = request.get_json()
             name = content["name"]
             ptype = content["type"]
             #TODO value?
@@ -83,7 +83,7 @@ class Parameters(Resource):
     def delete(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json(force=True)
+            content = request.get_json()
             PARAMETER_NAME = content['param_name']
             if parameter_connector.remove_parameter(PARAMETER_NAME, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(

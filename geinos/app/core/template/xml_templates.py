@@ -63,9 +63,6 @@ def apply_parameters(xml_filename, request_ip, sn):
         ast = env.parse(s)
         all_vars.extend(meta.find_undeclared_variables(ast))
     to_render = {}
-    for var in all_vars:
-        if not parameter_connector.parameter_exists(var):
-            raise MissingResource('The parameter: %s required to add this template does not currently exist', var)
     param_file = ''
     for var in all_vars:
         to_render[var] = parameter_connector.get_parameter_next_value(var, request_ip, sn)

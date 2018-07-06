@@ -15,14 +15,11 @@ class Devices(Resource):
     Success: status= 200, message= "Sent Devices", data= devices(json)
     Failure: status= 400, message= "Could not send devices
     """
-    def get(self,device):
+    def get(self):
         logged_user = request_parser.validateCreds(request)
         print("Hit backend method")
         if (logged_user):
-            if device is not None:
-                devices = device_connector.get_device(device)
-            else:
-                devices = device_connector.get_all_devices()
+            devices = device_connector.get_all_devices()
             return jsonify(
                 status=200,
                 message="Sent Devices",

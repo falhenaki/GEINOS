@@ -17,10 +17,8 @@ class Device_Groups(Resource):
     """
     #TODO Get specific device group
     def get(self):
-        content = request.get_json(force=True)
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            group_name = content["group_name"]
             dgs = device_group_connector.get_all_device_groups()
             return jsonify(
                 status=200,
@@ -49,7 +47,7 @@ class Device_Groups(Resource):
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json(force=True)
+            content = request.get_json()
             group_name = content["group_name"] #TODO api failing here
             attribute = content["attribute"]
             value = content["value"]
@@ -83,7 +81,7 @@ class Device_Groups(Resource):
     def delete(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.get_json(force=True)
+            content = request.get_json()
             GROUP = content['group_name']
             if device_group_connector.remove_group(GROUP, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
