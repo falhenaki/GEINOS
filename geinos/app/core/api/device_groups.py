@@ -63,11 +63,10 @@ class Device_Groups(Resource):
                         message="Device Group not created, group name or value already exists"
                     )
             '''
-            if device_group_connector.add_device_group(group_name):
+            if device_group_connector.add_device_group(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
                 print("Device group added")
-                if device_group_connector.add_devices_to_groups(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
-                    status=201
-                    message="Device(s) added to group"
+                status=201
+                message="Device(s) added to group"
             else:
                 status = 402
                 message = "Device Group not created, group name or value already exists, or device could belong to multiple groups"
