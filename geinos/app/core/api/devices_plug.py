@@ -58,17 +58,6 @@ class Devices(Resource):
                 MODEL_NUMBER = content['model_num']
                 LOCATION = content['location']
                 cert_required = content['scep']
-                '''
-                devices = device_connector.get_all_devices()
-                for d in devices:
-                    if SERIAL_NUMBER in d:
-                        status = 402
-                        message = "Device not added. Device already exists"
-                if status is not 402:
-                    device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
-                    status=201
-                    message="Device Added"
-                '''
                 if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr, cert_required.upper()):
                     status = 201
                     message = "Device Added"

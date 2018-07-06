@@ -8,7 +8,9 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database - we are working with
 # SQLite for this example
-SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://admin:password@bitforcedev.se.rit.edu/se_project'
+SQL_USERNAME = 'admin'
+SQL_PASSWORD = 'password'
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + SQL_USERNAME + ':' + SQL_PASSWORD + '@bitforcedev.se.rit.edu/se_project'
 DATABASE_CONNECT_OPTIONS = {}
 
 # Application threads. A common general assumption is
@@ -28,6 +30,6 @@ CSRF_SESSION_KEY = "secret"
 SECRET_KEY = "secret"
 
 # allowed file extensions
-UPLOADS_FOLDER = os.path.join(BASE_DIR, 'app/core/upload_folder/')
+UPLOADS_FOLDER = os.path.join(BASE_DIR, 'app/core/upload_folder')
 APPLIED_PARAMS_FOLDER = os.path.join(BASE_DIR, 'app/core/assigned_params')
 ALLOWED_EXTENSIONS = set({'xml'})
