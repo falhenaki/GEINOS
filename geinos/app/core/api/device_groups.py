@@ -17,10 +17,8 @@ class Device_Groups(Resource):
     """
     #TODO Get specific device group
     def get(self):
-        content = request.get_json(force=True)
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            group_name = content["group_name"]
             dgs = device_group_connector.get_all_device_groups()
             return jsonify(
                 status=200,

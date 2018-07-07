@@ -18,10 +18,9 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
     existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
     if existence_check is not None:
         raise Conflict("Device Group already exists")
-    existence_check = s.query(Device_Group).filter(Device_Group.attribute_value == att+val).first()
+    '''existence_check = s.query(Device_Group).filter(Device_Group.attribute_value == att+val).first()
     if existence_check is not None:
-        raise Conflict("Device Group already exists")
-    att_val = None
+        raise Conflict("Device Group already exists")'''
     if att == "other":
         dict = {}
         val = val.split(',')
@@ -29,15 +28,43 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
             item = ele.split('=')
             dict[item[0]] = item[1]
         att_val = str(dict)
+        num_atts = len(val)
     else:
+        num_atts = 1
         att_val = str({att : val})
 
-    dg = Device_Group(name,datetime.datetime.now(), att_val)
+    dg = Device_Group(name,datetime.datetime.now(), att_val, num_atts=num_atts)
     s.add(dg)
     log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {}, value:{})".format(name, att, val),
                           username, role_type, remote_addr)
     s.commit()
+    update_groups_of_devices(dg)
     return True
+
+def update_groups_of_devices(new_group):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    att_vals = ast.literal_eval(new_group.attribute_value)
+    for key in att_vals:
+        devices = devices.filter(getattr(Device, key) == att_vals[key])
+
+    for device in devices:
+        grps = device.group_name
+        new_entry = new_group.device_group_name + '=' + str(new_group.num_attributes)
+        if (grps is None or len(grps) == 0):
+            device.group_name = new_entry
+        else:
+            grps = grps.split(',')
+            new_grps = ""
+            new_group_added = False
+            for x in range(len(grps)):
+                if (new_group_added == False and new_group.num_attributes >= x.split('=')[1]):
+                    new_grps += ',' + new_entry
+                    new_group_added = True
+                else:
+                    new_grps += ',' + x
+            device.group_name = new_grps[1:]
+    s.commit
 
 def device_group_exists(group_name):
     Session = sessionmaker(bind=engine)
@@ -58,18 +85,19 @@ def get_all_device_groups():
         ret.append(dictionary)
     return ret
 
-def get_devices_in_group(g_name):
+def get_all_devices_in_group(g_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     dict_string = s.query(Device_Group).filter(Device_Group.device_group_name == g_name).with_entities(Device_Group.attribute_value).first()
     if dict_string is None:
         raise MissingResource("Device Group does not exist")
+    devices_in_group = []
     devices = s.query(Device)
-    att_vals = ast.literal_eval(dict_string)
-    for key in att_vals:
-        devices = devices.filter(getattr(Device, key) == att_vals[key])
+    for device in devices:
+        if (device.group_name != None and device.group_name.split('=')[0] == g_name):
+            devices_in_group.append(device)
     ret = []
-    for x in devices:
+    for x in devices_in_group:
         ret.append(x.as_dict())
     return ret
 
@@ -90,7 +118,6 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     for var in all_vars:
         if not parameter_connector.parameter_exists(var) or (parameter_connector.number_of_parameter(var) != 1 and parameter_connector.number_of_parameter(var) < devs_in_groups):
             return False
-
     Session = sessionmaker(bind=engine)
     s = Session()
     dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
