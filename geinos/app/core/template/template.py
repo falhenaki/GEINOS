@@ -10,9 +10,7 @@ class Template(CustomMixin, Base):
     __tablename__ = "Templates"
     name = Column(String, primary_key=True)
     date_created = Column(DateTime(timezone=false))
-    template_file = Column(String)
     # ----------------------------------------------------------------------
-    def __init__(self, name, template_file, date_created):
+    def __init__(self, name, date_created):
         self.date_created = date_created
-        self.template_file = template_file
         self.name = name

@@ -7,7 +7,7 @@ import datetime
 def add_file(path, filename):
     Session = sessionmaker(bind=engine)
     s = Session()
-    template = Template(filename, path, datetime.datetime.now())
+    template = Template(filename, datetime.datetime.now())
     s.add(template)
     s.commit()
     return True

@@ -1,9 +1,7 @@
 from app.core.device.device import Device
 from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_in_group import Device_in_Group
-from app.core.log import log_connector
-from app.core.template import template_connector
-from app.core.exceptions.custom_exceptions import Conflict, MissingResource, InvalidInput
+from app.core.exceptions.custom_exceptions import Conflict, MissingResource
 from sqlalchemy.orm import sessionmaker
 from app import engine
 import datetime
@@ -12,16 +10,32 @@ from app import app
 import os
 from jinja2 import Environment, meta
 from app.core.log import log_connector
+import ast
 
-
-def add_device_group(name):
+def add_device_group(name, att, val, username, role_type, remote_addr):
     Session = sessionmaker(bind=engine)
     s = Session()
     existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
     if existence_check is not None:
         raise Conflict("Device Group already exists")
-    dg = Device_Group(name,datetime.datetime.now())
+    existence_check = s.query(Device_Group).filter(Device_Group.attribute_value == att+val).first()
+    if existence_check is not None:
+        raise Conflict("Device Group already exists")
+    att_val = None
+    if att == "other":
+        dict = {}
+        val = val.split(',')
+        for ele in val:
+            item = ele.split('=')
+            dict[item[0]] = item[1]
+        att_val = str(dict)
+    else:
+        att_val = str({att : val})
+
+    dg = Device_Group(name,datetime.datetime.now(), att_val)
     s.add(dg)
+    log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {}, value:{})".format(name, att, val),
+                          username, role_type, remote_addr)
     s.commit()
     return True
 
@@ -47,38 +61,18 @@ def get_all_device_groups():
 def get_devices_in_group(g_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_in_Group).filter(Device_in_Group.device_group_name == g_name) #TODO return hash map not query
-    if query is None:
+    dict_string = s.query(Device_Group).filter(Device_Group.device_group_name == g_name).with_entities(Device_Group.attribute_value).first()
+    if dict_string is None:
         raise MissingResource("Device Group does not exist")
+    devices = s.query(Device)
+    att_vals = ast.literal_eval(dict_string)
+    for key in att_vals:
+        devices = devices.filter(getattr(Device, key) == att_vals[key])
     ret = []
-    for x in query:
+    for x in devices:
         ret.append(x.as_dict())
     return ret
-#TODO Modify to group by attributes other than model, and possibly multiple attributes
-def add_devices_to_groups(group_name, att, val, username, role_type, remote_addr):
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
-    if query is None:
-        add_device_group(group_name)
-        log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {}, value:{})".format(group_name, att, val), username, role_type, remote_addr)
-        raise MissingResource("Device group does not exist")
-    query_devices_in_groups = s.query(Device_in_Group).filter(Device_in_Group.model_number == val).first()
-    if query_devices_in_groups is not None:
-        raise Conflict("There is an existing group of devices with this criteria")
-    if att == "model":
-        devices = s.query(Device).filter(Device.model_number == val)
-        for q in devices:
-            dig = Device_in_Group(group_name, q.vendor_id, q.serial_number, q.model_number)
-            s.add(dig)
-        s.commit()
-        log_connector.add_log('ADD DEVICE GROUP', "Added devices with {} = {} to {} device group".format(att, val, group_name), username,
-                              role_type, remote_addr)
-        return True
-    else:
-        log_connector.add_log('ADD DEVICE GROUP FAIL', "Failed to add devics (with {} = {}) to {} device group".format(att, val, group_name), username,
-                              role_type, remote_addr)
-        raise InvalidInput("Unable to group by that attribute")
+
 #TODO Check groups and templates exist
 def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
