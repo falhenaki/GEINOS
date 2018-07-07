@@ -8,6 +8,7 @@ from app.core.log import log_connector
 from app.core.template import xml_templates
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError
 import datetime
+
 #TODO Log update
 def update_device(sn, attribute, value):
     Session = sessionmaker(bind=engine)
@@ -60,20 +61,39 @@ def get_device(device):
         ret.append(d.as_dict())
     return ret
 
-def device_exists_and_templated(sn, name, do_both_exist=False):
+def device_exists_and_templated(sn):
     Session = sessionmaker(bind=engine)
     exists = False
     has_template = False
     s = Session()
-    query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
+    query = s.query(Device).filter(Device.serial_number == sn)
     device = query.first()
     if device is None:
         raise MissingResource("Device has not been added")
-    query = s.query(Device_in_Group).filter(Device.vendor_id == name, Device.serial_number == sn)
+    query = s.query(Device_in_Group).filter(Device.serial_number == sn)
     device_in_group = query.first()
     if device_in_group is None: #TODO check if device group has a template assigned
         raise MissingResource("Device is not assigned to a group")
     return True
+
+def get_templated_devices():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    devices = s.query(Device)
+    templated_devices =[]
+    for d in devices:
+        if device_exists_and_templated(d.serial_number) is True:
+            templated_devices.append(d)
+    return templated_devices
+
+def get_devices_exist_and_scep():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device).filter(Device.IP.like("%.%.%"),Device.cert_required == "TRUE",Device.cert_set == "FALSE")
+    if query is None:
+        return False
+    return query
+
 #TODO Can this be moved to templates?
 def set_rendered_template(sn, name, template_name): #TODO add back in functionality to save params to a file
     Session = sessionmaker(bind=engine)
@@ -109,3 +129,4 @@ def get_device_template(device_sn):
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn)
     return device.config_file
+

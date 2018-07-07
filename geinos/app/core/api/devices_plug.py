@@ -2,9 +2,13 @@ from flask_restful import Resource
 from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.core.device import device_connector, device_helpers
-from  app.core.api import request_parser
+from app.core.api import request_parser
+from app.core.celery_tasks.tasks import del_dev
 
 authen = HTTPBasicAuth()
+
+
+
 class Devices(Resource):
     """
     HTTP Method: GET
@@ -90,11 +94,15 @@ class Devices(Resource):
             print(content)
             content = request.get_json(force=True)
             DEVICE_SN = content['serial_num']
+            print("working?")
+            del_dev.delay(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr)
+            '''
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Device Deleted"
                 )
+            '''
             return jsonify(
                 status=status,
                 message="Failed to delete device or device does not exist"
