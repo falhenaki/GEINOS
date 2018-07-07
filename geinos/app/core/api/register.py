@@ -50,8 +50,6 @@ class Register(Resource):
                     message="Device could not be found"
                 )
 
-
-
             if device_connector.device_exists_and_templated(device_sn, device_name):
                     t = threading.Thread(target=device_helpers.do_it_all,
                                          args=(device_ip,device_username,device_password,device_sn,device_name,request.remote_addr,))

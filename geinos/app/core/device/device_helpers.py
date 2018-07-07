@@ -84,6 +84,7 @@ def set_scep(host, user, passwd, serial):
         return "Error: Failed to get Client Cert"
     if "complete" not in client_cert:
         return "Error: Device returned the following when attempt to get a Client Cert:" + client_cert
+    return True
 def do_it_all(host,user,passwd,serial,name,remote_addr):
     set_scep(host,user,passwd,serial)
     apply_template(serial, name, host,

@@ -21,6 +21,7 @@ class Device(CustomMixin, Base):
     date_provisioned = Column(DateTime(timezone=false))
     location = Column(String)
     cert_required = Column(Enum('TRUE','FALSE'))
+    cert_set = Column(Enum('TRUE','FALSE','FAIL'))
     #----------------------------------------------------------------------
     def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username=None, password=None,
                  config_file=None, added_date=None, location=None, cert_required = 'FALSE'):
