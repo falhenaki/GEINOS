@@ -3,7 +3,6 @@ from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.core.device import device_connector, device_helpers
 from app.core.api import request_parser
-from app.core.celery_tasks.tasks import del_dev
 
 authen = HTTPBasicAuth()
 
