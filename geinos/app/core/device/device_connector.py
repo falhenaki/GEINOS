@@ -125,6 +125,6 @@ def remove_device(device_sn, username, user_role, request_ip):
 def get_device_template(device_sn):
     Session = sessionmaker(bind=engine)
     s = Session()
-    device = s.query(Device).filter(Device.serial_number == device_sn)
+    device = s.query(Device).filter(Device.serial_number == device_sn).first()
     return device.config_file, device_group_connector.get_template_for_device(device_sn)
 

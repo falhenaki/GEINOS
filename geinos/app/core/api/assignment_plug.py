@@ -47,7 +47,7 @@ class Assign(Resource):
                 templ_name = content['temp_name']
                 group_name = content['group_name']
                 if device_group_connector.assign_template(group_name, templ_name, logged_user.username, logged_user.role_type, request.remote_addr):
-                    for dev in device_group_connector.get_devices_in_group(group_name):
+                    for dev in device_group_connector.get_all_devices_in_group(group_name):
                         device_connector.set_rendered_template(dev['serial_number'], dev['vendor_id'], templ_name)
                     status = 200
                     message = templ_name + " Assigned to " + group_name

@@ -17,13 +17,13 @@ class Device_Configs(Resource):
     Success: status: 200, message: "ok", configs: tbd
     Failure: status: 400, message: "Configs not created"
     """
-    def put(self):
+    def post(self):
         status=400
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
-        if (logged_user):
-            content = request.parse_json()
-            device_sn = content['device_sn']
+        if True:# (logged_user):
+            #content = request.parse_json()
+            device_sn = '0187298473'#content['device_sn']
             config_path, template_path = device_connector.get_device_template(device_sn)
             rendered_template = xml_templates.parse_config_params(config_path, template_path, device_sn)
         return jsonify(

@@ -91,14 +91,11 @@ class Devices(Resource):
             content = request.get_json(force=True)
             DEVICE_SN = content['serial_num']
             print("working?")
-            del_dev.delay(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr)
-            '''
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Device Deleted"
                 )
-            '''
             return jsonify(
                 status=status,
                 message="Failed to delete device or device does not exist"
