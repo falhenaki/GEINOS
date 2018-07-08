@@ -1,7 +1,6 @@
 __author__ = 'Fawaz'
 import os
 from sqlalchemy.orm import sessionmaker
-from app.core.device_group.device_in_group import Device_in_Group
 from app.core.device_group import device_group_connector
 from app.core.device.device import Device
 from app import engine, app

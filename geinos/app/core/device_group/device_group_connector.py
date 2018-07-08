@@ -45,9 +45,7 @@ def devices_in_group(new_group):
     s = Session()
     att_vals = ast.literal_eval(new_group.attribute_value)
     devices = list(s.query(Device))
-
     ret = []
-
     for i, device in enumerate(devices):
         in_group = True
         for key in att_vals:
@@ -61,17 +59,9 @@ def devices_in_group(new_group):
 def update_groups_of_devices(new_group):
     Session = sessionmaker(bind=engine)
     s = Session()
-
     devices = devices_in_group(new_group)
-
     for device in devices:
-        #dig = Device_in_Group(new_group.device_group_name, None, device.serial_number, None)
-        #s.add(dig)
         if new_group.num_attributes >= device.device_group_filters:
-            #device.device_group_filters = new_group.num_attributes
-            #device.group_name = new_group.device_group_name
-            #Device.update().values(device_group_filters=new_group.num_attributes, device_group=new_group.device_group_name).where(Device.serial_number == device.serial_number)
-            #s.query(Device).filter(Device.serial_number == device.serial_number).update({'device_group_filters' : new_group.num_attributes, 'device_group' : new_group.device_group_name})
             s.query(Device).filter(Device.serial_number == device.serial_number).update(
                 {'device_group_filters': new_group.num_attributes, 'device_group': new_group.device_group_name})
     s.commit()
@@ -140,15 +130,14 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
 def number_of_devices_in_group(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    return s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).count()
+    return s.query(Device).filter(Device.device_group == group_name).count()
 
 #TODO Should be SN only
 def get_template_for_device(sn, vn):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_in_Group).filter(Device_in_Group.serial_number == sn)
-    device_in_group = query.first()
-    device_group_name = device_in_group.device_group_name
+    device = s.query(Device).filter(Device.serial_number == sn).first()
+    device_group_name = device.group_name
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == device_group_name).first()
     if device_group is None:
         raise MissingResource("Device Group does not exist")
@@ -163,8 +152,6 @@ def remove_group(group_name, username, user_role, request_ip):
     if device_group.first() is None:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
         raise MissingResource("Device group being removed does not exist")
-
-    s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).delete()
     device_group.delete()
     if device_group is 0:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
