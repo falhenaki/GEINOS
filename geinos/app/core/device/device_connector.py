@@ -64,14 +64,16 @@ def get_device(device):
 
 def device_exists_and_templated(sn):
     Session = sessionmaker(bind=engine)
+    exists = False
+    has_template = False
     s = Session()
     query = s.query(Device).filter(Device.serial_number == sn)
     device = query.first()
-    if device is None:
-        raise MissingResource("Device has not been added")
-    if device.config_file == None:
-        raise MissingResource("Device has not been assigned a config file")
-    return True
+    if not device is None:
+        exists = True
+    if not device.config_file == None:
+        has_template = True
+    return exists and has_template
 
 def get_templated_devices():
     Session = sessionmaker(bind=engine)
