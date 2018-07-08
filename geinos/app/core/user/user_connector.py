@@ -97,40 +97,15 @@ def change_user_lastlogin(username):
 def get_all_users():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(User)
-    userList=[]
-    for user in query:
-        '''
-            last_login_time = 'min ago'
-            #change_user_email(user.username, 'none@noemail')
-            if user.last_login is None:
-                final_login = "Never"
-            else:
-                last_login = (datetime.datetime.now() - user.last_login).seconds
-                print(last_login)
-                last_login = floor(last_login/60)
-                if last_login < 1 :
-                    last_login = 1
-                    last_login_time = ' <  min ago'
-                if last_login < 60 and last_login > 1 :
-
-                    last_login_time = ' minutes ago'
-                if last_login > 60:
-                    last_login = floor(last_login/60)
-                    if last_login < 24 :
-                        last_login_time = ' hours ago'
-                    else:
-                        last_login = floor(last_login/24)
-                        last_login = ' days ago'
-                        if last_login > 7 :
-                            last_login = 7
-                            last_login_time = ' > days ago'
-
-                final_login = str(last_login) + last_login_time
-            '''
-        userList.append(user.as_dict())
-
-    return userList
+    query = s.query(User).with_entities(User.role_type, User.username, User.email, User.last_login)
+    ret = []
+    atts_returned = ['role_type', 'username', 'email', 'last_login']
+    for d in query:
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
+    return ret
 
 
 def get_user_role(username):

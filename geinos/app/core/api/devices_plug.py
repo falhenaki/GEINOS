@@ -2,9 +2,12 @@ from flask_restful import Resource
 from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.core.device import device_connector, device_helpers
-from  app.core.api import request_parser
+from app.core.api import request_parser
 
 authen = HTTPBasicAuth()
+
+
+
 class Devices(Resource):
     """
     HTTP Method: GET
@@ -15,7 +18,7 @@ class Devices(Resource):
     Success: status= 200, message= "Sent Devices", data= devices(json)
     Failure: status= 400, message= "Could not send devices
     """
-    def get(self):
+    def get(self,device=None):
         logged_user = request_parser.validateCreds(request)
         print("Hit backend method")
         if (logged_user):
@@ -54,18 +57,8 @@ class Devices(Resource):
                 SERIAL_NUMBER = content['serial_num']
                 MODEL_NUMBER = content['model_num']
                 LOCATION = content['location']
-                '''
-                devices = device_connector.get_all_devices()
-                for d in devices:
-                    if SERIAL_NUMBER in d:
-                        status = 402
-                        message = "Device not added. Device already exists"
-                if status is not 402:
-                    device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER)
-                    status=201
-                    message="Device Added"
-                '''
-                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr):
+                cert_required = content['scep']
+                if device_connector.add_device(VENDOR_ID, SERIAL_NUMBER, MODEL_NUMBER, LOCATION, logged_user.username, logged_user.role_type, request.remote_addr, cert_required.upper()):
                     status = 201
                     message = "Device Added"
                 else:
@@ -97,11 +90,15 @@ class Devices(Resource):
             print(content)
             content = request.get_json(force=True)
             DEVICE_SN = content['serial_num']
+            print("working?")
+            del_dev.delay(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr)
+            '''
             if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Device Deleted"
                 )
+            '''
             return jsonify(
                 status=status,
                 message="Failed to delete device or device does not exist"

@@ -12,7 +12,7 @@ import datetime
 def add_list_of_devices(entries, filename, username, user_role, request_ip):
     for entry in entries:
         device_connector.add_device(entry[0], entry[1], entry[2], entry[3], username, user_role, request_ip)
-    log_connector.add_log(1, "Added all devices from {} file".format(filename), username, user_role, request_ip)
+    log_connector.add_log('ADD DEVICES', "Added all devices from {} file".format(filename), username, user_role, request_ip)
     return True
 
 
@@ -23,16 +23,16 @@ def apply_template(sn, vn, ip, user, pw, request_ip):
 
         if (rendered_template) == (None):
             #TODO Make this log message more meaningful
-            log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{}). Missing param(s)".format(sn, vn, ip, user), None, None, request_ip)
+            log_connector.add_log('APPLY TEMPLATE FAIL', "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{}). Missing param(s)".format(sn, vn, ip, user), None, None, request_ip)
             return False
 
         device_access.set_config(ip, user, pw, rendered_template)
         device_connector.update_device(sn, 'date_provisioned', datetime.datetime.now())
         #TODO: check if all devices are provisioned, log it
-        log_connector.add_log(1, "Provisioned device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
+        log_connector.add_log('APPLY TEMPLATE', "Provisioned device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
         return True
     else:
-        log_connector.add_log(1, "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
+        log_connector.add_log('APPLY TEMPLATE FAIL', "Failed to provision device (sn:{}, vn:{}, ip:{}, user:{})".format(sn, vn, ip, user), None, None, request_ip)
         return False
 
 #TODO add logging and update device modified field
@@ -45,7 +45,8 @@ def set_scep(host, user, passwd, serial):
     if scep_info is None:
         return "Error: SCEP information not in database"
     scep_thumb = scep_info.thumbprint
-    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id, scep_info.server,
+    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
+                                                        scep_info.server + "/certsrv/mscep/mscep.dll",
                                                         scep_info.digestalgo, scep_info.encryptalgo)
     ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
     cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
@@ -62,16 +63,21 @@ def set_scep(host, user, passwd, serial):
     pk = device_access.generate_private_key(dev,scep_info.key_id)
     if pk is False:
         return "Error: Failed to generate private key"
-    if pk is not "complete":
+    if "complete" not in pk:
         return "Error: Device returned the following status of the private key" + pk
     ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
     if ca_cert is False:
         return "Error: Failed to get CA Cert"
-    if ca_cert is not "complete":
+    if "complete" not in ca_cert:
         return "Error: Device returned the following when attempt to get a CA Cert:" + ca_cert
     client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
                     scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
     if client_cert is False:
         return "Error: Failed to get Client Cert"
-    if client_cert is not "complete":
+    if "complete" not in client_cert:
         return "Error: Device returned the following when attempt to get a Client Cert:" + client_cert
+    return True
+def do_it_all(host,user,passwd,serial,name,remote_addr):
+    set_scep(host,user,passwd,serial)
+    apply_template(serial, name, host,
+                   user, passwd, remote_addr)

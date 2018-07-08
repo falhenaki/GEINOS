@@ -6,13 +6,15 @@ import datetime
 def get_all_logs():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Log)
-    logList=[]
-    for log in query:
-        print(log.as_dict())
-        logList.append(log.as_dict())
-        #logList.append([log.user, log.log_message])
-    return logList
+    query = s.query(Log).with_entities(Log.user, Log.IP, Log.event_type, Log.log_message, Log.date_created)
+    ret = []
+    atts_returned = ['user', 'IP', 'event_type', 'log_message', 'date_created']
+    for d in query:
+        dictionary = {}
+        for att in atts_returned:
+            dictionary[att] = getattr(d, att)
+        ret.append(dictionary)
+    return ret
 
 def add_log(event_type, log_message, user, role, ip):
     Session = sessionmaker(bind=engine)

@@ -5,7 +5,7 @@ from app import engine
 def get_assignments():
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_Group).filter(Device_Group.template_name is not None)
+    query = s.query(Device_Group).filter(Device_Group.template_name != None)
     dgs=[]
     for dg in query:
         dgs.append(dg.as_dict())

@@ -10,9 +10,8 @@ from sqlalchemy import create_engine
 app = Flask(__name__, static_folder='react/static', template_folder='react')
 CORS(app)
 #Database Login Credentials
-import sys
+from app import app
 import os
-import json
 datafile = "data.json"
 
 data_file_dir = os.path.join(app.root_path, 'react/static')
@@ -30,10 +29,13 @@ db = SQLAlchemy(app)
 username = "admin"
 password = "password"
 
+'''
 if username == "MYSQLUSERHERE" or password == "YOUR PASSWORD here":
     print("Please update mysql credentials in the static/data.json")
     sys.exit()
-engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@bitforcedev.se.rit.edu/se_project')
+'''
+
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 #engine = create_engine('mysql+mysqlconnector://' + username +':' + password +'@localhost/test')
 
 # Sample HTTP error handling
