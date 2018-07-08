@@ -61,11 +61,11 @@ def device_exists_and_templated(sn, name, do_both_exist=False):
     exists = False
     has_template = False
     s = Session()
-    query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
+    query = s.query(Device).filter(Device.vendor_id == name)
     device = query.first()
     if device is None:
         raise MissingResource("Device has not been added")
-    query = s.query(Device_in_Group).filter(Device.vendor_id == name, Device.serial_number == sn)
+    query = s.query(Device_in_Group).filter(Device.vendor_id == name)
     device_in_group = query.first()
     if device_in_group is None: #TODO check if device group has a template assigned
         raise MissingResource("Device is not assigned to a group")
