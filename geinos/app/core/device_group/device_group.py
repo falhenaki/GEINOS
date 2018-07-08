@@ -21,4 +21,3 @@ class Device_Group(CustomMixin, Base):
         self.template_name = template_name
         self.attribute_value = attribute_value
         self.num_attributes = num_atts
-

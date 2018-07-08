@@ -26,7 +26,7 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
         val = val.split(',')
         for ele in val:
             item = ele.split('=')
-            dict[item[0]] = item[1]
+            dict[item[0].strip()] = item[1].strip()
         att_val = str(dict)
         num_atts = len(val)
     else:
@@ -34,20 +34,29 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
         att_val = str({att : val})
 
     dg = Device_Group(name,datetime.datetime.now(), att_val, num_atts=num_atts)
-    s.add(dg)
-    log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {}, value:{})".format(name, att, val),
-                          username, role_type, remote_addr)
-    s.commit()
+    log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {})".format(name, att), username, role_type, remote_addr)
     update_groups_of_devices(dg)
+    s.add(dg)
+    s.commit()
     return True
 
 def devices_in_group(new_group):
     Session = sessionmaker(bind=engine)
     s = Session()
     att_vals = ast.literal_eval(new_group.attribute_value)
-    for key in att_vals:
-        devices = devices.filter(getattr(Device, key) == att_vals[key])
-    return devices
+    devices = list(s.query(Device))
+
+    ret = []
+
+    for i, device in enumerate(devices):
+        in_group = True
+        for key in att_vals:
+            if (getattr(device, key) != att_vals[key]):
+                in_group = False
+                break
+        if in_group:
+            ret.append(devices[i])
+    return ret
 
 def update_groups_of_devices(new_group):
     Session = sessionmaker(bind=engine)
@@ -56,12 +65,16 @@ def update_groups_of_devices(new_group):
     devices = devices_in_group(new_group)
 
     for device in devices:
-        dig = Device_in_Group(new_group.device_group_name, None, device.serial_number, None)
-        s.add(dig)
+        #dig = Device_in_Group(new_group.device_group_name, None, device.serial_number, None)
+        #s.add(dig)
         if new_group.num_attributes >= device.device_group_filters:
-            device.device_group_filters = new_group.num_attributes
-            device.group_name = new_group.device_group_name
-    s.commit
+            #device.device_group_filters = new_group.num_attributes
+            #device.group_name = new_group.device_group_name
+            #Device.update().values(device_group_filters=new_group.num_attributes, device_group=new_group.device_group_name).where(Device.serial_number == device.serial_number)
+            #s.query(Device).filter(Device.serial_number == device.serial_number).update({'device_group_filters' : new_group.num_attributes, 'device_group' : new_group.device_group_name})
+            s.query(Device).filter(Device.serial_number == device.serial_number).update(
+                {'device_group_filters': new_group.num_attributes, 'device_group': new_group.device_group_name})
+    s.commit()
 
 def device_group_exists(group_name):
     Session = sessionmaker(bind=engine)
@@ -130,7 +143,7 @@ def number_of_devices_in_group(group_name):
     return s.query(Device_in_Group).filter(Device_in_Group.device_group_name == group_name).count()
 
 #TODO Should be SN only
-def get_template_for_device(sn):
+def get_template_for_device(sn, vn):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_in_Group).filter(Device_in_Group.serial_number == sn)
