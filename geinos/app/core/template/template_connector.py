@@ -16,8 +16,8 @@ def template_exists(template_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Template).filter(Template.name == template_name)
-    if query is None:
-        raise MissingResource("Template: {} could not be found", template_name)
+    if not query is None:
+        return False
     return True
 
 def get_templates():

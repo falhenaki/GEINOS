@@ -26,8 +26,6 @@ def parameter_exists(parameter_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Parameter).filter(Parameter.param_name == parameter_name).first()
-    if query is not None:
-        raise Conflict("Parameter %s to be added already exists", parameter_name)
     return (query is not None)
 
 
@@ -161,7 +159,7 @@ def remove_parameter(param_name, username, user_role, request_ip):
 def number_of_parameter(param_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    param = s.query(Parameter).filter(Parameter.param_name == param_name)
+    param = s.query(Parameter).filter(Parameter.param_name == param_name).first()
     if param is None:
         raise MissingResource("Parameter to be removed did not exist")
     if (param.param_type is 'SCALAR' or (param.param_type is 'DYNAMIC')):

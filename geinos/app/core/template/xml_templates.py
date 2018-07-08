@@ -29,7 +29,7 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
         s = f.read()
     with open(path, 'w') as fout:
         fout.write(s)
-        template_connector.add_file(path, sec_filename)
+        template_connector.add_file(sec_filename)
     log_connector.add_log('SAVE TEMPLATE', "Saved template: {}".format(filename), username, user_role, request_ip)
     return True
 
