@@ -21,7 +21,7 @@ class Device(CustomMixin, Base):
     date_provisioned = Column(DateTime(timezone=false))
     location = Column(String)
     cert_required = Column(Enum('TRUE','FALSE'))
-    group_name = Column(String)
+    device_group = Column(String)
     cert_set = Column(Enum('TRUE','FALSE','FAIL'))
     device_group_filters = Column(Integer)
     #----------------------------------------------------------------------
@@ -40,7 +40,7 @@ class Device(CustomMixin, Base):
         self.location = location
         self.IP = ""
         self.cert_required = cert_required
-        self.group_name = group_name
+        self.device_group = group_name
         self.device_group_filters = num_filters
 
     def set_config_file(self, config_file):
