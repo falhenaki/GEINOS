@@ -6,8 +6,6 @@ from app.core.api import request_parser
 
 authen = HTTPBasicAuth()
 
-
-
 class Devices(Resource):
     """
     HTTP Method: GET
@@ -18,6 +16,7 @@ class Devices(Resource):
     Success: status= 200, message= "Sent Devices", data= devices(json)
     Failure: status= 400, message= "Could not send devices
     """
+
     def get(self,device=None):
         logged_user = request_parser.validateCreds(request)
         print("Hit backend method")

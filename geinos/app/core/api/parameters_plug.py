@@ -14,6 +14,7 @@ class Parameters(Resource):
     Success: status= 200, message= "Sent Parameters", data= parameters(json)
     Failure: status= 400, message= "Could not send Logs"
     """
+
     def get(self):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):

@@ -5,6 +5,7 @@ from flask import jsonify
 from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, \
     assignment_plug, logs_plugs, register, scep_plug, radius_plug
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError, InvalidInput
+
 """
 API END POINTS
 """
