@@ -59,3 +59,5 @@ class Device(CustomMixin, Base):
         self.IP = ip
     def set_cert_req(self,required):
         self.cert_required = required
+    def set_cert_set(self,status):
+        self.cert_set = status

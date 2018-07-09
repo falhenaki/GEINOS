@@ -152,7 +152,7 @@ def remove_group(group_name, username, user_role, request_ip):
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
         return False
 
-    no_group_devices = s.query(Device).filter(Device.device == group_name)
+    no_group_devices = s.query(Device).filter(Device.device_group == group_name)
     dgs = s.query(Device_Group).orderby(Device_Group.num_attributes.desc(), Device_Group.last_modified.desc())
 
     for dg in dgs:

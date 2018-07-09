@@ -84,6 +84,15 @@ def get_templated_devices():
             templated_devices.append(d)
     return templated_devices
 
+def get_rdy_config():
+    devices = get_templated_devices()
+    devices_to_config = []
+    print(devices)
+    for d in devices:
+       if "TRUE" in d.cert_set or "FALSE" in d.cert_required:
+            devices_to_config.append(d)
+    return devices_to_config
+
 def get_devices_exist_and_scep():
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -127,4 +136,3 @@ def get_device_template(device_sn):
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn).first()
     return device.config_file, device_group_connector.get_template_for_device(device_sn)
-

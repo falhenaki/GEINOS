@@ -44,7 +44,7 @@ def get_config(host, user, passwd):
         print ("Cannot connect to device: {0}".format(err))
         return
 
-def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="LO1"):
+def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="bridge"):
     try:
         dev = Device(host="192.168.1.1", username="admin", password="admin")
         dev.open()
