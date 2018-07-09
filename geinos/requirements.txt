@@ -11,3 +11,4 @@ jinja2>=2.7.1
 flask_cors
 xmltodict
 requests_ntlm
+py-radius

@@ -2,6 +2,7 @@ from flask import session
 from app.core.user import user_connector
 from app.core.log import log_connector
 from datetime import datetime
+from app.core.radius import radius_connector
 
 def login(username_or_token, password):
     """
@@ -14,10 +15,13 @@ def login(username_or_token, password):
     if usr:
         return usr
     elif not usr and password:
-        connector = user_connector.DB_User_Connection(username_or_token, password)
-        if connector.is_legal():
-            connector.update_last_login(datetime.now)
-            return connector.this_user
+        if (radius_connector.authenticate_user(username_or_token, password)):
+            connector = user_connector.DB_User_Connection(username_or_token, password)
+            if connector.is_legal():
+                connector.update_last_login(datetime.now)
+                return connector.this_user
+            else:
+                return None
         else:
             return None
     else:
