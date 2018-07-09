@@ -3,6 +3,7 @@ from flask import request, jsonify
 from app.core.user import auth
 from app.core.user import user_connector
 from  app.core.api import request_parser
+from app.core.exceptions.custom_exceptions import Conflict
 
 class Users(Resource):
     """
@@ -43,7 +44,6 @@ class Users(Resource):
     Success: status= 200, message = 'User added',
     Failure: status: 400, message = 'User not added'
     """
-    #TODO verify password and retype password are equal
     def put(self):
         status = 400
         message = "User not added"
@@ -55,6 +55,8 @@ class Users(Resource):
             POST_RETYPE_PASS = content['retypepassword']
             POST_EMAIL = content['email']
             POST_ROLE = str(content['role'])
+            if not POST_PASSWORD == POST_RETYPE_PASS:
+                raise Conflict("Please make sure that the password and retype password match")
             '''
             users = user_connector.get_all_users()
             for u in users:

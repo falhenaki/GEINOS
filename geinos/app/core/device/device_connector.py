@@ -102,7 +102,7 @@ def get_devices_exist_and_scep():
     return query
 
 #TODO Can this be moved to templates?
-def set_rendered_template(sn, name, template_name): #TODO add back in functionality to save params to a file
+def set_rendered_template(sn, name, template_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)

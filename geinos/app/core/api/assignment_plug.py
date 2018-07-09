@@ -19,7 +19,6 @@ class Assign(Resource):
     Success: status: 200, message: "Template assigned"
     Failure: status: 400
     Failure on missing group or template: 404
-    TODO perform parameter assignment here
     """
     def get(self):
         status = 401
