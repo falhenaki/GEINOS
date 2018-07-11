@@ -8,7 +8,6 @@ import ipaddress
 from app.core.device.device import Device
 from app.core.device import device_access
 from app.core.radius.radius import Radius
-import radius
 
 def authenticate_user(username, password):
     Session = sessionmaker(bind=engine)
