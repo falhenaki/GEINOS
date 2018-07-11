@@ -23,7 +23,8 @@ def update_device(sn, attribute, value):
         return False
     device.__setattr__(attribute, value)
     s.commit()
-    dev_queue.try_add_dev_queue(sn)
+    if "IP" in attribute or "serial_number" in attribute:
+        dev_queue.try_add_dev_queue(sn)
     s.close()
     return True
 
@@ -200,5 +201,8 @@ def get_device_access(device_sn):
     s.close()
     return False
 def set_device_access(device_sn,state):
-    update_device(device_sn,'device_access',state)
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.serial_number == device_sn).first()
+    device.device_access = state.upper()
     return True

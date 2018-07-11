@@ -48,7 +48,7 @@ class User(CustomMixin, Base):
 
     @staticmethod
     def verify_auth_token(token):
-        print(token)
+
         s = Serializer(app.config['SECRET_KEY'])
         try:
             data = s.loads(token)

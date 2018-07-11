@@ -20,7 +20,7 @@ from app.core.log import log_connector
 
 
 def config_scep_thread(dev):
-    p_engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    #p_engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
     device = device_connector.get_device(dev)
     result = device_helpers.set_scep(device[0]['IP'],"admin","admin",device[0]['serial_number'])
     device_connector.set_device_access(dev, "FALSE")
@@ -28,7 +28,7 @@ def config_scep_thread(dev):
                                       'System', 'None', 'None')
     if "Error" not in result:
         dev_queue.try_add_dev_queue(dev)
-    p_engine.dispose()
+    #p_engine.dispose()
     return result
 
 
@@ -49,6 +49,7 @@ def config_process(device_queue):
         if device_queue.empty() is False:
             process = device_queue.get()
             if 'cert' in process['process']:
+                print(process['sn'])
                 log_connector.add_log('Cert Begin', "Device {}".format(process['sn']),
                                       'System', 'None', 'None')
                 futures.append(pool.submit(config_scep_thread,process['sn'],))

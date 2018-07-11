@@ -18,8 +18,8 @@ class Devices(Resource):
     """
 
     def get(self,device=None):
+        print("GET DEVICES")
         logged_user = request_parser.validateCreds(request)
-        print("Hit backend method")
         if (logged_user):
             devices = device_connector.get_all_devices()
             return jsonify(
@@ -45,6 +45,7 @@ class Devices(Resource):
     Failure: status 401, message = 'Unauthorized'
     """
     def put(self):
+        print("PUT DEVICE")
         status = 400
         message = "Device not added"
         logged_user = request_parser.validateCreds(request)
@@ -83,6 +84,7 @@ class Devices(Resource):
         )
 
     def delete(self):
+        print('DELEtE DEVICE')
         status=400
         logged_user = request_parser.validateCreds(request)
         if (logged_user):

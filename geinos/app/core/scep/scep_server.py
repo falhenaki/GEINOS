@@ -47,7 +47,8 @@ def get_otp():
         return "Error: Connection to SCEP server timed out"
     except requests.exceptions.ConnectionError:
         return "Error connecting to SCEP server."
-
+    except Exception as e:
+        return e
     if result.status_code == 401:
         return "Error 401 fro SCEP server: Unauthorized."
 

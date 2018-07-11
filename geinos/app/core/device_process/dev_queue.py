@@ -13,20 +13,20 @@ def try_add_dev_queue(serial_number):
     if status is False:
         return False
     access = device_connector.get_device_access(serial_number)
-    if access is False:
+    if access is True:
         return False
     if "TRUE" in status['config']:
         if device_connector.get_rdy_config(serial_number):
             log_connector.add_log('In queue for config', "Device {}".format(serial_number),
                                   'System', 'None', 'None')
             device_connector.set_device_access(serial_number,"TRUE")
-            q.put({'sn':serial_number,'process':'config'})
+            device_queue.put({'sn':serial_number,'process':'config'})
             return True
     if "TRUE" in status['cert_req'] and "TRUE" not in status['cert_obt']:
         device_connector.set_device_access(serial_number, "TRUE")
         log_connector.add_log('In queue for certification', "Device {}".format(serial_number),
                               'System', 'None', 'None')
-        q.put({'sn': serial_number, 'process': 'cert'})
+        device_queue.put({'sn': serial_number, 'process': 'cert'})
         return True
     return False
 
