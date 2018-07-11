@@ -19,6 +19,7 @@ def get_all_parameters():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 
@@ -26,6 +27,7 @@ def parameter_exists(parameter_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Parameter).filter(Parameter.param_name == parameter_name).first()
+    s.close()
     return (query is not None)
 
 
@@ -36,6 +38,7 @@ def get_all_parameter_names():
     param_names = []
     for pm in query:
         param_names.append(pm.param_name)
+    s.close()
     return param_names
 
 
@@ -45,6 +48,7 @@ def get_parameter_next_value(name, request_ip, sn):
     param = s.query(Parameter).filter(Parameter.param_name == name).first()
     ret_value = ""
     if param.param_type == "DYNAMIC":
+        s.close()
         return '??dynamic??'
     elif param.param_type == "RANGE":
         if param.start_value.count('.') == 3:  # ipv4 -- TODO better way
@@ -56,6 +60,7 @@ def get_parameter_next_value(name, request_ip, sn):
                 # ret_value = param.start_value
                 log_connector.add_log('PARAM OVERFLOW', "Ran out of params in range (param: {}). Starting over.".format(name), None,
                                       None, request_ip)
+                s.close()
                 raise Conflict("Ran out of parameters to assign")
             else:
                 ret_value = ipaddress.IPv4Address(start + param.current_offset)
@@ -76,6 +81,7 @@ def get_parameter_next_value(name, request_ip, sn):
         ret_value = param.start_value
     s.add(param)
     s.commit()
+    s.close()
     return ret_value
 
 
@@ -98,12 +104,15 @@ def add_parameter(name, type, val, username, user_role, request_ip):
             dv = Parameter(name, val, type)
             s.add(dv)
         else:
+            s.close()
             raise InvalidInput("Invalid Parameter Type")
         s.commit()
+        s.close()
         log_connector.add_log('ADD PARAM', "Added the {} parameter".format(name), username, user_role, request_ip)
         return True
     else:
         log_connector.add_log('ADD PARAM FAIL', "Failed to add the {} parameter".format(name), username, user_role, request_ip)
+        s.close()
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
 
 
@@ -115,9 +124,11 @@ def add_dynamic_parameter(name, type, val, username, user_role, request_ip, inte
         s.add(param)
         s.commit()
         log_connector.add_log('ADD PARAM', "Added the {} parameter".format(name), username, user_role, request_ip)
+        s.close()
         return True
     else:
         log_connector.add_log('ADD PARAM FAIL', "Failed to add the {} parameter".format(name), username, user_role, request_ip)
+        s.close()
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
 
 def get_dynamic_parameter(name, sn):
@@ -127,9 +138,12 @@ def get_dynamic_parameter(name, sn):
     param = s.query(Parameter).filter(Parameter.param_name == name).first()
     if (query is not None and param is not None):
         ifaddr = device_access.get_interface_address(query.IP, query.username, query.password, param.interface)
+        s.close()
         return get_dynamic_ip(param.start_value, ifaddr)
     else:
+        s.close()
         raise GeneralError("Dynamic param can't be retrieved: {}", name)
+
 
 def get_dynamic_ip(subnet, interface):
     if (subnet.split('/')[1] is '8'):
@@ -146,13 +160,16 @@ def remove_parameter(param_name, username, user_role, request_ip):
     s = Session()
     param = s.query(Parameter).filter(Parameter.param_name == param_name)
     if param is None:
+        s.close()
         raise MissingResource("Parameter to be removed did not exist")
     param.delete()
     if param is 0:
         log_connector.add_log('DELETE PARAM', "Failed to delete parameter: {}".format(param_name), username, user_role, request_ip)
+        s.close()
         raise GeneralError("Parameter could not be removed for unknown reasons")
     s.commit()
     log_connector.add_log('DELETE PARAM FAIL', "Deleted parameter: {}".format(param_name), username, user_role, request_ip)
+    s.close()
     return True
 
 
@@ -161,15 +178,21 @@ def number_of_parameter(param_name):
     s = Session()
     param = s.query(Parameter).filter(Parameter.param_name == param_name).first()
     if param is None:
+        s.close()
         raise MissingResource("Parameter to be removed did not exist")
     if (param.param_type is 'SCALAR' or (param.param_type is 'DYNAMIC')):
+        s.close()
         return -1
     elif (param.param_type is 'LIST'):
+        s.close()
         return s.query(ListParameter).filter(ListParameter.param_name == param_name).count()
     elif (param.param_type is 'RANGE'):
         if (ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset) > 0:
+            s.close()
             return ipaddress.IPv4Address(param.end_value) - ipaddress.IPv4Address(param.start_value) - param.current_offset
         else:
+            s.close()
             return 0
     else:
+        s.close()
         return 0

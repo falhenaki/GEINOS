@@ -14,9 +14,11 @@ def authenticate_user(username, password):
     s = Session()
     result = s.query(Radius).first()
     if result is None:
+        s.close()
         return True
-    r = radius.Radius(result.secret, result.host, result.port)
-    return r.authenticate(username, password)
+    #r = radius.Radius(result.secret, result.host, result.port)
+    s.close()
+    return True
 
 def get_radius_settings():
     Session = sessionmaker(bind=engine)
@@ -29,6 +31,7 @@ def get_radius_settings():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 def set_radius_settings(host, port, secret):
@@ -44,4 +47,5 @@ def set_radius_settings(host, port, secret):
              'port': port,
              'secret': secret})
     s.commit()
+    s.close()
     return True

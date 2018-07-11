@@ -17,6 +17,7 @@ def setUpModule():
     s = Session()
     s.query(Scep).delete()
     s.commit()
+    s.close()
 
 class TestScep(unittest.TestCase):
 

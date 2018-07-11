@@ -14,6 +14,7 @@ def get_all_logs():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 def add_log(event_type, log_message, user, role, ip):
@@ -22,3 +23,4 @@ def add_log(event_type, log_message, user, role, ip):
     dv = Log(None, event_type, log_message, user, role, ip, datetime.datetime.now())
     s.add(dv)
     s.commit()
+    s.close()

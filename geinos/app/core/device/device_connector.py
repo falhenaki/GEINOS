@@ -24,6 +24,7 @@ def update_device(sn, attribute, value):
     device.__setattr__(attribute, value)
     s.commit()
     dev_queue.try_add_dev_queue(sn)
+    s.close()
     return True
 
 def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
@@ -37,9 +38,11 @@ def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
         s.commit()
         log_connector.add_log('ADD DEVICE', "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
         dev_queue.try_add_dev_queue(sn)
+        s.close()
         return True
     else:
         log_connector.add_log('ADD DEVICE FAIL', "Failed to add device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
+        s.close()
         raise Conflict("Device already exists in system")
 
 def get_all_devices():
@@ -54,6 +57,7 @@ def get_all_devices():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 def get_device(device):
@@ -63,6 +67,7 @@ def get_device(device):
     query = s.query(Device).filter(Device.serial_number == device)
     for d in query:
         ret.append(d.as_dict())
+    s.close()
     return ret
 
 def device_exists_and_templated(sn):
@@ -76,6 +81,7 @@ def device_exists_and_templated(sn):
         exists = True
     if not device.config_file == None:
         has_template = True
+    s.close()
     return exists and has_template
 
 def get_templated_devices():
@@ -86,6 +92,7 @@ def get_templated_devices():
     for d in devices:
         if device_exists_and_templated(d.serial_number) is True:
             templated_devices.append(d)
+    s.close()
     return templated_devices
 
 def get_rdy_config(dev):
@@ -94,6 +101,7 @@ def get_rdy_config(dev):
     d = s.query(Device).filter(Device.serial_number == dev).first()
     if ("TRUE" in d.cert_set or "FALSE" in d.cert_required) and "TRUE" in d.config_status and "." in d.IP:
         return True
+    s.close()
     return False
 
 def get_cert_or_config(dev):
@@ -106,6 +114,7 @@ def get_cert_or_config(dev):
     config = device.config_available
     cert_obt = device.cert_set
     result_dict = {'cert_req':cert,'config':config, 'cert_obt':cert_obt}
+    s.close()
     return result_dict
 
 
@@ -114,9 +123,12 @@ def get_rdy_scep(device):
     s = Session()
     devices = s.query(Scep).first()
     if devices.thumbprint is None:
+        s.close()
         return False
     if "TRUE" in device.cert_required and "." in device.IP:
+        s.close()
         return True
+    s.close()
     return False
 
 def get_dev_exist(device):
@@ -124,9 +136,12 @@ def get_dev_exist(device):
     s = Session()
     dev = s.query(Device).filter(Device.serial_number == device).first()
     if dev is None:
+        s.close()
         return False
     if '.' not in dev.IP:
+        s.close()
         return False
+    s.close()
     return True
 
 
@@ -139,6 +154,7 @@ def set_rendered_template(sn, name, template_name):
     query = s.query(Device).filter(Device.vendor_id == name, Device.serial_number == sn)
     device = query.first()
     if device is None:
+        s.close()
         raise MissingResource()
     filename = device.vendor_id + device.serial_number + device.model_number
     print(filename)
@@ -148,6 +164,7 @@ def set_rendered_template(sn, name, template_name):
         fout.write(rendered_template)
     device.set_config_file(save_path)
     s.commit()
+    s.close()
     return True
 
 def remove_device(device_sn, username, user_role, request_ip):
@@ -156,12 +173,14 @@ def remove_device(device_sn, username, user_role, request_ip):
     device = s.query(Device).filter(Device.serial_number == device_sn)
     if device.count() is 0:
         log_connector.add_log('DELETE DEVICE FAIL', "Failed to remove device (sn={})".format(device_sn), username, user_role, request_ip)
+        s.close()
         raise MissingResource("Device to be removed did not previously exist")
     device.delete()
     log_connector.add_log('DELETE DEVICE', "Removed device (sn={})".format(device_sn), username, user_role, request_ip)
     s.commit()
+    s.close()
     return True
-
+#TODO close connection
 def get_device_template(device_sn):
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -176,7 +195,9 @@ def get_device_access(device_sn):
     s = Session()
     query = s.query(Device).filter(Device.serial_number == device_sn).first()
     if "TRUE" in query.device_access is True:
+        s.close()
         return True
+    s.close()
     return False
 def set_device_access(device_sn,state):
     update_device(device_sn,'device_access',state)

@@ -86,7 +86,6 @@ def set_scep(host, user, passwd, serial):
     if "complete" not in client_cert:
         return "Device (sn:{})".format(serial),\
                "Error: Device return ed the following when attempt to get a Client Cert:" + client_cert
-        
     return "Device (sn:{})".format(serial) + "Client Certificate Obtained"
 
 def do_it_all(host,user,passwd,serial):

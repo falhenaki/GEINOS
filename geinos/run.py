@@ -1,8 +1,11 @@
 import os
-
+from multiprocessing import Queue,Manager
+import concurrent.futures
 # Run a test server.
 from app import app
 from app.core.api import initialize
+from app.core.device_process import dev_queue,device_process
+import time
 #import subprocess
 
 #subprocess.call(['app/pyorbit/tst_scr.sh'])
@@ -26,8 +29,13 @@ from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
 
 initialize.initialize_APIs()
 
+
 d = PathInfoDispatcher({'/': app})
 server = WSGIServer(('0.0.0.0', 5000), d)
+
+pool = concurrent.futures.ProcessPoolExecutor(max_workers=1)
+pool.submit(device_process.config_process,dev_queue.device_queue)
+
 
 try:
     server.start()

@@ -10,6 +10,7 @@ def add_file(filename):
     template = Template(filename, datetime.datetime.now())
     s.add(template)
     s.commit()
+    s.close()
     return True
 
 def template_exists(template_name):
@@ -17,7 +18,9 @@ def template_exists(template_name):
     s = Session()
     query = s.query(Template).filter(Template.name == template_name)
     if not query is None:
+        s.close()
         return False
+    s.close()
     return True
 
 def get_templates():
@@ -27,4 +30,5 @@ def get_templates():
     ret=[]
     for tm in query:
         ret.append(tm.as_dict())
+    s.close()
     return ret

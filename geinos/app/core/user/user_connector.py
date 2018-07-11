@@ -16,6 +16,7 @@ def verify_password(username, password):
     if not user or not user.verify_password(password):
         return False
     Flask.g.user = user
+    s.close()
     return True
 
 def authenticate_token(token):
@@ -26,12 +27,14 @@ def get_user_by_id(id):
     Session = sessionmaker(bind=engine)
     s = Session()
     user = s.query(User).filter(User.id == id).first()
+    s.close()
     return user
 
 def get_user(username):
     Session = sessionmaker(bind=engine)
     s = Session()
     user = s.query(User).filter(User.username == username).first()
+    s.close()
     return user
 
 def add_user(username, password, email, role_type):
@@ -48,6 +51,7 @@ def add_user(username, password, email, role_type):
     user = User(username, password, email, role_type)
     s.add(user)
     s.commit()
+    s.close()
 
 
 def remove_user(username):
@@ -60,16 +64,19 @@ def remove_user(username):
     s = Session()
     s.query(User).filter(User.username == username).delete()
     s.commit()
+    s.close()
 
 def change_user_role(username, new_role):
     Session = sessionmaker(bind=engine)
     s = Session()
     user = s.query(User).filter(User.username == username).first()
     if user.role_type == new_role:
+        s.close()
         return False
     else:
         user.role_type = new_role
         s.commit()
+        s.close()
     return True
 
 def change_user_email(username, new_email):
@@ -78,12 +85,14 @@ def change_user_email(username, new_email):
     user = s.query(User).filter(User.username == username).first()
     try:
         if user.email == new_email:
+            s.close()
             return False
         else:
             user.email = new_email
     except AttributeError:
         user.email = new_email
         s.commit()
+    s.close()
     return True
 
 def change_user_lastlogin(username):
@@ -92,6 +101,7 @@ def change_user_lastlogin(username):
     user = s.query(User).filter(User.username == username).first()
     user.last_login = datetime.datetime.now()
     s.commit()
+    s.close()
     return True
 
 def get_all_users():
@@ -105,6 +115,7 @@ def get_all_users():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 
@@ -118,7 +129,7 @@ def get_user_role(username):
     s = Session()
     query = s.query(User).filter(User.username == username)
     user = query.first()
-    print(user)
+    s.close()
     return user.role_type
 
 def check_username_availability(username):
@@ -129,9 +140,12 @@ def check_username_availability(username):
     """
     Session = sessionmaker(bind=engine)
     s = Session()
-    user = s.query(User).filter(User.username == username).first()
+    user = s.que
+    ry(User).filter(User.username == username).first()
     if user:
+        s.close()
         return False
+    s.close()
     return True
 
 def change_role_type(username, role_type):
@@ -141,6 +155,7 @@ def change_role_type(username, role_type):
     user = query.first()
     if user:
         user.change_role(role_type)
+    s.close()
 
 class DB_User_Connection():
     """

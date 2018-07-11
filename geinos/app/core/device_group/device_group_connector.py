@@ -19,6 +19,7 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
     s = Session()
     existence_check = s.query(Device_Group).filter(Device_Group.device_group_name == name).first()
     if existence_check is not None:
+        s.close()
         raise Conflict("Device Group already exists")
     '''existence_check = s.query(Device_Group).filter(Device_Group.attribute_value == att+val).first()
     if existence_check is not None:
@@ -40,6 +41,7 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
     update_groups_of_devices(dg)
     s.add(dg)
     s.commit()
+    s.close()
     return True
 
 def devices_in_group(new_group):
@@ -56,6 +58,7 @@ def devices_in_group(new_group):
                 break
         if in_group:
             ret.append(devices[i])
+    s.close()
     return ret
 
 def update_groups_of_devices(new_group):
@@ -68,11 +71,13 @@ def update_groups_of_devices(new_group):
                 {'device_group_filters': new_group.num_attributes, 'device_group': new_group.device_group_name})
     dev_queue.try_add_group_queue(new_group)
     s.commit()
+    s.close()
 
 def device_group_exists(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
+    s.close()
     return (query is not None)
 
 def get_all_device_groups():
@@ -86,6 +91,7 @@ def get_all_device_groups():
         for att in atts_returned:
             dictionary[att] = getattr(d, att)
         ret.append(dictionary)
+    s.close()
     return ret
 
 def get_all_devices_in_group(g_name):
@@ -93,11 +99,13 @@ def get_all_devices_in_group(g_name):
     s = Session()
     dict_string = s.query(Device_Group).filter(Device_Group.device_group_name == g_name).with_entities(Device_Group.attribute_value).first()
     if dict_string is None:
+        s.close()
         raise MissingResource("Device Group does not exist")
     devices = s.query(Device).filter(Device.device_group == g_name)
     ret = []
     for x in devices:
         ret.append(x.as_dict())
+    s.close()
     return ret
 
 #TODO Check groups and templates exist
@@ -128,8 +136,9 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     s.commit()
     dev_queue.try_add_group_queue(group_name)
     log_connector.add_log('ASSIGN', "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
+    s.close()
     return True
-
+#TODO close session
 def number_of_devices_in_group(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -142,9 +151,12 @@ def get_template_for_device(sn):
     device_group_name = device.device_group
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == device_group_name).first()
     if device_group is None:
+        s.close()
         raise MissingResource("Device Group does not exist")
     if device_group.template_name == None:
+        s.close()
         raise MissingResource("Device group does not have an assigned template")
+    s.close()
     return device_group.template_name
 
 def remove_group(group_name, username, user_role, request_ip):
@@ -153,10 +165,12 @@ def remove_group(group_name, username, user_role, request_ip):
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
     if device_group.first() is None:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
+        s.close()
         raise MissingResource("Device group being removed does not exist")
     device_group.delete()
     if device_group is 0:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
+        s.close()
         return False
 
     no_group_devices = s.query(Device).filter(Device.device_group == group_name)
@@ -175,5 +189,6 @@ def remove_group(group_name, username, user_role, request_ip):
     remaining_serials = [x.serial_number for x in no_group_devices]
     s.query(Device).filter(Device.serial_number == remaining_serials).update({'group_name': None, 'device_group_filters': 0})
     s.commit()
+    s.close()
     log_connector.add_log('DELETE DEVICE GROUP', "Removed {} device group".format(group_name), username, user_role, request_ip)
     return True

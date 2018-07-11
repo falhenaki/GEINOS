@@ -9,4 +9,5 @@ def get_assignments():
     dgs=[]
     for dg in query:
         dgs.append(dg.as_dict())
+    s.close()
     return dgs
