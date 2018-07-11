@@ -27,6 +27,7 @@ class Scep(CustomMixin, Base):
     ca_cert_id = Column(String)
     client_cert_id = Column(String)
     thumbprint = Column(String)
+    sys_server = Column(String)
 
 
 
@@ -50,6 +51,7 @@ class Scep(CustomMixin, Base):
         self.key_id = key_id
         self.ca_cert_id = ca_cert_id
         self.client_cert_id = client_cert_id
+        self.sys_server = server
 
     def set_thumb(self,thumbprint):
         self.thumbprint = thumbprint

@@ -42,6 +42,7 @@ class Scep(Resource):
                                     POST_ORGANIZATION,POST_ORG_UNIT,POST_CERT_SERVER_ID,POST_KEY_ID,POST_CA_CERT_ID,
                                     POST_CLIENT_CERT_ID):
                 thumb = scep_server.get_thumbprint()
+                print(thumb)
                 if thumb is False:
                     status = 405
                     message = "Failed to obtain scep thumbprint"
@@ -49,7 +50,7 @@ class Scep(Resource):
                     status = 406
                     message = thumb
                 else:
-
+                    scep_server.update_thumbprint(thumb)
                     status = 200
                     message = "SCEP server added"
             else:
@@ -62,3 +63,18 @@ class Scep(Resource):
             status=status,
             message=message
         )
+
+    def get(self):
+        logged_user = request_parser.validateCreds(request)
+        if (logged_user):
+            scep = scep_server.scep_connector.get_scep_info()
+            return jsonify(
+                status=200,
+                message="SCEP settings sent",
+                data=scep
+            )
+        else:
+            return jsonify(
+                status=401,
+                message="Unauthorized"
+            )

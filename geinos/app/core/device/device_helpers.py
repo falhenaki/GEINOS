@@ -6,7 +6,6 @@ from app.core.device import device_connector
 from app.core.log import log_connector
 from app.core.exceptions.custom_exceptions import MissingResource
 from app.core.scep import scep_config,scep_connector,scep_server
-
 import datetime
 
 #TODO should be moved to device connector
@@ -40,13 +39,12 @@ def apply_template(sn, ip, user, pw):
 def set_scep(host, user, passwd, serial):
     otp = scep_server.get_otp()
     if "Error" in otp:
-        log_connector.add_log('Failed to obtain OTP', "Device (sn:{})".format(serial),None,None,None)
-        return False
+        return otp
     dev = Device(host=host, username=user, password=passwd)
     scep_info = scep_connector.get_scep()
     if scep_info is None:
-        log_connector.add_log('Error: SCEP information not in database',None,None,None,None)
-        return False
+        return 'Error: SCEP information not in database'
+        
     scep_thumb = scep_info.thumbprint
     cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
                                                         scep_info.server + "/certsrv/mscep/mscep.dll",
@@ -58,41 +56,39 @@ def set_scep(host, user, passwd, serial):
     ca_config = device_access.set_config(host, user, passwd, ca_server)
     cert_info_config = device_access.set_config(host, user, passwd, cert_info)
     if cert_config is False:
-        log_connector.add_log("Error: Failed to config Certificate server information", "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return "Device (sn:{})".format(serial),"Error: Failed to config Certificate server information"
+        
     if ca_config is False:
-        log_connector.add_log("Error: Failed to config CA server information", "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return "Device (sn:{})".format(serial),"Error: Failed to config CA server information"
+        
     if cert_info_config is False:
-        log_connector.add_log("Error: Failed to config Certificate Information", "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return "Device (sn:{})".format(serial),"Error: Failed to config Certificate Information"
+        
     pk = device_access.generate_private_key(dev,scep_info.key_id)
     if pk is False:
-        log_connector.add_log("Error: Failed to generate private key", "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return "Device (sn:{})".format(serial),"Error: Failed to generate private key"
+        
     if "complete" not in pk:
-        log_connector.add_log("Error: Failed to config Certificate server information", "Device (sn:{})".format(serial), None, None, None)
-        return False
+       return "Device (sn:{})".format(serial),"Error: Failed to config Certificate server information"
+       
     ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
     if ca_cert is False:
-        log_connector.add_log("Error: Failed to get CA Cert", "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return  "Device (sn:{})".format(serial),"Error: Failed to get CA Cert"
+        
     if "complete" not in ca_cert:
-        log_connector.add_log("Error: Device returned the following when attempt to get a CA Cert:" + ca_cert, "Device (sn:{})".format(serial), None, None, None)
-        return False
+        return  "Device (sn:{})".format(serial),"Error: Device return ed the following when attempt to get a CA Cert:" + ca_cert
+        
     client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
                     scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
     if client_cert is False:
-        log_connector.add_log("Error: Failed to get Client Cert", "Device (sn:{})".format(serial),
-                              None, None, None)
-        return False
+        return "Device (sn:{})".format(serial),"Error: Failed to get Client Cert"
+        
     if "complete" not in client_cert:
-        log_connector.add_log("Error: Device returned the following when attempt to get a Client Cert:" + client_cert, "Device (sn:{})".format(serial),
-                              None, None, None)
-        return False
-    log_connector.add_log("Client Certificate Obtained", "Device (sn:{})".format(serial),
-                          None, None, None)
-    return True
+        return "Device (sn:{})".format(serial),\
+               "Error: Device return ed the following when attempt to get a Client Cert:" + client_cert
+        
+    return "Device (sn:{})".format(serial) + "Client Certificate Obtained"
+
 def do_it_all(host,user,passwd,serial):
     #set_scep(host,user,passwd,serial)
     apply_template(serial, host,

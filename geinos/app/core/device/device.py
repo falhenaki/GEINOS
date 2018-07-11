@@ -14,18 +14,21 @@ class Device(CustomMixin, Base):
     last_modified = Column(DateTime(timezone=false))
     username = Column(String)
     password = Column(String)
-    IP = Column(String)
+    IP = Column(String) # 3
     config_file = Column(String)
     date_added = Column(DateTime(timezone=false))
     date_authorized = Column(DateTime(timezone=false))
     date_provisioned = Column(DateTime(timezone=false))
     location = Column(String)
-    cert_required = Column(Enum('TRUE','FALSE'))
+    cert_required = Column(Enum('TRUE','FALSE')) # 2
     device_group = Column(String)
     cert_set = Column(Enum('TRUE','FALSE','FAIL'))
     device_group_filters = Column(Integer)
+    device_access = Column(Enum('TRUE','FALSE'))
+    config_available = Column(Enum('TRUE', 'FALSE')) #available 1
+
     #----------------------------------------------------------------------
-    def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username=None, password=None,
+    def __init__(self, vendor_id, serial_number, model_number, device_status, last_modified, username="admin", password="admin",
                  config_file=None, added_date=None, location=None, cert_required = 'FALSE', group_name=None, num_filters=0):
         """"""
         self.vendor_id = vendor_id
@@ -42,6 +45,9 @@ class Device(CustomMixin, Base):
         self.cert_required = cert_required
         self.device_group = group_name
         self.device_group_filters = num_filters
+        self.cert_set = "FALSE"
+        self.device_access = 'FALSE'
+        self.config_available = 'FALSE' #Change this to config available
 
     def set_config_file(self, config_file):
         self.config_file = config_file
@@ -61,3 +67,5 @@ class Device(CustomMixin, Base):
         self.cert_required = required
     def set_cert_set(self,status):
         self.cert_set = status
+    def set_config_statis(self,status):
+        self.config_available = status

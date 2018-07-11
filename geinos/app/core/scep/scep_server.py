@@ -10,7 +10,7 @@ Gets the webpage of a scep server with a challenge password
 
 def get_thumbprint():
     server = scep_connector.get_scep()
-    scep_admin = server.server + "/certsrv/mscep_admin/"
+    scep_admin = server.sys_server + "/certsrv/mscep_admin/"
     if server is None:
         return "Error: No SCEP server defined"
 
@@ -36,15 +36,17 @@ def get_thumbprint():
 
 def get_otp():
     server = scep_connector.get_scep()
-    scep_admin = server.server + "/certsrv/mscep_admin/"
+    scep_admin = server.sys_server + "/certsrv/mscep_admin/"
     if server is None:
         return "Error: No SCEP server defined"
 
     try:
         result = requests.get(scep_admin,
-                          auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=1)
+                          auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=10)
     except requests.exceptions.ConnectTimeout:
         return "Error: Connection to SCEP server timed out"
+    except requests.exceptions.ConnectionError:
+        return "Error connecting to SCEP server."
 
     if result.status_code == 401:
         return "Error 401 fro SCEP server: Unauthorized."

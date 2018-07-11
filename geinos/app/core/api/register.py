@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify
 from app.core.device import device_helpers, device_connector
+from app.core.device_process import dev_queue
 import threading
 
 parser = reqparse.RequestParser()
@@ -38,25 +39,15 @@ class Register(Resource):
             device_sn = content['serial-number']
             device_name = content['name']
             device_ip = content['ip-address']
-            device_password = content['password']
-            device_username = content['username']
-            #device_usern = request.form['device_user']
-            device_usern = "admin"
-            #device_pass = request.form['device_pass']
-            device_pass = "admin"
             if device_connector.update_device(device_sn,"IP",device_ip) is not True:
                 return jsonify(
                     status=402,
                     message="Device could not be found"
                 )
 
-            if device_connector.device_exists_and_templated(device_sn):
-                    t = threading.Thread(target=device_helpers.do_it_all,
-                                         args=(device_ip,device_username,device_password,device_sn))
-                    t.start()
-                    status = 200
-                    message = "Device Configured"
-
+            else:
+                status=200
+                message="Success"
         else:
             status = 401
             message = "Unauthorized"

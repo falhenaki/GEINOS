@@ -3,7 +3,7 @@ from flask import request, jsonify
 from flask_httpauth import HTTPBasicAuth
 from app.core.device import device_connector, device_helpers
 from app.core.api import request_parser
-
+from app.core.device_process import dev_queue
 authen = HTTPBasicAuth()
 
 class Devices(Resource):
@@ -68,6 +68,7 @@ class Devices(Resource):
                 file_data = file.readlines()
                 content = [str(x,'utf-8').strip().split(',') for x in file_data]
                 if device_helpers.add_list_of_devices(content, file.filename, logged_user.username, logged_user.role_type, request.remote_addr):
+
                     status=201
                     message="Devices Added"
                 else:

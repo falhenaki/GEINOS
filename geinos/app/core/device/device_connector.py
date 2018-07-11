@@ -7,6 +7,8 @@ from app import engine, app
 from app.core.log import log_connector
 from app.core.template import xml_templates
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError
+from app.core.scep.scep import Scep
+from app.core.device_process import dev_queue
 import datetime
 
 #TODO Log update
@@ -21,6 +23,7 @@ def update_device(sn, attribute, value):
         return False
     device.__setattr__(attribute, value)
     s.commit()
+    dev_queue.try_add_dev_queue(sn)
     return True
 
 def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
@@ -33,6 +36,7 @@ def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
         s.add(dv)
         s.commit()
         log_connector.add_log('ADD DEVICE', "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
+        dev_queue.try_add_dev_queue(sn)
         return True
     else:
         log_connector.add_log('ADD DEVICE FAIL', "Failed to add device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)
@@ -84,22 +88,49 @@ def get_templated_devices():
             templated_devices.append(d)
     return templated_devices
 
-def get_rdy_config():
-    devices = get_templated_devices()
-    devices_to_config = []
-    print(devices)
-    for d in devices:
-       if "TRUE" in d.cert_set or "FALSE" in d.cert_required:
-            devices_to_config.append(d)
-    return devices_to_config
-
-def get_devices_exist_and_scep():
+def get_rdy_config(dev):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device).filter(Device.IP.like("%.%.%"),Device.cert_required == "TRUE",Device.cert_set == "FALSE")
-    if query is None:
+    d = s.query(Device).filter(Device.serial_number == dev).first()
+    if ("TRUE" in d.cert_set or "FALSE" in d.cert_required) and "TRUE" in d.config_status and "." in d.IP:
+        return True
+    return False
+
+def get_cert_or_config(dev):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    device = s.query(Device).filter(Device.serial_number == dev).first()
+    if device is None:
         return False
-    return query
+    cert = device.cert_required
+    config = device.config_available
+    cert_obt = device.cert_set
+    result_dict = {'cert_req':cert,'config':config, 'cert_obt':cert_obt}
+    return result_dict
+
+
+def get_rdy_scep(device):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    devices = s.query(Scep).first()
+    if devices.thumbprint is None:
+        return False
+    if "TRUE" in device.cert_required and "." in device.IP:
+        return True
+    return False
+
+def get_dev_exist(device):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dev = s.query(Device).filter(Device.serial_number == device).first()
+    if dev is None:
+        return False
+    if '.' not in dev.IP:
+        return False
+    return True
+
+
+
 
 #TODO Can this be moved to templates?
 def set_rendered_template(sn, name, template_name): #TODO add back in functionality to save params to a file
@@ -136,3 +167,17 @@ def get_device_template(device_sn):
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn).first()
     return device.config_file, device_group_connector.get_template_for_device(device_sn)
+'''
+get_device_access: device access is true if device is in queue. it is false if it is not in queue or being processed.
+
+'''
+def get_device_access(device_sn):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device).filter(Device.serial_number == device_sn).first()
+    if "TRUE" in query.device_access is True:
+        return True
+    return False
+def set_device_access(device_sn,state):
+    update_device(device_sn,'device_access',state)
+    return True

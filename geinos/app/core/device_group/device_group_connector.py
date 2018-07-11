@@ -1,9 +1,11 @@
 from app.core.device.device import Device
+from app.core.device import device_connector
 from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource
 from sqlalchemy.orm import sessionmaker
 from app import engine
+from app.core.device_process import dev_queue
 import datetime
 from app.core.parameter import parameter_connector
 from app import app
@@ -64,6 +66,7 @@ def update_groups_of_devices(new_group):
         if new_group.num_attributes >= device.device_group_filters:
             s.query(Device).filter(Device.serial_number == device.serial_number).update(
                 {'device_group_filters': new_group.num_attributes, 'device_group': new_group.device_group_name})
+    dev_queue.try_add_group_queue(new_group)
     s.commit()
 
 def device_group_exists(group_name):
@@ -119,7 +122,11 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
     dg.template_name = template_name
     dg.last_updated = datetime.datetime.now()
+    devices = devices_in_group(group_name)
+    for d in devices:
+        d.set_config_status("TRUE")
     s.commit()
+    dev_queue.try_add_group_queue(group_name)
     log_connector.add_log('ASSIGN', "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     return True
 

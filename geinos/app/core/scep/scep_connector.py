@@ -21,12 +21,25 @@ def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,c
                  organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id)
     s.add(scep)
     s.commit()
+    return True
 
 def get_scep():
     Session = sessionmaker(bind=engine)
     s = Session()
     scep = s.query(Scep).first()
     return scep
+
+def get_scep_info():
+    ret = []
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    scep = s.query(Scep).first()
+    atts_returned = ['username', 'password', 'server','encryptalgo','digestalgo','country','state','locale','organization','org_unit']
+    dictionary = {}
+    for att in atts_returned:
+        dictionary[att] = getattr(scep, att)
+    ret.append(dictionary)
+    return ret
 """
 Add thumprint to server. input is a Scep object, and a string
 
