@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from app import db,app
-from app.core.user.user_connector import *
+from app.core.user import user_connector
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -56,5 +56,6 @@ class User(CustomMixin, Base):
             return None  # valid token, but expired
         except BadSignature:
             return None  # invalid token
-        user = get_user_by_id(data['id'])
+        print(data)
+        user = user_connector.get_user_by_id(data['id'])
         return user
