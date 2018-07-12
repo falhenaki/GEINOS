@@ -56,35 +56,35 @@ def set_scep(host, user, passwd, serial):
     ca_config = device_access.set_config(host, user, passwd, ca_server)
     cert_info_config = device_access.set_config(host, user, passwd, cert_info)
     if cert_config is False:
-        return "Device (sn:{})".format(serial),"Error: Failed to config Certificate server information"
+        return "Error: Failed to config Certificate server information"
         
     if ca_config is False:
-        return "Device (sn:{})".format(serial),"Error: Failed to config CA server information"
+        return "Error: Failed to config CA server information"
         
     if cert_info_config is False:
-        return "Device (sn:{})".format(serial),"Error: Failed to config Certificate Information"
+        return "Error: Failed to config Certificate Information"
         
     pk = device_access.generate_private_key(dev,scep_info.key_id)
     if pk is False:
-        return "Device (sn:{})".format(serial),"Error: Failed to generate private key"
+        return "Error: Failed to generate private key"
         
     if "complete" not in pk:
-       return "Device (sn:{})".format(serial),"Error: Failed to config Certificate server information"
+       return "Error: Failed to config Certificate server information"
        
     ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
     if ca_cert is False:
-        return  "Device (sn:{})".format(serial),"Error: Failed to get CA Cert"
+        return "Error: Failed to get CA Cert"
         
     if "complete" not in ca_cert:
-        return  "Device (sn:{})".format(serial),"Error: Device return ed the following when attempt to get a CA Cert:" + ca_cert
+        return "Error: Device return ed the following when attempt to get a CA Cert:" + ca_cert
         
     client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
                     scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
     if client_cert is False:
-        return "Device (sn:{})".format(serial),"Error: Failed to get Client Cert"
+        return "Error: Failed to get Client Cert"
         
     if "complete" not in client_cert:
-        return "Device (sn:{})".format(serial),\
+        return  \
                "Error: Device return ed the following when attempt to get a Client Cert:" + client_cert
     return "Device (sn:{})".format(serial) + "Client Certificate Obtained"
 

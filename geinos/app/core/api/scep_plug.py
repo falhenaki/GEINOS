@@ -37,10 +37,11 @@ class Scep(Resource):
             POST_KEY_ID = "GEINOS_KEY"
             POST_CA_CERT_ID = "GEINOS_CA_CERT "
             POST_CLIENT_CERT_ID = "GEINOS_CLIENT_CERT"
+            POST_SYS_SERVER = content ['sys-server']
             if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT,
                                     POST_CERT_INFO_ID,POST_CA_SERVER_ID,POST_COUNTRY,POST_STATE,POST_LOCALE,
                                     POST_ORGANIZATION,POST_ORG_UNIT,POST_CERT_SERVER_ID,POST_KEY_ID,POST_CA_CERT_ID,
-                                    POST_CLIENT_CERT_ID):
+                                    POST_CLIENT_CERT_ID,POST_SYS_SERVER):
                 thumb = scep_server.get_thumbprint()
                 print(thumb)
                 if thumb is False:

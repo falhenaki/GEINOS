@@ -33,7 +33,7 @@ class Scep(CustomMixin, Base):
 
     #----------------------------------------------------------------------
     def __init__(self, server,username,password,digest,encrypt,cert_info_id,ca_server_id,country,state,locale,
-                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id):
+                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id,sys_server):
         """"""
         self.username = username
         self.password = password
@@ -51,7 +51,7 @@ class Scep(CustomMixin, Base):
         self.key_id = key_id
         self.ca_cert_id = ca_cert_id
         self.client_cert_id = client_cert_id
-        self.sys_server = server
+        self.sys_server = sys_server
 
     def set_thumb(self,thumbprint):
         self.thumbprint = thumbprint
