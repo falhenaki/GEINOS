@@ -67,5 +67,5 @@ class Device(CustomMixin, Base):
         self.cert_required = required
     def set_cert_set(self,status):
         self.cert_set = status
-    def set_config_statis(self,status):
+    def set_config_status(self,status):
         self.config_available = status
