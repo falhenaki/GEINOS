@@ -202,3 +202,6 @@ class DB_User_Connection():
 
     def update_last_login(self, login_datetime):
         self.this_user.update_last_login(login_datetime)
+
+    def close_session(self):
+        self.s.close()

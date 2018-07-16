@@ -62,3 +62,4 @@ def init_db():
     Session = sessionmaker(bind=engine)
     s = Session()
     s.commit()
+    s.close()
