@@ -61,6 +61,13 @@ def devices_in_group(new_group):
     s.close()
     return ret
 
+def devices_in_group_objects(group_name):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    devices = s.query(Device).filter(Device.device_group == group_name)
+    return devices
+
+
 def update_groups_of_devices(new_group):
     Session = sessionmaker(bind=engine)
     s = Session()
@@ -130,19 +137,23 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
     dg.template_name = template_name
     dg.last_updated = datetime.datetime.now()
-    devices = devices_in_group(group_name)
+    devices = devices_in_group_objects(group_name)
+    #todo actually set config status correctly
     for d in devices:
+        print(d)
         d.set_config_status("TRUE")
     s.commit()
     dev_queue.try_add_group_queue(group_name)
     log_connector.add_log('ASSIGN', "Assigned {} to {}".format(template_name, group_name), username, user_role, request_ip)
     s.close()
     return True
-#TODO close session
+
 def number_of_devices_in_group(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    return s.query(Device).filter(Device.device_group == group_name).count()
+    count = s.query(Device).filter(Device.device_group == group_name).count()
+    s.close()
+    return
 
 def get_template_for_device(sn):
     Session = sessionmaker(bind=engine)

@@ -26,21 +26,21 @@ from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
         'server.socket_host': '0.0.0.0'
     })*/
 '''
-
-initialize.initialize_APIs()
-
-
-d = PathInfoDispatcher({'/': app})
-server = WSGIServer(('0.0.0.0', 5000), d)
-
-pool = concurrent.futures.ProcessPoolExecutor(max_workers=1)
-pool.submit(device_process.config_process,dev_queue.device_queue)
+if __name__ == '__main__':
+    initialize.initialize_APIs()
 
 
-try:
-    server.start()
-except KeyboardInterrupt:
-    server.stop()
+    d = PathInfoDispatcher({'/': app})
+    server = WSGIServer(('0.0.0.0', 5000), d)
+
+    pool = concurrent.futures.ProcessPoolExecutor(max_workers=1)
+    pool.submit(device_process.config_process,dev_queue.device_queue)
+
+
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()
 
 #cherrypy.engine.start()
 #cherrypy.engine.block()

@@ -181,11 +181,12 @@ def remove_device(device_sn, username, user_role, request_ip):
     s.commit()
     s.close()
     return True
-#TODO close connection
+
 def get_device_template(device_sn):
     Session = sessionmaker(bind=engine)
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn).first()
+    s.close()
     return device.config_file, device_group_connector.get_template_for_device(device_sn)
 '''
 get_device_access: device access is true if device is in queue. it is false if it is not in queue or being processed.
