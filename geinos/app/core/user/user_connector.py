@@ -140,8 +140,7 @@ def check_username_availability(username):
     """
     Session = sessionmaker(bind=engine)
     s = Session()
-    user = s.que
-    ry(User).filter(User.username == username).first()
+    user = s.query(User).filter(User.username == username).first()
     if user:
         s.close()
         return False
