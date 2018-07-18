@@ -1,21 +1,9 @@
-from app.core.device import device_connector
-from sqlalchemy.orm import sessionmaker
-from app import engine, app
 from app.core.device import device_helpers
 from app.core.device import device_connector
-from app.core.device.device import Device
-from app import engine, app
 from app.core.device_process import dev_queue
-import os
 import concurrent.futures
-from sqlalchemy.orm import sessionmaker
-from app.core.scep import scep_server
+
 import time
-from multiprocessing import Queue,Manager
-from sqlalchemy import create_engine
-from geinos.test_scripts import whatever
-from app.core.scep.scep import Scep
-from app import engine
 from app.core.log import log_connector
 
 
