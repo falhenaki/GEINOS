@@ -39,6 +39,7 @@ class Register(Resource):
             device_sn = content['serial-number']
             device_name = content['name']
             device_ip = content['ip-address']
+            print(device_ip)
             if device_connector.update_device(device_sn,"IP",device_ip) is not True:
                 return jsonify(
                     status=402,

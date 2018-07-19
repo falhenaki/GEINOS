@@ -5,6 +5,7 @@ from app import app
 from app.core.api import initialize
 from app.core.device_process import device_process,dev_queue
 from multiprocessing import Manager
+from flask import render_template
 
 import time
 #import subprocess
@@ -27,6 +28,14 @@ from cheroot.wsgi import Server as WSGIServer, PathInfoDispatcher
         'server.socket_host': '0.0.0.0'
     })*/
 '''
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+
+        return render_template('index.html')
+
+
 if __name__ == '__main__':
     initialize.initialize_APIs()
 

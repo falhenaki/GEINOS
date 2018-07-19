@@ -41,5 +41,4 @@ def try_add_group_queue(group_name):
     for device in devices:
         try_add_dev_queue(device['serial_number'])
 
-if __name__ == '__main__':
-    print("Running")
+

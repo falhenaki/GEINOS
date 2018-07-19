@@ -52,10 +52,12 @@ class User(CustomMixin, Base):
         s = Serializer(app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
+            print(data)
         except SignatureExpired:
             return None  # valid token, but expired
         except BadSignature:
             return None  # invalid token
-        print(data)
         user = user_connector.get_user_by_id(data['id'])
         return user
+
+

@@ -6,6 +6,7 @@ import datetime
 from flask import Flask
 from flask_httpauth import HTTPBasicAuth
 from math import floor
+import time
 authen = HTTPBasicAuth()
 
 @authen.verify_password
@@ -195,8 +196,6 @@ class DB_User_Connection():
         getter for the user pulled from the database's role
         :return: user's role type
         """
-        print("tried getting role")
-        print(self.this_user.role_type)
         return self.this_user.role_type
 
     def update_last_login(self, login_datetime):

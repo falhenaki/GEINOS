@@ -3,7 +3,7 @@ from app.core.device import device_connector
 from app.core.device_process import tasks_connector
 from app import app
 import concurrent.futures
-
+from multiprocessing import Manager
 import time
 from app.core.log import log_connector
 
@@ -53,5 +53,10 @@ def config_process(device_queue):
             if future.done() is True:
                 futures.remove(future)
 
-
-
+if __name__ == '__main__':
+    m = Manager()
+    q = m.Queue()
+    z = Manager()
+    print(m)
+    print(q.get())
+    print(z)

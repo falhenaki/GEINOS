@@ -9,6 +9,7 @@ from app.core.template import xml_templates
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError
 from app.core.scep.scep import Scep
 from app.core.device_process import dev_queue
+from multiprocessing import Lock
 import datetime
 
 #TODO Log update

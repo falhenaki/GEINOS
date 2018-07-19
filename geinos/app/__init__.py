@@ -25,7 +25,6 @@ data_file_path = os.path.join(data_file_dir, datafile)
 
 
 
-
 # Configurations
 app.config.from_object('config')
 
