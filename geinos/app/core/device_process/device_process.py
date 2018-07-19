@@ -55,14 +55,4 @@ def config_process(device_queue):
                 futures.remove(future)
 
 
-if __name__ == '__main__':
-
-    tasks_connector.add_task('1', 'CERT')
-    tasks_connector.add_task('2', 'CERT')
-    tasks_connector.add_task('3', 'CONFIG')
-    tasks_connector.add_task('4', 'CONFIG')
-    tasks_connector.add_task('5', 'WAITING_CERT')
-    tasks_connector.add_task('6', 'WAITING_CERT')
-    tasks_connector.add_task('7', 'WAITING_CONFIG')
-    tasks_connector.add_task('8', 'WAITING_CONFIG')
 

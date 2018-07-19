@@ -3,9 +3,9 @@ from app.core.device_group import device_group_connector
 from app.core.log import log_connector
 from multiprocessing import Manager
 from app.core.device_process import tasks_connector
+
 m = Manager()
 device_queue = m.Queue()
-
 
 def try_add_dev_queue(serial_number):
     if device_connector.get_dev_exist(serial_number) is False:
@@ -40,3 +40,7 @@ def try_add_group_queue(group_name):
         return False
     for device in devices:
         try_add_dev_queue(device['serial_number'])
+
+if __name__ == '__main__':
+    m = Manager()
+    device_queue = m.Queue()

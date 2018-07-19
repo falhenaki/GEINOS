@@ -5,6 +5,8 @@ from app.core.user import user_connector
 from app.core.log import log_connector
 from app.core.api import request_parser
 
+import time
+
 class Login(Resource):
     """
     HTTP Method: POST
@@ -43,8 +45,6 @@ class Login(Resource):
 class Login_Helper(Resource):
     def get(self):
         logged_user = request_parser.validateCreds(request)
-        print("do we")
-        print(logged_user)
 
         if logged_user:
             return jsonify(
