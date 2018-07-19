@@ -15,6 +15,7 @@ def login(username_or_token, password):
     if usr:
         return usr
     elif not usr and password:
+        #TODO put radius back in
         if True:
             connector = user_connector.DB_User_Connection(username_or_token, password)
             if connector.is_legal():
