@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 # Import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from multiprocessing import Manager
+
 
 # Define the WSGI application object
 app = Flask(__name__, static_folder='react/static', template_folder='react')
@@ -24,8 +24,7 @@ data_file_path = os.path.join(data_file_dir, datafile)
 
 
 
-m = Manager()
-device_queue = m.Queue()
+
 
 # Configurations
 app.config.from_object('config')

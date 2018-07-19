@@ -2,9 +2,10 @@ from app.core.device import device_connector
 from app.core.device_group import device_group_connector
 from app.core.log import log_connector
 from app.core.device_process import tasks_connector
-from app import app
 
-device_queue = app.device_queue
+device_queue = []
+
+
 
 def try_add_dev_queue(serial_number):
     if device_connector.get_dev_exist(serial_number) is False:
