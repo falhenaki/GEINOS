@@ -1,8 +1,7 @@
 from app.core.device import device_helpers
 from app.core.device import device_connector
-from app.core.device_process import dev_queue
 from app.core.device_process import tasks_connector
-from geinos.config import DEVICE_PROCESS
+from app import app
 import concurrent.futures
 
 import time
@@ -36,7 +35,7 @@ def config_device_thread(dev):
 def config_process(device_queue):
 
     futures=[]
-    pool = concurrent.futures.ProcessPoolExecutor(max_workers=DEVICE_PROCESS)
+    pool = concurrent.futures.ProcessPoolExecutor(max_workers=app.config['DEVICE_PROCESS'])
     while True:
         if device_queue.empty():
             time.sleep(5)

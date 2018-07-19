@@ -1,10 +1,10 @@
 import os
-from multiprocessing import Queue,Manager
 import concurrent.futures
 # Run a test server.
 from app import app
 from app.core.api import initialize
-from app.core.device_process import dev_queue,device_process
+from app.core.device_process import device_process
+
 import time
 #import subprocess
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     server = WSGIServer(('0.0.0.0', 5000), d)
 
     pool = concurrent.futures.ProcessPoolExecutor(max_workers=1)
-    pool.submit(device_process.config_process,dev_queue.device_queue)
+    pool.submit(device_process.config_process,app.device_queue)
 
 
     try:
