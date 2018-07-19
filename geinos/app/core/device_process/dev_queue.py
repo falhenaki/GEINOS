@@ -2,6 +2,7 @@ from app.core.device import device_connector
 from app.core.device_group import device_group_connector
 from app.core.log import log_connector
 from multiprocessing import Manager
+from app.core.device_process import tasks_connector
 m = Manager()
 device_queue = m.Queue()
 
@@ -17,6 +18,7 @@ def try_add_dev_queue(serial_number):
         return False
     if "TRUE" in status['config']:
         if device_connector.get_rdy_config(serial_number):
+            tasks_connector.add_task(serial_number,'WAITING_CONFIG')
             log_connector.add_log( "Queue Device {}".format(serial_number),'In queue for config',
                                    'System', 'None', 'None')
             device_connector.set_device_access(serial_number,"TRUE")
@@ -24,6 +26,7 @@ def try_add_dev_queue(serial_number):
             return True
     if "TRUE" in status['cert_req'] and "TRUE" not in status['cert_obt']:
         device_connector.set_device_access(serial_number, "TRUE")
+        tasks_connector.add_task(serial_number, 'WAITING_CERT')
         log_connector.add_log("Queue Device {}".format(serial_number),'In queue for certification',
                               'System', 'None', 'None')
         device_queue.put({'sn': serial_number, 'process': 'cert'})

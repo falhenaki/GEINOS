@@ -3,7 +3,7 @@ from flask_restful import Api
 from app import app
 from flask import jsonify
 from app.core.api import configs_plug, devices_plug, login_plug, parameters_plug, device_groups, users_plug, templates_plug, \
-    assignment_plug, logs_plugs, register, scep_plug, radius_plug
+    assignment_plug, logs_plugs, register, scep_plug, radius_plug,device_process_plug
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError, InvalidInput
 
 """
@@ -11,12 +11,13 @@ API END POINTS
 """
 def initialize_APIs():
     api = Api(app)
+
     api.add_resource(login_plug.Login, '/login', '/')
     api.add_resource(users_plug.Users, '/users')
     api.add_resource(devices_plug.Devices, '/devices/<device>','/devices')
     api.add_resource(device_groups.Device_Groups, '/device_groups')
     api.add_resource(parameters_plug.Parameters, '/parameters')
-    api.add_resource(configs_plug.Device_Configs, '/configs')
+    api.add_resource(configs_plug.Device_Configs, '/configs/<device>','/configs')
     api.add_resource(templates_plug.Templates, '/templates')
     api.add_resource(assignment_plug.Assign, '/assign')
     api.add_resource(logs_plugs.Logs, '/logs')
@@ -24,6 +25,8 @@ def initialize_APIs():
     api.add_resource(login_plug.Login_Helper, '/verify_token')
     api.add_resource(scep_plug.Scep, '/scep')
     api.add_resource(radius_plug.Radius, '/radius')
+    api.add_resource(device_process_plug.Tasks, '/tasks')
+
 
     """
     Exception responses

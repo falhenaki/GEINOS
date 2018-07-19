@@ -36,7 +36,7 @@ def get_scep_info():
     Session = sessionmaker(bind=engine)
     s = Session()
     scep = s.query(Scep).first()
-    atts_returned = ['username', 'password', 'server','encryptalgo','digestalgo','country','state','locale','organization','org_unit']
+    atts_returned = ['username', 'password', 'server','encryptalgo','digestalgo','country','state','locale','organization','org_unit','sys_server']
     dictionary = {}
     for att in atts_returned:
         dictionary[att] = getattr(scep, att)

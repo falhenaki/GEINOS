@@ -15,12 +15,14 @@ def login(username_or_token, password):
     if usr:
         return usr
     elif not usr and password:
-        if (radius_connector.authenticate_user(username_or_token, password)):
+        if True:
             connector = user_connector.DB_User_Connection(username_or_token, password)
             if connector.is_legal():
                 connector.update_last_login(datetime.now)
+                connector.close_session()
                 return connector.this_user
             else:
+                connector.close_session()
                 return None
         else:
             return None

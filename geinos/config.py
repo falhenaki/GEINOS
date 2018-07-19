@@ -33,3 +33,4 @@ SECRET_KEY = "secret"
 UPLOADS_FOLDER = os.path.join(BASE_DIR, 'app/core/upload_folder')
 APPLIED_PARAMS_FOLDER = os.path.join(BASE_DIR, 'app/core/assigned_params')
 ALLOWED_EXTENSIONS = set({'xml'})
+DEVICE_PROCESS = 2
