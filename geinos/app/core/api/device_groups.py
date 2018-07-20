@@ -48,7 +48,7 @@ class Device_Groups(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            group_name = content["group_name"] #TODO api failing here
+            group_name = content["group_name"]
             attribute = content["attribute"]
             value = content["value"]
             '''
