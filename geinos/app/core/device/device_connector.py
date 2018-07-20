@@ -9,6 +9,7 @@ from app.core.template import xml_templates
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource, GeneralError
 from app.core.scep.scep import Scep
 from app.core.device_process import dev_queue
+from werkzeug.utils import secure_filename
 from multiprocessing import Lock
 import datetime
 
@@ -158,7 +159,7 @@ def set_rendered_template(sn, name, template_name):
     if device is None:
         s.close()
         raise MissingResource()
-    filename = device.vendor_id + device.serial_number + device.model_number
+    filename = secure_filename(device.vendor_id + device.serial_number + device.model_number)
     print(filename)
     rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1', sn)
     save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
