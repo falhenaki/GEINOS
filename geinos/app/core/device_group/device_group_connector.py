@@ -1,6 +1,6 @@
 from app.core.device.device import Device
 from app.core.device import device_connector
-from app.core.device_group.device_group import Device_Group
+from app.core.device_group.device_group import Device_Group, Device_Group_Filter
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource
 from sqlalchemy.orm import sessionmaker
@@ -24,17 +24,25 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
     '''existence_check = s.query(Device_Group).filter(Device_Group.attribute_value == att+val).first()
     if existence_check is not None:
         raise Conflict("Device Group already exists")'''
+    filter_dict = {}
     if att == "other":
-        dict = {}
         val = val.split(',')
         for ele in val:
             item = ele.split('=')
-            dict[item[0].strip()] = item[1].strip()
-        att_val = str(dict)
+            filter_dict[item[0].strip()] = item[1].strip()
+        att_val = str(filter_dict)
         num_atts = len(val)
     else:
         num_atts = 1
         att_val = str({att : val})
+        filter_dict[att] = val
+
+    for key in filter_dict:
+        group_filter = Device_Group_Filter(name, key, filter_dict[key])
+        s.add(group_filter)
+
+    if not check_orthogonal(filter_dict):
+        raise Conflict("Group filter(s) overlap and devices could belong to multiple different groups")
 
     dg = Device_Group(name,datetime.datetime.now(), att_val, num_atts=num_atts)
     log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {})".format(name, att), username, role_type, remote_addr)
@@ -202,4 +210,36 @@ def remove_group(group_name, username, user_role, request_ip):
     s.commit()
     s.close()
     log_connector.add_log('DELETE DEVICE GROUP', "Removed {} device group".format(group_name), username, user_role, request_ip)
+    return True
+
+def check_orthogonal(filter_dict):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    check_filters = {}
+    for key in filter_dict:
+        check_filters[(key, filter_dict[key])] = 0
+
+    filters = s.query(Device_Group_Filter)
+    group_filters = {}
+    for filter in filters:
+        if filter.device_group_name not in group_filters.keys():
+            temp_list = [(filter.filter, filter.filter_value)]
+            group_filters[filter.device_group_name] = temp_list
+        else:
+            group_filters[filter.device_group_name].append((filter.filter, filter.filter_value))
+
+    for key in group_filters:
+        group_filt = {}
+        for specific_filter in group_filters[key]:
+            group_filt[specific_filter] = 0
+            for filter_key in group_filt:
+                if filter_key in check_filters.keys():
+                    group_filt[key] = 1
+                    check_filters[key] = 1
+            if not (0 in group_filt.values() and 0 in check_filters.values()):
+                return False
+            else:
+                for key in group_filters:
+                    group_filters[key] = 0
+
     return True
