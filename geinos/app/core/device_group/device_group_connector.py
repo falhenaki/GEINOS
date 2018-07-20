@@ -1,6 +1,7 @@
 from app.core.device.device import Device
 from app.core.device import device_connector
-from app.core.device_group.device_group import Device_Group, Device_Group_Filter
+from app.core.device_group.device_group import Device_Group
+from app.core.device_group.device_group_filter import Device_Group_Filter
 from app.core.device_group.device_in_group import Device_in_Group
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource
 from sqlalchemy.orm import sessionmaker
@@ -232,10 +233,10 @@ def check_orthogonal(filter_dict):
         group_filt = {}
         for specific_filter in group_filters[key]:
             group_filt[specific_filter] = 0
-            for filter_key in group_filt:
+            for filter_key in group_filt.keys():
                 if filter_key in check_filters.keys():
-                    group_filt[key] = 1
-                    check_filters[key] = 1
+                    group_filt[filter_key] = 1
+                    check_filters[filter_key] = 1
             if not (0 in group_filt.values() and 0 in check_filters.values()):
                 return False
             else:
