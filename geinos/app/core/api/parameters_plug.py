@@ -85,15 +85,16 @@ class Parameters(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            PARAMETER_NAME = content['param_name']
-            if parameter_connector.remove_parameter(PARAMETER_NAME, logged_user.username, logged_user.role_type, request.remote_addr):
+            PARAMETER_NAMEs = content['param_names']
+            deleted, not_deleted = parameter_connector.remove_parameters(PARAMETER_NAMEs, logged_user.username, logged_user.role_type, request.remote_addr)
+            if len(not_deleted) == 0:
                 return jsonify(
                     status=200,
-                    message="Group Deleted"
+                    message="Parameters deleted: {}".format(','.join(deleted))
                 )
             else:
                 status = 412,
-                message = "Failed to delete parameter or parameter does not exist"
+                message = "Parameters not deleted : {}\nParameters deleted : {}".format(','.join(not_deleted), ','.join(deleted))
 
         else:
             status = 401

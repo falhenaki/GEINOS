@@ -155,6 +155,16 @@ def get_dynamic_ip(subnet, interface):
     else:
         return subnet.split('/')[0]
 
+def remove_parameters(param_names, username, user_role, request_ip):
+    deleted = []
+    not_deleted = []
+    for param in param_names:
+        if remove_parameter(param, username, user_role, request_ip):
+            deleted.append(param)
+        else:
+            not_deleted.append(param)
+    return deleted, not_deleted
+
 def remove_parameter(param_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
