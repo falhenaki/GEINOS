@@ -91,8 +91,8 @@ class Users(Resource):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            POST_USERNAME = content['rmusr']
-            auth.remove_user(POST_USERNAME, logged_user.username, logged_user.role_type, request.remote_addr)
+            USERS = content['rmusr']
+            auth.remove_user(USERS, logged_user.username, logged_user.role_type, request.remote_addr)
             status=200,
             message="Users Deleted"
         else:

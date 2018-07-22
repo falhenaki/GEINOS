@@ -45,15 +45,15 @@ def add_user(username, password, email, role_type, curr_username, user_role, req
     log_connector.add_log('ADD USER FAIL', "Failed to add user: {}".format(username), curr_username, user_role, request_ip)
     return False
 
-def remove_user(username, curr_username, user_role, request_ip):
+def remove_user(users, curr_username, user_role, request_ip):
     """
     removes user from database
     :param username: username to remove
     :return:
     """
     #TODO: error checking
-    log_connector.add_log('DELETE USER', "Removed user: {}".format(username), curr_username, user_role, request_ip)
-    user_connector.remove_user(username)
+    log_connector.add_log('DELETE USER', "Removed {} user(s)".format(len(users)), curr_username, user_role, request_ip)
+    user_connector.remove_user(users)
 
 def change_user_role(username, new_role):
     """

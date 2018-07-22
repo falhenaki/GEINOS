@@ -78,12 +78,24 @@ class Device_Groups(Resource):
 
 
     def delete(self):
+        status = 401
+        message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
             content = request.get_json()
-            GROUP = content['group_name']
-            if device_group_connector.remove_group(GROUP, logged_user.username, logged_user.role_type, request.remote_addr):
-                return jsonify(
-                    status=200,
-                    message="Group Deleted"
-                )
+            GROUPs = content['group_names']
+            deleted, not_deleted = device_group_connector.remove_groups(GROUPs, logged_user.username, logged_user.role_type, request.remote_addr)
+            if len(not_deleted) == 0:
+                status=200
+                message="Groups deleted: {}".format(','.join(deleted))
+            else:
+                status=401
+                message="Groups deleted: {}\nGroups not deleted: {}".format(','.join(deleted), ','.join(not_deleted))
+        else:
+            status= 401
+            message = "Unauthorized"
+
+        return jsonify(
+            status=status,
+            message=message
+        )

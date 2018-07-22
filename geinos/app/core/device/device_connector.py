@@ -171,16 +171,19 @@ def set_rendered_template(sn, name, template_name):
     s.close()
     return True
 
-def remove_device(device_sn, username, user_role, request_ip):
+def remove_device(device_sns, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
-    device = s.query(Device).filter(Device.serial_number == device_sn)
-    if device.count() is 0:
-        log_connector.add_log('DELETE DEVICE FAIL', "Failed to remove device (sn={})".format(device_sn), username, user_role, request_ip)
-        s.close()
-        raise MissingResource("Device to be removed did not previously exist")
-    device.delete()
-    log_connector.add_log('DELETE DEVICE', "Removed device (sn={})".format(device_sn), username, user_role, request_ip)
+    #device = s.query(Device).filter(Device.serial_number == device_sn)
+    for x in device_sns:
+        s.query(Device).filter(Device.serial_number == x).delete()
+    #TODO move logic below to exception handling
+    #if device.count() is 0:
+        #log_connector.add_log('DELETE DEVICE FAIL', "Failed to remove device (sn={})".format(device_sn), username, user_role, request_ip)
+        #s.close()
+        #raise MissingResource("Device to be removed did not previously exist")
+    #device.delete()
+    log_connector.add_log('DELETE DEVICE', "Removed device (#={})".format(len(device_sns)), username, user_role, request_ip)
     s.commit()
     s.close()
     return True

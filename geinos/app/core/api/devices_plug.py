@@ -91,9 +91,9 @@ class Devices(Resource):
             content = request.get_json()
             print(content)
             content = request.get_json(force=True)
-            DEVICE_SN = content['serial_num']
+            DEVICE_SNs = content['serial_nums']
             print("working?")
-            if device_connector.remove_device(DEVICE_SN, logged_user.username, logged_user.role_type, request.remote_addr):
+            if device_connector.remove_device(DEVICE_SNs, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     status=200,
                     message="Device Deleted"

@@ -55,7 +55,7 @@ def add_user(username, password, email, role_type):
     s.close()
 
 
-def remove_user(username):
+def remove_user(users):
     """
     removes specified user from the database
     :param username: user to remove
@@ -63,7 +63,8 @@ def remove_user(username):
     """
     Session = sessionmaker(bind=engine)
     s = Session()
-    s.query(User).filter(User.username == username).delete()
+    for x in users:
+        s.query(User).filter(User.username == x).delete()
     s.commit()
     s.close()
 

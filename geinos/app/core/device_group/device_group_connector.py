@@ -198,6 +198,16 @@ def get_template_for_device(sn):
     s.close()
     return device_group.template_name
 
+def remove_groups(group_names, username, user_role, request_ip):
+    deleted = []
+    not_deleted = []
+    for x in group_names:
+        if remove_group(x, username, user_role, request_ip):
+            deleted.append(x)
+        else:
+            not_deleted.append(x)
+    return deleted, not_deleted
+
 def remove_group(group_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
