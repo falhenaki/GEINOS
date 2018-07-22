@@ -124,6 +124,25 @@ def get_all_devices_in_group(g_name):
     s.close()
     return ret
 
+def is_device_in_group(new_group, device):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    att_vals = ast.literal_eval(new_group.attribute_value)
+    for key in att_vals:
+        if (getattr(device, key) != att_vals[key]):
+            return False
+    return True
+
+def get_group_of_device(device):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dgs = s.query(Device_Group)
+    if (dgs is not None):
+        for dg in dgs:
+            if (is_device_in_group(dg, device)):
+                return dg.device_group_name
+    return None
+
 #TODO Check groups and templates exist
 def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):

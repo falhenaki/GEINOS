@@ -37,6 +37,7 @@ def add_device(vend, sn, mn, location, username, user_role, request_ip, cert):
     query = s.query(Device).filter(Device.serial_number == sn).first()
     if query is None:
         dv = Device(vend, sn, mn, 'UNAUTHORIZED', datetime.datetime.now(), added_date=datetime.datetime.now(), location=location, cert_required=cert)
+        dv.device_group = device_group_connector.get_group_of_device(dv)
         s.add(dv)
         s.commit()
         log_connector.add_log('ADD DEVICE', "Added device (vend={}, sn={}, mn={})".format(vend, sn, mn), username, user_role, request_ip)

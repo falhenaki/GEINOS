@@ -23,18 +23,16 @@ class Templates(Resource):
     Success: status= 200, message= "Sent Templates", data= templates(json)
     Failure: status= 400, message= "Could not send templates"
     """
-    def get(self):
+    def get(self, template_name=None):
         status = 400
         message="error"
         data = []
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            args = parser.parse_args()
-            tmp_name = args.get('template_name')
-            if tmp_name is not None:
-                nms = xml_templates.get_template(tmp_name)
+            if (template_name is None):
+                 nms = xml_templates.get_templates()
             else:
-                nms = xml_templates.get_templates()
+                nms = xml_templates.get_template(template_name)
             status=200
             message="Sent Templates"
             data=nms

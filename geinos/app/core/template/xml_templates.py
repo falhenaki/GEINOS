@@ -40,7 +40,10 @@ def get_template(xml_filename):
     :return: specified filename
     """
     sec_filename = secure_filename(xml_filename)
-    return send_from_directory(app.config['UPLOADS_FOLDER'], sec_filename)
+    with open(os.path.join(app.config['UPLOADS_FOLDER'], sec_filename), 'r') as myfile:
+        data = myfile.read()
+    return data
+    #return send_from_directory(app.config['UPLOADS_FOLDER'], sec_filename)
 
 def get_templates():
     """
