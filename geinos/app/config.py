@@ -11,6 +11,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SQL_USERNAME = 'admin'
 SQL_PASSWORD = 'password'
 SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + SQL_USERNAME + ':' + SQL_PASSWORD + '@bitforcedev.se.rit.edu/se_project'
+#SQLALCHEMY_DATABASE_URI = 'sqlite:////home/qasim/Desktop/se_project.db'
 #SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://' + SQL_USERNAME + ':' + SQL_PASSWORD + '@localhost/demo'
 DATABASE_CONNECT_OPTIONS = {}
 # Application threads. A common general assumption is
