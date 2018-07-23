@@ -74,7 +74,9 @@ def devices_in_group_objects(group_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     devices = s.query(Device).filter(Device.device_group == group_name)
+    s.close()
     return devices
+
 
 
 def update_groups_of_devices(new_group):
@@ -166,9 +168,7 @@ def assign_template(group_name, template_name, username, user_role, request_ip):
     dg.template_name = template_name
     dg.last_updated = datetime.datetime.now()
     devices = devices_in_group_objects(group_name)
-    #todo actually set config status correctly
     for d in devices:
-        print(d)
         d.set_config_status("TRUE")
     s.commit()
     dev_queue.try_add_group_queue(group_name)

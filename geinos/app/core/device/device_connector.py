@@ -103,7 +103,7 @@ def get_rdy_config(dev):
     Session = sessionmaker(bind=engine)
     s = Session()
     d = s.query(Device).filter(Device.serial_number == dev).first()
-    if ("TRUE" in d.cert_set or "FALSE" in d.cert_required) and "TRUE" in d.config_status and "." in d.IP:
+    if ("TRUE" in d.cert_set or "FALSE" in d.cert_required) and "TRUE" in d.config_available and "." in d.IP:
         return True
     s.close()
     return False

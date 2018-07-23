@@ -11,7 +11,7 @@ from app.core.log import log_connector
 def config_scep_thread(dev):
     for _ in range(2):
         device = device_connector.get_device(dev)
-        tasks_connector.update_task(dev[0]['serial_number'], 'CERT')
+        tasks_connector.add_task(dev[0]['serial_number'], 'CERT')
         result = device_helpers.set_scep(device[0]['IP'],"admin","admin",device[0]['serial_number'])
         device_connector.set_device_access(dev, "FALSE")
         log_connector.add_log( "Get Cert Device {}".format(dev),'Cert Status:' + result,
@@ -24,7 +24,7 @@ def config_scep_thread(dev):
 def config_device_thread(dev):
     for _ in range(2):
         device = device_connector.get_device(dev)
-        tasks_connector.update_task(dev[0]['serial_number'], 'CONFIG')
+        #tasks_connector.add_task(dev[0]['serial_number'], 'CONFIG')
         result = device_helpers.apply_template(device[0]['serial_number'],device[0]['IP'],"admin","admin")
         device_connector.set_device_access(dev, "FALSE")
         if result is True:
@@ -39,6 +39,7 @@ def config_process(device_queue):
     while True:
         if device_queue.empty():
             time.sleep(5)
+            print(device_queue.empty())
         if device_queue.empty() is False:
             process = device_queue.get()
             if 'cert' in process['process']:
@@ -48,7 +49,7 @@ def config_process(device_queue):
             if 'config' in process['process']:
                 log_connector.add_log("Device {}".format(process['sn']),'Config Begin',
                                       'System', 'None', 'None')
-                futures.append(pool.submit(config_scep_thread, process['sn'],))
+                futures.append(pool.submit(config_device_thread, process['sn'],))
         for future in futures:
             if future.done() is True:
                 futures.remove(future)

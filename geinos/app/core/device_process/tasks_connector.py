@@ -7,13 +7,12 @@ from app.core.device_process.tasks import Tasks
 import datetime
 
 
-
-
-
-
 def add_task(sn,status):
     Session = sessionmaker(bind=engine)
     s = Session()
+    task = s.query(Tasks).filter(Tasks.serial_number == sn).first()
+    if task is not None:
+        delete_task(sn)
     task = Tasks(sn,status)
     s.add(task)
     s.commit()

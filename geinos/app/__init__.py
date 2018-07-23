@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 # Import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+import sys
 
 
 # Define the WSGI application object
@@ -20,13 +21,23 @@ data_file_path = os.path.join(data_file_dir, datafile)
 #data = json.load(open(data_file_path))
 
 #print(data)
-
-
-
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+        return render_template('index.html')
 
 
 # Configurations
-app.config.from_object('config')
+if getattr(sys, 'freeze', False):
+    # running as bundle (aka frozen)
+    bundle_dir = sys._MEIPASS
+else:
+    # running live
+    bundle_dir = os.path.dirname(os.path.abspath(__file__))
+
+app.config.from_pyfile(os.path.join(bundle_dir, 'config.py'))
+
+#app.config.from_pyfile('config.cfg')
 
 # Define the database object which is imported
 # by modules and controllers

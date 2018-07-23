@@ -24,4 +24,3 @@ def add_log(event_type, log_message, user, role, ip):
     s.add(dv)
     s.commit()
     s.close()
-    engine.dispose()

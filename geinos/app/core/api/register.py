@@ -40,7 +40,7 @@ class Register(Resource):
             device_name = content['name']
             device_ip = content['ip-address']
             print(device_ip)
-            if device_connector.update_device(device_sn,"IP",device_ip) is not True:
+            if device_connector.update_device(device_sn,"IP",request.remote_addr) is not True:
                 return jsonify(
                     status=402,
                     message="Device could not be found"
