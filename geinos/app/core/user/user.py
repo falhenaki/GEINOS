@@ -42,7 +42,7 @@ class User(CustomMixin, Base):
     def change_role(self, role_type):
         self.role_type = role_type
 
-    def generate_auth_token(self, expiration=600):
+    def generate_auth_token(self, expiration=None):
         s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'id': self.id})
 
