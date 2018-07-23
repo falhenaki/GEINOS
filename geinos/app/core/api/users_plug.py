@@ -51,12 +51,13 @@ class Users(Resource):
         if (logged_user):
             content = request.get_json()
             POST_USERNAME = content['usr']
+            print(POST_USERNAME)
             POST_PASSWORD = content['password']
             POST_RETYPE_PASS = content['retypepassword']
             POST_EMAIL = content['email']
             POST_ROLE = str(content['role'])
             if not POST_PASSWORD == POST_RETYPE_PASS:
-                raise Conflict("Please make sure that the password and retype password match")
+                raise Conflict("Please make sure that the password and retype password match", 400)
             '''
             users = user_connector.get_all_users()
             for u in users:
