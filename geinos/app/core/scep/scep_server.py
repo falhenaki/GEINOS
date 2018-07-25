@@ -10,7 +10,7 @@ Gets the webpage of a scep server with a challenge password
 
 def get_thumbprint():
     server = scep_connector.get_scep()
-    scep_admin = server.sys_server + "/certsrv/mscep_admin/"
+    scep_admin = server.sys_server
     if server is None:
         return "Error: No SCEP server defined"
 
@@ -36,7 +36,7 @@ def get_thumbprint():
 
 def get_otp():
     server = scep_connector.get_scep()
-    scep_admin = server.sys_server + "/certsrv/mscep_admin/"
+    scep_admin = server.sys_server
     if server is None:
         return "Error: No SCEP server defined"
 

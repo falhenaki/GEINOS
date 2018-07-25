@@ -47,7 +47,7 @@ def set_scep(host, user, passwd, serial):
         
     scep_thumb = scep_info.thumbprint
     cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
-                                                        scep_info.server + "/certsrv/mscep/mscep.dll",
+                                                        scep_info.server,
                                                         scep_info.digestalgo, scep_info.encryptalgo)
     ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
     cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
