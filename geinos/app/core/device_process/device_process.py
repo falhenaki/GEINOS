@@ -38,8 +38,7 @@ def config_process(device_queue):
     pool = concurrent.futures.ProcessPoolExecutor(max_workers=app.config['DEVICE_PROCESS'])
     while True:
         if device_queue.empty():
-            time.sleep(5)
-            print(device_queue.empty())
+            time.sleep(1)
         if device_queue.empty() is False:
             process = device_queue.get()
             if 'cert' in process['process']:

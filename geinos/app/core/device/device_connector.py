@@ -167,6 +167,7 @@ def set_rendered_template(sn, name, template_name):
     with open(save_path, 'w') as fout:
         fout.write(rendered_template)
     device.set_config_file(save_path)
+    device.set_config_status('TRUE')
     s.commit()
     s.close()
     return True

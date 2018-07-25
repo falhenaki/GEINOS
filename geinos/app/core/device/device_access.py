@@ -43,18 +43,18 @@ def get_config(host, user, passwd):
         print ("Cannot connect to device: {0}".format(err))
         return
 
-def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="bridge"):
+def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="Bridge"):
     try:
-        dev = Device(host="192.168.1.1", username="admin", password="admin")
+        dev = Device(host=host, username="admin", password="admin")
         dev.open()
         with Status(dev) as st:
             ipv4 = """/interfaces-state/interface[name='{}']/ipv4/address""".format(ifname)
             # JSON
             out = st.get(filter=('xpath', ipv4), format='json')
             dt = json.loads(out)
-            #print(out)
+            print(out)
             ifip = dt['data']['interfaces-state']['interface']['ipv4']['address']['ip']
-            return
+            return ifip
     except:
         print("COULD NOT GET IF ADDRESS")
 
