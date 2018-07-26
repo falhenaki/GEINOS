@@ -146,12 +146,21 @@ def get_dynamic_parameter(name, sn):
 
 
 def get_dynamic_ip(subnet, interface):
-    if (subnet.split('/')[1] is '8'):
-        return subnet.split('/')[0].split('.')[0] + interface.split('.')[1] + interface.split('.')[2] + interface.split('.')[3]
-    elif (subnet.split('/')[1] is '16'):
-        return subnet.split('/')[0].split('.')[0] + subnet.split('/')[0].split('.')[1] + interface.split('.')[2] + interface.split('.')[3]
-    elif (subnet.split('/')[1] is '24'):
-        return subnet.split('/')[0].split('.')[0] + subnet.split('/')[0].split('.')[1] + subnet.split('/')[0].split('.')[2] + interface.split('.')[3]
+    if (subnet.split('/')[1] in '8'):
+        net = subnet.split('/')[0].split('.')
+        add_inter = interface.split('.')[1] + '.' + interface.split('.')[2] + '.' + interface.split('.')[3]
+        value = net[0] + '.' + add_inter
+        return value
+    elif (subnet.split('/')[1] in '16'):
+        net = subnet.split('/')[0].split('.')
+        add_inter = interface.split('.')[2] + '.' + interface.split('.')[3]
+        value = net[0] + '.' + net[1] + '.' + add_inter
+        return value
+    elif (subnet.split('/')[1] in '24'):
+        net = subnet.split('/')[0].split('.')
+        add_inter = interface.split('.')[3]
+        value = net[0] + '.' + net[1] + '.' + net[2] + '.' + add_inter
+        return value
     else:
         return subnet.split('/')[0]
 
