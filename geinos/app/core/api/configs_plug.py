@@ -22,7 +22,7 @@ class Device_Configs(Resource):
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            content = request.parse_json()
+            content = request.get_json(force=True)
             device_sn = content['device_sn']
             config_path, template_path = device_connector.get_device_template(device_sn)
             rendered_template = xml_templates.parse_config_params(config_path, template_path, device_sn)
