@@ -49,8 +49,12 @@ class Device_Groups(Resource):
         if (logged_user):
             content = request.get_json()
             group_name = content["group_name"]
-            attribute = content["attribute"]
+            try:
+                attribute = content["attribute"]
+            except KeyError:
+                attribute = "other"
             value = content["value"]
+
             '''
             groups = device_group_connector.get_all_device_groups()
             #TODO allow cases in which value is not just model, also take this logic out of here
