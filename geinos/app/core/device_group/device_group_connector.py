@@ -38,8 +38,15 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
         att_val = str({att : val})
         filter_dict[att] = val
     for key in filter_dict:
+        try:
+            s.query(Device).filter(Device.key)
+        except AttributeError:
+            raise Conflict("Group filter {} is not able to be checked against device attributes".format(key))
         group_filter = Device_Group_Filter(name, key, filter_dict[key])
         s.add(group_filter)
+
+    if not check_orthogonal(filter_dict):
+        raise Conflict("Group filter(s) are not unique and some devices could belong to multiple groups")
 
     dg = Device_Group(name,datetime.datetime.now(), att_val, num_atts=num_atts)
     log_connector.add_log('ADD DEVICE GROUP', "Added {} device group (att: {})".format(name, att), username, role_type, remote_addr)
@@ -246,7 +253,6 @@ def remove_group(group_name, username, user_role, request_ip):
     return True
 
 def check_orthogonal(filter_dict):
-    return True
     Session = sessionmaker(bind=engine)
     s = Session()
     check_filters = {}
@@ -266,14 +272,14 @@ def check_orthogonal(filter_dict):
         group_filt = {}
         for specific_filter in group_filters[key]:
             group_filt[specific_filter] = 0
-            for filter_key in group_filt.keys():
-                if filter_key in check_filters.keys():
-                    group_filt[filter_key] = 1
-                    check_filters[filter_key] = 1
-            if not (0 in group_filt.values() and 0 in check_filters.values()):
-                return False
-            else:
-                for key in group_filters:
-                    group_filters[key] = 0
+        for filter_key in group_filt.keys():
+            if filter_key in check_filters.keys():
+                group_filt[filter_key] = 1
+                check_filters[filter_key] = 1
+        if not (0 in group_filt.values() and 0 in check_filters.values()):
+            return False
+        else:
+            for key in group_filters.keys():
+                group_filters[key] = 0
 
     return True
