@@ -5,6 +5,7 @@ from app.core.device import device_connector, device_helpers
 from app.core.api import request_parser
 from app.core.device_process import dev_queue
 authen = HTTPBasicAuth()
+import csv
 
 class Devices(Resource):
     """
@@ -68,8 +69,14 @@ class Devices(Resource):
                 file = request.files['file']
                 file_data = file.readlines()
                 content = [str(x,'utf-8').strip().split(',') for x in file_data]
-                if device_helpers.add_list_of_devices(content, file.filename, logged_user.username, logged_user.role_type, request.remote_addr):
-
+                #records = csv.DictReader(request.files['file'])
+                header = content[0]
+                #a = [dict(zip(header, map(int, row))) for row in file_data]
+                # for row in records:
+                a = [dict(zip(header, map(str, row))) for row in content[1:]]
+                #     print(row)
+                #print(a)
+                if device_helpers.add_list_of_devices(a, file.filename, logged_user.username, logged_user.role_type, request.remote_addr):
                     status=201
                     message="Devices Added"
                 else:

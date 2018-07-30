@@ -7,11 +7,12 @@ from app.core.log import log_connector
 from app.core.exceptions.custom_exceptions import MissingResource
 from app.core.scep import scep_config,scep_connector,scep_server
 import datetime
+import csv
 
 #TODO should be moved to device connector
 def add_list_of_devices(entries, filename, username, user_role, request_ip):
     for entry in entries:
-        device_connector.add_device(entry[0], entry[1], entry[2], entry[3], username, user_role, request_ip)
+        device_connector.add_device(entry["vendor_id"], entry["serial_num"], entry["model_num"], entry["location"], username, user_role, request_ip, entry["cert_required"].upper())
     log_connector.add_log('ADD DEVICES', "Added all devices from {} file".format(filename), username, user_role, request_ip)
     return True
 
