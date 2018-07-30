@@ -35,6 +35,7 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     return True
 
 def valid_xml(xml_file):
+    return True
     try:
         x = ET.fromstring(xml_file)
     except:
