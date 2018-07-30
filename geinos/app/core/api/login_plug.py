@@ -45,13 +45,16 @@ class Login(Resource):
 class Login_Helper(Resource):
     def get(self):
         logged_user = request_parser.validateCreds(request)
-
+        auth_token = ""
         if logged_user:
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             return jsonify(
+                auth_token=auth_token,
                 status=200,
                 message="User logged in."
             )
         return jsonify(
+                auth_token=auth_token,
                 status=403,
                 message="User not logged in."
             )

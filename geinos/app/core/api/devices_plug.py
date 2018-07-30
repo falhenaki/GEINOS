@@ -21,15 +21,19 @@ class Devices(Resource):
     def get(self,device=None):
         print("GET DEVICES")
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             devices = device_connector.get_all_devices()
             return jsonify(
+                auth_token=auth_token,
                 status=200,
                 message="Sent Devices",
                 data=devices
             )
         else:
             return jsonify(
+                auth_token=auth_token,
                 status=401,
                 message="Unauthorized"
             )
@@ -50,7 +54,9 @@ class Devices(Resource):
         status = 400
         message = "Device not added"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             if 'file' not in request.files:
                 content = request.get_json(force=True)
                 print(content)
@@ -85,7 +91,9 @@ class Devices(Resource):
         else:
             status = 401
             message = "Unauthorized"
+
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )
@@ -94,7 +102,9 @@ class Devices(Resource):
         print('DELEtE DEVICE')
         status=400
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             print(content)
             content = request.get_json(force=True)
@@ -102,10 +112,12 @@ class Devices(Resource):
             print("working?")
             if device_connector.remove_device(DEVICE_SNs, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
+                    auth_token=auth_token,
                     status=200,
                     message="Device Deleted"
                 )
             return jsonify(
+                auth_token=auth_token,
                 status=status,
                 message="Failed to delete device or device does not exist"
             )

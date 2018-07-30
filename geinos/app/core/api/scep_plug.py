@@ -18,7 +18,9 @@ class Scep(Resource):
 
     def put(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
             print(content)
             POST_USERNAME = content['usr']
@@ -61,21 +63,26 @@ class Scep(Resource):
             status = 401
             message = "Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )
 
     def get(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             scep = scep_server.scep_connector.get_scep_info()
             return jsonify(
+                auth_token=auth_token,
                 status=200,
                 message="SCEP settings sent",
                 data=scep
             )
         else:
             return jsonify(
+                auth_token=auth_token,
                 status=401,
                 message="Unauthorized"
             )

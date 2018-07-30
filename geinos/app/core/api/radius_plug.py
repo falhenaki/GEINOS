@@ -26,15 +26,19 @@ class Radius(Resource):
     """
     def get(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             data = radius_connector.get_radius_settings()
             return jsonify(
+                auth_token=auth_token,
                 status=200,
                 message="Sent Radius Settings",
                 data=data
             )
         else:
             return jsonify(
+                auth_token=auth_token,
                 status=401,
                 message="Unauthorized"
             )
@@ -42,7 +46,9 @@ class Radius(Resource):
 
     def put(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
             HOST = content['host']
             PORT = content['port']
@@ -57,6 +63,7 @@ class Radius(Resource):
             status = 401
             message = "Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )

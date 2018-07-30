@@ -25,7 +25,9 @@ class Assign(Resource):
         message = "Unauthorized"
         data = None
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             asgns = assignment_connector.get_assignments()
             status=200
             message="Sent Assignments"
@@ -33,6 +35,7 @@ class Assign(Resource):
         return jsonify(
             status=status,
             message=message,
+            auth_token=auth_token,
             data=data
         )
 
@@ -40,7 +43,9 @@ class Assign(Resource):
         status = 401
         message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
             if content['temp_name'] and content['group_name']:
                 templ_name = content['temp_name']
@@ -55,6 +60,7 @@ class Assign(Resource):
                     message = "Could not process request"
         return jsonify(
                 status=status,
-                message= message
+                message= message,
+                auth_token=auth_token,
             )
 

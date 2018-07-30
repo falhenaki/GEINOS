@@ -18,15 +18,19 @@ class Device_Groups(Resource):
     #TODO Get specific device group
     def get(self, device_group_name=None):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             dgs = device_group_connector.get_all_device_groups(device_group_name)
             return jsonify(
                 status=200,
                 message="Sent Device Groups",
+                auth_token=auth_token,
                 data=dgs
             )
         else:
             return jsonify(
+                auth_token=auth_token,
                 status=401,
                 message="Unauthorized"
             )
@@ -46,7 +50,9 @@ class Device_Groups(Resource):
         status = 400
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             group_name = content["group_name"]
             try:
@@ -77,7 +83,8 @@ class Device_Groups(Resource):
             message = "Unauthorized"
         return jsonify(
             status=status,
-            message=message
+            message=message,
+            auth_token=auth_token
         )
 
 
@@ -85,7 +92,9 @@ class Device_Groups(Resource):
         status = 401
         message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             GROUPs = content['group_names']
             deleted, not_deleted = device_group_connector.remove_groups(GROUPs, logged_user.username, logged_user.role_type, request.remote_addr)
@@ -101,5 +110,6 @@ class Device_Groups(Resource):
 
         return jsonify(
             status=status,
-            message=message
+            message=message,
+            auth_token=auth_token
         )

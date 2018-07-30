@@ -10,15 +10,19 @@ class Tasks(Resource):
 
     def get(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             dgs = tasks_connector.get_all_tasks()
             return jsonify(
                 status=200,
                 message="Sent Tasks",
+                auth_token=auth_token,
                 data=dgs
             )
         else:
             return jsonify(
+                auth_token=auth_token,
                 status=401,
                 message="Unauthorized"
             )

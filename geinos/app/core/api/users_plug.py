@@ -17,7 +17,9 @@ class Users(Resource):
     """
     def get(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             all_users = user_connector.get_all_users()
             status=200
             message="Sent all users."
@@ -28,6 +30,7 @@ class Users(Resource):
             message = "Unauthorized"
             data = []
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message,
             data=data
@@ -48,7 +51,9 @@ class Users(Resource):
         status = 400
         message = "User not added"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             POST_USERNAME = content['usr']
             print(POST_USERNAME)
@@ -76,6 +81,7 @@ class Users(Resource):
             status = 401
             message = "Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )
@@ -90,7 +96,9 @@ class Users(Resource):
     """
     def delete(self):
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             USERS = content['rmusr']
             auth.remove_user(USERS, logged_user.username, logged_user.role_type, request.remote_addr)
@@ -100,6 +108,7 @@ class Users(Resource):
             status=401
             message="Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )

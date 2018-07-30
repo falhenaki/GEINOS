@@ -28,7 +28,9 @@ class Templates(Resource):
         message="error"
         data = []
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             if (template_name is None):
                  nms = xml_templates.get_templates()
             else:
@@ -41,6 +43,7 @@ class Templates(Resource):
             status=401
             message="Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message,
             data=data
@@ -61,7 +64,9 @@ class Templates(Resource):
         status = 400
         message = "Template not added"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             if 'file' in request.files:
                 file = request.files['file']
                 '''
@@ -82,6 +87,7 @@ class Templates(Resource):
             status=401
             message = "Unauthorized"
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message
         )

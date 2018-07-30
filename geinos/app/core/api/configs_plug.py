@@ -21,12 +21,15 @@ class Device_Configs(Resource):
         status=400
         message = "Configs not created"
         logged_user = request_parser.validateCreds(request)
+        auth_token = ""
         if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
             device_sn = content['device_sn']
             config_path, template_path = device_connector.get_device_template(device_sn)
             rendered_template = xml_templates.parse_config_params(config_path, template_path, device_sn)
         return jsonify(
+            auth_token=auth_token,
             status=status,
             message=message,
             data=rendered_template
