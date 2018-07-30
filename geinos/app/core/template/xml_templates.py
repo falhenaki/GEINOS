@@ -7,7 +7,8 @@ from werkzeug.utils import secure_filename
 from jinja2 import Environment, meta, FileSystemLoader
 from app.core.template import template_connector
 from app.core.log import log_connector
-from app.core.exceptions.custom_exceptions import MissingResource
+from xml.etree import ElementTree as ET
+from app.core.exceptions.custom_exceptions import MissingResource, Conflict
 
 def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     """
@@ -16,7 +17,7 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     :param replacements: xml tags that should have their values replaced with jinja2 tags
     :return: true if file is saved correctly
     """
-    if (template_connector.template_exists(filename)):
+    if (template_connector.template_exists(filename) or not valid_xml(xml_file)):
         log_connector.add_log('SAVE TEMPLATE FAIL', "Failed to save template: {}".format(filename), username, user_role, request_ip)
         return False
     all_params = []
@@ -32,6 +33,12 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
         template_connector.add_file(sec_filename)
     log_connector.add_log('SAVE TEMPLATE', "Saved template: {}".format(filename), username, user_role, request_ip)
     return True
+
+def valid_xml(xml_file):
+    try:
+        x = ET.fromstring(xml_file)
+    except:
+        raise Conflict("XML file to be added is not of valid XML form")
 
 def get_template(xml_filename):
     """
