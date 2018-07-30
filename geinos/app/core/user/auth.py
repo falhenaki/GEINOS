@@ -4,6 +4,7 @@ from app.core.log import log_connector
 from datetime import datetime
 from app.core.radius import radius_connector
 
+
 def login(username_or_token, password):
     """
     checks user login and if it is legal sets the required session tokens appropriately
@@ -15,15 +16,17 @@ def login(username_or_token, password):
     if usr:
         return usr
     elif not usr and password:
-        #TODO put radius back in
-        if True:
-            connector = user_connector.DB_User_Connection(username_or_token, password)
-            if connector.is_legal():
-                connector.update_last_login(datetime.now)
-                connector.close_session()
-                return connector.this_user
+        if radius_connector.authenticate_user(username_or_token, password):
+            if True:
+                connector = user_connector.DB_User_Connection(username_or_token, password)
+                if connector.is_legal():
+                    connector.update_last_login(datetime.now)
+                    connector.close_session()
+                    return connector.this_user
+                else:
+                    connector.close_session()
+                    return None
             else:
-                connector.close_session()
                 return None
         else:
             return None

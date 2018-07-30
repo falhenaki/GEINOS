@@ -8,6 +8,7 @@ import ipaddress
 from app.core.device.device import Device
 from app.core.device import device_access
 from app.core.radius.radius import Radius
+import radius
 
 def authenticate_user(username, password):
     Session = sessionmaker(bind=engine)
@@ -16,9 +17,12 @@ def authenticate_user(username, password):
     if result is None:
         s.close()
         return True
-    #r = radius.Radius(result.secret, result.host, result.port)
+    r = radius.Radius(result.secret, result.host, int(result.port))
     s.close()
-    return True
+    if r.authenticate(username, password):
+        return True
+    else:
+        return False
 
 def get_radius_settings():
     Session = sessionmaker(bind=engine)
