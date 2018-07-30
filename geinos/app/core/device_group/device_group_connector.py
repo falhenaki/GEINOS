@@ -94,10 +94,13 @@ def device_group_exists(group_name):
     s.close()
     return (query is not None)
 
-def get_all_device_groups():
+def get_all_device_groups(dg_name=None):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device_Group).with_entities(Device_Group.device_group_name, Device_Group.template_name, Device_Group.last_modified)
+    if (dg_name is None):
+        query = s.query(Device_Group).with_entities(Device_Group.device_group_name, Device_Group.template_name, Device_Group.last_modified)
+    else:
+        query = s.query(Device_Group).filter(Device_Group.device_group_name == dg_name).with_entities(Device_Group.device_group_name, Device_Group.template_name, Device_Group.last_modified)
     ret = []
     atts_returned = ['device_group_name', 'template_name', 'last_modified']
     for d in query:

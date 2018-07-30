@@ -13,3 +13,4 @@ xmltodict
 requests_ntlm
 py-radius
 cheroot
+read-protobuf

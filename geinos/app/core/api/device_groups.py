@@ -16,10 +16,10 @@ class Device_Groups(Resource):
     Failure: status= 400, message= "Could not send device groups
     """
     #TODO Get specific device group
-    def get(self):
+    def get(self, device_group_name=None):
         logged_user = request_parser.validateCreds(request)
         if (logged_user):
-            dgs = device_group_connector.get_all_device_groups()
+            dgs = device_group_connector.get_all_device_groups(device_group_name)
             return jsonify(
                 status=200,
                 message="Sent Device Groups",
