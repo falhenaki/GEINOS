@@ -211,11 +211,15 @@ def remove_group(group_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
+    filters = s.query(Device_Group_Filter).filter(Device_Group_Filter.device_group_name == group_name)
     if device_group.first() is None:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
         s.close()
         raise MissingResource("Device group being removed does not exist")
+    if device_group.template_name is not None:
+        raise Conflict("Device groups can not be deleted once a template has been assigned")
     device_group.delete()
+    filters.delete()
     if device_group is 0:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
         s.close()
