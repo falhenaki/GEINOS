@@ -7,7 +7,7 @@ authen = HTTPBasicAuth()
 
 
 def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,country,state,locale,
-                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id):
+                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id,sys_server):
     """
     adds scep server to database. delete any existing servers first
     :param username: username to add
@@ -18,7 +18,7 @@ def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,c
     s = Session()
     s.query(Scep).delete()
     scep = Scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,country,state,locale,
-                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id)
+                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id,sys_server)
     s.add(scep)
     s.commit()
     s.close()

@@ -1,10 +1,8 @@
 from app.core.device import device_connector, device_access
 from pyorbit import Device, ConnectError
-from app.core.device_group import device_group_connector
-from app.core.template import template_connector, xml_templates
+from app.core.template import xml_templates
 from app.core.device import device_connector
 from app.core.log import log_connector
-from app.core.exceptions.custom_exceptions import MissingResource
 from app.core.scep import scep_config,scep_connector,scep_server
 import datetime
 import csv

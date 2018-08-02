@@ -39,13 +39,26 @@ class Scep(Resource):
             POST_KEY_ID = "GEINOS_KEY"
             POST_CA_CERT_ID = "GEINOS_CA_CERT "
             POST_CLIENT_CERT_ID = "GEINOS_CLIENT_CERT"
-            POST_SYS_SERVER = content ['sys-server']
-            if scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT,
+            POST_SYS_SERVER = content ['sys_server']
+            POST_THUMB_ONLY = content['thumb_only']
+            if 'TRUE' in POST_THUMB_ONLY:
+                print("THUMB ONLY")
+                thumb = scep_server.get_thumbprint()
+                if thumb is False:
+                    status = 405
+                    message = "Failed to obtain scep thumbprint"
+                elif "Error" in thumb:
+                    status = 406
+                    message = thumb
+                else:
+                    scep_server.update_thumbprint(thumb)
+                    status = 200
+                    message = "SCEP server added"
+            elif scep_server.add_scep(POST_SERVER, POST_USERNAME, POST_PASSWORD, POST_DIGEST, POST_ENCRYPT,
                                     POST_CERT_INFO_ID,POST_CA_SERVER_ID,POST_COUNTRY,POST_STATE,POST_LOCALE,
                                     POST_ORGANIZATION,POST_ORG_UNIT,POST_CERT_SERVER_ID,POST_KEY_ID,POST_CA_CERT_ID,
                                     POST_CLIENT_CERT_ID,POST_SYS_SERVER):
                 thumb = scep_server.get_thumbprint()
-                print(thumb)
                 if thumb is False:
                     status = 405
                     message = "Failed to obtain scep thumbprint"
@@ -62,6 +75,7 @@ class Scep(Resource):
         else:
             status = 401
             message = "Unauthorized"
+        print(message)
         return jsonify(
             auth_token=auth_token,
             status=status,

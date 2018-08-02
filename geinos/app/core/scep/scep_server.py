@@ -16,7 +16,7 @@ def get_thumbprint():
 
     try:
         result = requests.get(scep_admin,
-                          auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=1)
+                          auth=HttpNtlmAuth('domain\\' + server.username, server.password), timeout=10)
     except requests.exceptions.ConnectTimeout:
         return "Error: Connection to SCEP server timed out"
 
@@ -68,7 +68,7 @@ def get_otp():
 
 
 def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,country,state,locale,
-                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id):
+                 organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id,sys_server):
     """
     adds user with given username password and email
     :param username: username to add
@@ -76,7 +76,7 @@ def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,c
     :return: true if server is added false otherwise
     """
     if scep_connector.add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,country,state,locale,
-                               organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id):
+                               organization,org_unit,cert_server_id,key_id,ca_cert_id,client_cert_id,sys_server):
         return True
     return False
 

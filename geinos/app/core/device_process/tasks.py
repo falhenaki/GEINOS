@@ -8,7 +8,7 @@ class Tasks(CustomMixin, Base):
     """"""
     __tablename__ = "Tasks"
     serial_number = Column(String, primary_key=True)
-    status = Column(Enum('WAITING_CERT','WAITING_CONFIG','CERT','CONFIG'))
+    status = Column(String)
 
     #----------------------------------------------------------------------
     def __init__(self, serial,status):

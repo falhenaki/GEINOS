@@ -73,7 +73,7 @@ def get_device(device):
         ret.append(d.as_dict())
     s.close()
     return ret
-
+#TODO fix device.config part
 def device_exists_and_templated(sn):
     Session = sessionmaker(bind=engine)
     exists = False
@@ -83,7 +83,7 @@ def device_exists_and_templated(sn):
     device = query.first()
     if not device is None:
         exists = True
-    if not device.config_file == None:
+    if not device.config_file is None:
         has_template = True
     s.close()
     return exists and has_template
@@ -213,4 +213,5 @@ def set_device_access(device_sn,state):
     s = Session()
     device = s.query(Device).filter(Device.serial_number == device_sn).first()
     device.device_access = state.upper()
-    return True
+    s.commit()
+    s.close()
