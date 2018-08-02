@@ -2,15 +2,8 @@ from flask_restful import Resource, reqparse
 from flask_httpauth import HTTPBasicAuth
 from flask import request, jsonify
 from app.core.device import device_helpers, device_connector
-from app.core.device_process import dev_queue
-import threading
 
-#import read_protobuf.tests.demo_pb2
-#from google.protobuf.json_format import MessageToJson
-#from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
-#from google.protobuf.descriptor import FieldDescriptor
-from google.protobuf.message import Message
-#from copy import copy
+from app.core.proto import ztp_pb2
 
 parser = reqparse.RequestParser()
 authen = HTTPBasicAuth()
@@ -41,14 +34,11 @@ class Register(Resource):
         TODO: Require authorization, needs to be changed in orbit device. See if IP address can be obtained.
         """
         if True:
-            #my_message = MyMessage()
-            #my_message.ParseFromString(request.data)
-            sn = ""
-            idx = -1
-            while (request.data.decode("utf-8")[idx].isdigit()):
-                sn = request.data.decode("utf-8")[idx] + sn
-                idx -= 1
-            if device_connector.update_device(sn,"IP",request.remote_addr) is not True:
+
+            msg = ztp_pb2.registration()
+            msg.ParseFromString(request.data)
+
+            if device_connector.update_device(msg.serial_number,"IP",request.remote_addr) is not True:
                 return jsonify(
                     status=402,
                     message="Device could not be found"

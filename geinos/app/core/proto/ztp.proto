@@ -1,0 +1,8 @@
+package gemds.services.ztp.protobuf;
+option optimize_for = LITE_RUNTIME;
+
+message registration
+{
+	required string name = 1;
+	required string serial_number = 2;
+}

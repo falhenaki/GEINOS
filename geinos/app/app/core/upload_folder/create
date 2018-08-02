@@ -1,0 +1,3 @@
+serial_num,vendor_id,model_num,location,cert_required
+12345,GE,G7,NY,False
+54321,GE,G5,CA,True
