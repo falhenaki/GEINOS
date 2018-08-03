@@ -25,7 +25,6 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     sec_filename = secure_filename(filename)
     path = os.path.join(app.config['UPLOADS_FOLDER'], sec_filename)
     xml_file.save(path)
-    print(path)
     with open(path, 'r') as f:
         s = f.read()
     with open(path, 'w') as fout:

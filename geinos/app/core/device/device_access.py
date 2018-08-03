@@ -52,7 +52,6 @@ def get_interface_address(host="192.168.1.1", username="admin", password="admin"
             # JSON
             out = st.get(filter=('xpath', ipv4), format='json')
             dt = json.loads(out)
-            print(out)
             ifip = dt['data']['interfaces-state']['interface']['ipv4']['address']['ip']
             return ifip
     except:

@@ -72,7 +72,6 @@ class Device_Groups(Resource):
                     )
             '''
             if device_group_connector.add_device_group(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
-                print("Device group added")
                 status=201
                 message="Device(s) added to group"
             else:

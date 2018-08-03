@@ -10,7 +10,6 @@ from app.core.exceptions.custom_exceptions import Conflict, MissingResource, Gen
 from app.core.scep.scep import Scep
 from app.core.device_process import dev_queue
 from werkzeug.utils import secure_filename
-from multiprocessing import Lock
 import datetime
 
 #TODO Log update
@@ -53,9 +52,9 @@ def get_all_devices():
     ret = []
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Device).with_entities(Device.vendor_id, Device.model_number, Device.serial_number)
+    query = s.query(Device).with_entities(Device.vendor_id, Device.model_number, Device.serial_number, Device.IP)
     ret = []
-    atts_returned = ['vendor_id', 'model_number', 'serial_number']
+    atts_returned = ['vendor_id', 'model_number', 'serial_number','IP']
     for d in query:
         dictionary = {}
         for att in atts_returned:
@@ -73,6 +72,17 @@ def get_device(device):
         ret.append(d.as_dict())
     s.close()
     return ret
+
+def get_sn_from_ip(ip):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device).filter(Device.IP == ip).first()
+    s.close()
+    if query is None:
+        return False
+    dev_ip = query.serial_number
+    return dev_ip
+
 #TODO fix device.config part
 def device_exists_and_templated(sn):
     Session = sessionmaker(bind=engine)
@@ -161,7 +171,6 @@ def set_rendered_template(sn, name, template_name):
         s.close()
         raise MissingResource()
     filename = secure_filename(device.vendor_id + device.serial_number + device.model_number)
-    print(filename)
     rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1', sn)
     save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
     with open(save_path, 'w') as fout:

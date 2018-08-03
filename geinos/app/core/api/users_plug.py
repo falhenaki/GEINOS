@@ -56,7 +56,6 @@ class Users(Resource):
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
             POST_USERNAME = content['usr']
-            print(POST_USERNAME)
             POST_PASSWORD = content['password']
             POST_RETYPE_PASS = content['retypepassword']
             POST_EMAIL = content['email']

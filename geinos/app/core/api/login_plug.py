@@ -23,8 +23,6 @@ class Login(Resource):
             POST_PASSWORD = request.authorization["password"]
             # we are making sure username and password both exist before logging in
             if POST_USERNAME and POST_PASSWORD and auth.login(POST_USERNAME, POST_PASSWORD):
-                print(POST_USERNAME)
-                print(POST_PASSWORD)
                 auth.update_user_login(POST_USERNAME)
                 usr = user_connector.get_user(POST_USERNAME)
                 log_connector.add_log('LOGIN', "Logged in successfully", usr.username, usr.role_type, request.remote_addr)

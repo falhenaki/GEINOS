@@ -22,7 +22,6 @@ class Scep(Resource):
         if (logged_user):
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
-            print(content)
             POST_USERNAME = content['usr']
             POST_PASSWORD = content['password']
             POST_SERVER = content['server']
@@ -42,7 +41,6 @@ class Scep(Resource):
             POST_SYS_SERVER = content ['sys_server']
             POST_THUMB_ONLY = content['thumb_only']
             if 'TRUE' in POST_THUMB_ONLY:
-                print("THUMB ONLY")
                 thumb = scep_server.get_thumbprint()
                 if thumb is False:
                     status = 405
@@ -75,7 +73,6 @@ class Scep(Resource):
         else:
             status = 401
             message = "Unauthorized"
-        print(message)
         return jsonify(
             auth_token=auth_token,
             status=status,

@@ -20,7 +20,6 @@ data_file_dir = os.path.join(app.root_path, 'react/static')
 data_file_path = os.path.join(data_file_dir, datafile)
 #data = json.load(open(data_file_path))
 
-#print(data)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):

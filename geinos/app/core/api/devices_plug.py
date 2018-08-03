@@ -19,7 +19,6 @@ class Devices(Resource):
     """
 
     def get(self,device=None):
-        print("GET DEVICES")
         logged_user = request_parser.validateCreds(request)
         auth_token = ""
         if (logged_user):
@@ -50,7 +49,7 @@ class Devices(Resource):
     Failure: status 401, message = 'Unauthorized'
     """
     def put(self):
-        print("PUT DEVICE")
+
         status = 400
         message = "Device not added"
         logged_user = request_parser.validateCreds(request)
@@ -59,7 +58,7 @@ class Devices(Resource):
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             if 'file' not in request.files:
                 content = request.get_json(force=True)
-                print(content)
+
                 VENDOR_ID = content['vendor_id']
                 SERIAL_NUMBER = content['serial_num']
                 MODEL_NUMBER = content['model_num']
@@ -99,17 +98,14 @@ class Devices(Resource):
         )
 
     def delete(self):
-        print('DELEtE DEVICE')
         status=400
         logged_user = request_parser.validateCreds(request)
         auth_token = ""
         if (logged_user):
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json()
-            print(content)
             content = request.get_json(force=True)
             DEVICE_SNs = content['serial_nums']
-            print("working?")
             if device_connector.remove_device(DEVICE_SNs, logged_user.username, logged_user.role_type, request.remote_addr):
                 return jsonify(
                     auth_token=auth_token,

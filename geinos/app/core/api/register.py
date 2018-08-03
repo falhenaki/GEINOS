@@ -22,7 +22,7 @@ class Register(Resource):
         status: 402, message = "Device has not yet been assigned a template"
 
     """
-    def post(self):
+    def post(self, dev_ip=None):
         """
         API for devices to request templates to be applied based on their device group
         :return: 402 if the device has not been added 401 if there is no template assigned to device group
@@ -37,8 +37,18 @@ class Register(Resource):
 
             msg = ztp_pb2.registration()
             msg.ParseFromString(request.data)
-
-            if device_connector.update_device(msg.serial_number,"IP",request.remote_addr) is not True:
+            if dev_ip is not None:
+                ip = dev_ip
+                serial_number = device_connector.get_sn_from_ip(ip)
+                if serial_number is False:
+                    return jsonify(
+                        status=402,
+                        message="No Device with ip {}".format(dev_ip)
+                    )
+            else:
+                ip = request.remote_addr
+                serial_number = msg.serial_number
+            if device_connector.update_device(serial_number,"IP",ip) is not True:
                 return jsonify(
                     status=402,
                     message="Device could not be found"
