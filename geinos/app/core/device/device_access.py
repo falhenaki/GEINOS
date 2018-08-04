@@ -16,6 +16,8 @@ def get_uptime(host, user, passwd):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return
+    finally:
+        dev.close()
 
 def set_config(host, user, passwd, t_conf):
     try:
@@ -31,6 +33,8 @@ def set_config(host, user, passwd, t_conf):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return False
+    finally:
+        dev.close()
     return True
 
 def get_config(host, user, passwd):
@@ -42,6 +46,8 @@ def get_config(host, user, passwd):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return
+    finally:
+        dev.close()
 
 def get_interface_address(host="192.168.1.1", username="admin", password="admin", ifname="Bridge"):
     try:
@@ -56,6 +62,8 @@ def get_interface_address(host="192.168.1.1", username="admin", password="admin"
             return ifip
     except:
         print("COULD NOT GET IF ADDRESS")
+    finally:
+        dev.close()
 
 def generate_private_key(dev, key_name):
     try:
@@ -80,6 +88,8 @@ def generate_private_key(dev, key_name):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return False
+    finally:
+        dev.close()
     return state
 
 
@@ -104,6 +114,8 @@ def get_ca_certs(dev,cert_id,cert_server_id, ca_server_id):
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
         return False
+    finally:
+        dev.close()
     return state
 
 
@@ -129,6 +141,8 @@ def get_client_cert(dev, cert_server_id, ca_server_id, cert_id, cert_info_id, ca
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
         return False
+    finally:
+        dev.close()
     return state
 
 
