@@ -72,15 +72,20 @@ class Assign(Resource):
         if (logged_user):
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             content = request.get_json(force=True)
-            if content['temp_name'] and content['group_name']:
-                templ_name = content['temp_name']
-                group_name = content['group_name']
-                if device_group_connector.remove_assignment(group_name, templ_name, logged_user.username, logged_user.role_type, request.remote_addr):
-                    status = 200
-                    message = templ_name + " Unassigned to " + group_name
+            if content['group_names']:
+                group_name = content['group_names']
+                deleted, not_deleted = device_group_connector.remove_assignments(group_name, logged_user.username, logged_user.role_type, request.remote_addr)
+                if len(not_deleted) == 0:
+                    return jsonify(
+                        auth_token=auth_token,
+                        status=200,
+                        message="Group assignments deleted: {}".format(','.join(deleted))
+                    )
                 else:
-                    status = 400
-                    message = "Could not process request"
+                    status = 412,
+                    message = "Group assignments not deleted : {}\nGroup assignments deleted : {}".format(','.join(not_deleted),
+                                                                                            ','.join(deleted))
+
         return jsonify(
                 status=status,
                 message= message,

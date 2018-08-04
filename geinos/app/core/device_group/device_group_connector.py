@@ -149,19 +149,33 @@ def get_group_of_device(device):
                 return dg.device_group_name
     return None
 
-def remove_assignment(group_name, template_name, username, user_role, request_ip):
+def remove_assignment(group_name, username, user_role, request_ip):
     Session = sessionmaker(bind=engine)
     s = Session()
-    dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
+    dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name).first()
+    curr_temp_name = dg.template_name
     if (dg is None):
-        log_connector.add_log('DELETE ASSIGN FAIL', "Failed to delete {} to {} assignment".format(template_name, group_name), username, user_role,
+        log_connector.add_log('DELETE ASSIGN FAIL', "Failed to delete {} to {} assignment".format(curr_temp_name, group_name), username, user_role,
                               request_ip)
         return False
-    else:
-        dg.template_name = None
-        log_connector.add_log('DELETE ASSIGN', "Deleted {} to {} assignment".format(template_name, group_name), username, user_role,
-                              request_ip)
-        return True
+
+    dg.template_name = None
+    dg.attribute_value = None
+    dg.num_attributes = 0
+    s.commit()
+    log_connector.add_log('DELETE ASSIGN', "Deleted {} to {} assignment".format(curr_temp_name, group_name), username, user_role,
+                          request_ip)
+    return True
+
+def remove_assignments(group_names, username, user_role, request_ip):
+    deleted = []
+    not_deleted = []
+    for name in group_names:
+        if remove_assignment(name, username, user_role, request_ip):
+            deleted.append(name)
+        else:
+            not_deleted.append(name)
+    return deleted, not_deleted
 
 #TODO Check groups and templates exist
 def assign_template(group_name, template_name, username, user_role, request_ip):
