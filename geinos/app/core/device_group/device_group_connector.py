@@ -223,30 +223,16 @@ def remove_group(group_name, username, user_role, request_ip):
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
         s.close()
         raise MissingResource("Device group being removed does not exist")
-    if device_group.template_name is not None:
-        raise Conflict("Device groups can not be deleted once a template has been assigned")
-    device_group.delete()
+    no_group_devices = s.query(Device).filter(Device.device_group == group_name)
+    remaining_serials = [x.serial_number for x in no_group_devices]
+    s.query(Device).filter(Device.serial_number == remaining_serials).update({'group_name': None, 'device_group_filters': 0})
     filters.delete()
+    device_group.delete()
     if device_group is 0:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
         s.close()
         return False
 
-    no_group_devices = s.query(Device).filter(Device.device_group == group_name)
-    dgs = s.query(Device_Group).orderby(Device_Group.num_attributes.desc(), Device_Group.last_modified.desc())
-
-    for dg in dgs:
-        if (no_group_devices.count() == 0):
-            break
-        digs = devices_in_group(dg.device_group_name)
-        overlap = list(set(digs) & set(no_group_devices))
-        if (len(overlap) > 0):
-            serials = [x.serial_number for x in overlap]
-            s.query(Device).filter(Device.serial_number == serials).update({'group_name' : dg.device_group_name, 'device_group_filters' : dg.num_attributes})
-            no_group_devices = list(set(no_group_devices) - set(overlap))
-
-    remaining_serials = [x.serial_number for x in no_group_devices]
-    s.query(Device).filter(Device.serial_number == remaining_serials).update({'group_name': None, 'device_group_filters': 0})
     s.commit()
     s.close()
     log_connector.add_log('DELETE DEVICE GROUP', "Removed {} device group".format(group_name), username, user_role, request_ip)
