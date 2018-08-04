@@ -64,3 +64,25 @@ class Assign(Resource):
                 auth_token=auth_token,
             )
 
+    def delete(self):
+        status = 401
+        message = "Unauthorized"
+        logged_user = request_parser.validateCreds(request)
+        auth_token = ""
+        if (logged_user):
+            auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
+            content = request.get_json(force=True)
+            if content['temp_name'] and content['group_name']:
+                templ_name = content['temp_name']
+                group_name = content['group_name']
+                if device_group_connector.remove_assignment(group_name, templ_name, logged_user.username, logged_user.role_type, request.remote_addr):
+                    status = 200
+                    message = templ_name + " Unassigned to " + group_name
+                else:
+                    status = 400
+                    message = "Could not process request"
+        return jsonify(
+                status=status,
+                message= message,
+                auth_token=auth_token,
+            )

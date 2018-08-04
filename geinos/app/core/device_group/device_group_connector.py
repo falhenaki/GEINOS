@@ -151,6 +151,20 @@ def get_group_of_device(device):
                 return dg.device_group_name
     return None
 
+def remove_assignment(group_name, template_name, username, user_role, request_ip):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    dg = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
+    if (dg is None):
+        log_connector.add_log('DELETE ASSIGN FAIL', "Failed to delete {} to {} assignment".format(template_name, group_name), username, user_role,
+                              request_ip)
+        return False
+    else:
+        dg.template_name = None
+        log_connector.add_log('DELETE ASSIGN', "Deleted {} to {} assignment".format(template_name, group_name), username, user_role,
+                              request_ip)
+        return True
+
 #TODO Check groups and templates exist
 def assign_template(group_name, template_name, username, user_role, request_ip):
     if group_name is None or template_name is None: # or not device_group_exists(group_name) or not template_connector.template_exists(template_name):
