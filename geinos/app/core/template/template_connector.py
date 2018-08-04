@@ -3,6 +3,8 @@ from sqlalchemy.orm import sessionmaker
 from app import engine
 from app.core.exceptions.custom_exceptions import GeneralError, MissingResource, Conflict
 import datetime
+from app.core.template import xml_templates
+from app.core.device_group.device_group import Device_Group
 
 def add_file(filename):
     Session = sessionmaker(bind=engine)
@@ -32,3 +34,30 @@ def get_templates():
         ret.append(tm.as_dict())
     s.close()
     return ret
+
+def delete_template(name, username, role_type, remote_addr):
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    template = s.query(Template).filter(Template.name == name)
+    if template is None:
+        return False
+    else:
+        template.delete()
+        if template is 0:
+            return False
+    s.query(Device_Group).filter(Device_Group.template_name == name).update(
+        {'template_name': None})
+    if xml_templates.delete_template(name, username, role_type, remote_addr):
+        return True
+    else:
+        return False
+
+def delete_templates(names, username, role_type, remote_addr):
+    deleted = []
+    not_deleted = []
+    for name in names:
+        if (delete_template(name, username, role_type, remote_addr)):
+            deleted.append(name)
+        else:
+            not_deleted.append(name)
+    return deleted, not_deleted

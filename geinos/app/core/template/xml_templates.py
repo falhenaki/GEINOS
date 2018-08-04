@@ -33,6 +33,20 @@ def save_with_jinja(xml_file, filename, username, user_role, request_ip):
     log_connector.add_log('SAVE TEMPLATE', "Saved template: {}".format(filename), username, user_role, request_ip)
     return True
 
+def delete_template(filename, username, user_role, request_ip):
+    if (not template_connector.template_exists(filename)):
+        log_connector.add_log('DELETE TEMPLATE FAIL', "Failed to delete template: {}".format(filename), username, user_role, request_ip)
+        return False
+    sec_filename = secure_filename(filename)
+    path = os.path.join(app.config['UPLOADS_FOLDER'], sec_filename)
+    if (os.path.isfile(path)):
+        os.remove(path)
+        log_connector.add_log('DELETED TEMPLATE', "Deleted template: {}".format(filename), username, user_role, request_ip)
+        return True
+    else:
+        log_connector.add_log('DELETE TEMPLATE FAIL', "Failed to delete template: {}".format(filename), username, user_role, request_ip)
+        return False
+
 def valid_xml(xml_file):
     return True
     try:
