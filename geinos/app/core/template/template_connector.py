@@ -19,7 +19,7 @@ def template_exists(template_name):
     Session = sessionmaker(bind=engine)
     s = Session()
     query = s.query(Template).filter(Template.name == template_name)
-    if not query is None:
+    if query is None:
         s.close()
         return False
     s.close()
@@ -38,15 +38,15 @@ def get_templates():
 def delete_template(name, username, role_type, remote_addr):
     Session = sessionmaker(bind=engine)
     s = Session()
-    s.query(Template).filter(Template.name == name).delete()
+    if not xml_templates.delete_template(name, username, role_type, remote_addr):
+        return False
+    tmp = s.query(Template).filter(Template.name == name).first()
+    s.delete(tmp)
     s.query(Device_Group).filter(Device_Group.template_name == name).update(
         {'template_name': None})
     s.commit()
     s.close()
-    if xml_templates.delete_template(name, username, role_type, remote_addr):
-        return True
-    else:
-        return False
+    return True
 
 def delete_templates(names, username, role_type, remote_addr):
     deleted = []
