@@ -38,9 +38,7 @@ def add_device_group(name, att, val, username, role_type, remote_addr):
         att_val = str({att : val})
         filter_dict[att] = val
     for key in filter_dict:
-        try:
-            s.query(Device).filter(Device.key)
-        except AttributeError:
+        if not hasattr(Device, key):
             raise Conflict("Group filter {} is not able to be checked against device attributes".format(key))
         group_filter = Device_Group_Filter(name, key, filter_dict[key])
         s.add(group_filter)
@@ -239,15 +237,19 @@ def remove_group(group_name, username, user_role, request_ip):
         raise MissingResource("Device group being removed does not exist")
     no_group_devices = s.query(Device).filter(Device.device_group == group_name)
     remaining_serials = [x.serial_number for x in no_group_devices]
-    s.query(Device).filter(Device.serial_number == remaining_serials).update({'group_name': None, 'device_group_filters': 0})
+    for sn in remaining_serials:
+        dv = s.query(Device).filter(Device.serial_number == sn).first()
+        dv.device_group = None
+        dv.device_group_filters = 0
+        s.commit()
     filters.delete()
     device_group.delete()
+    s.commit()
     if device_group is 0:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Failed to remove {} device group".format(group_name), username, user_role, request_ip)
         s.close()
         return False
 
-    s.commit()
     s.close()
     log_connector.add_log('DELETE DEVICE GROUP', "Removed {} device group".format(group_name), username, user_role, request_ip)
     return True
