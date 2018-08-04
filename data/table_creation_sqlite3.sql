@@ -7,6 +7,13 @@ CREATE TABLE `Device_Groups` (
   PRIMARY KEY (`device_group_name`)
 );
 
+CREATE TABLE `Radius` (
+  `host` varchar(50),
+  `port` varchar(50),
+  `secret` varchar(50),
+  PRIMARY KEY (`host`)
+);
+
 CREATE TABLE `Devices` (
   `vendor_id` varchar(20) NOT NULL DEFAULT '',
   `serial_number` varchar(20) NOT NULL PRIMARY KEY,
