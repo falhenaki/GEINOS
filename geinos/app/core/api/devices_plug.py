@@ -22,6 +22,15 @@ class Devices(Resource):
         logged_user = request_parser.validateCreds(request)
         auth_token = ""
         if (logged_user):
+            if device is not None:
+                device_info = device_connector.get_device(device)
+                return jsonify(
+                    auth_token=auth_token,
+                    status=200,
+                    message="Sent Device",
+                    data=device_info
+                )
+
             auth_token = logged_user.generate_auth_token().decode('ascii') + ":unused"
             devices = device_connector.get_all_devices()
             return jsonify(

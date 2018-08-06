@@ -170,7 +170,7 @@ def set_rendered_template(sn, name, template_name):
     if device is None:
         s.close()
         raise MissingResource()
-    filename = secure_filename(device.vendor_id + device.serial_number + device.model_number)
+    filename = secure_filename(device.vendor_id + device.serial_number + device.model_number + template_name)
     rendered_template = xml_templates.apply_parameters(template_name, '1.1.1.1', sn)
     save_path = os.path.join(app.config['APPLIED_PARAMS_FOLDER'], filename)
     with open(save_path, 'w') as fout:
