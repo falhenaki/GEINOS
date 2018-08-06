@@ -161,8 +161,6 @@ def remove_assignment(group_name, username, user_role, request_ip):
         return False
 
     dg.template_name = None
-    dg.attribute_value = None
-    dg.num_attributes = 0
     s.commit()
     log_connector.add_log('DELETE ASSIGN', "Deleted {} to {} assignment".format(curr_temp_name, group_name), username, user_role,
                           request_ip)
