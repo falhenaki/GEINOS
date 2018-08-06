@@ -33,6 +33,7 @@ class Register(Resource):
         """
         TODO: Require authorization, needs to be changed in orbit device. See if IP address can be obtained.
         """
+        print("Enter Register")
         if True:
 
             msg = ztp_pb2.registration()
@@ -48,13 +49,17 @@ class Register(Resource):
             else:
                 ip = request.remote_addr
                 serial_number = msg.serial_number
+                print("Device IP: " + ip)
+                print("Device Serial: " + serial_number)
             if device_connector.update_device(serial_number,"IP",ip) is not True:
+                print("Failed to find device in database")
                 return jsonify(
                     status=402,
                     message="Device could not be found"
                 )
 
             else:
+                print("Device Registered")
                 status=200
                 message="Success"
         else:

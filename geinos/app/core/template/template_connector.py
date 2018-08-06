@@ -40,6 +40,7 @@ def get_templates():
     return ret
 
 def delete_template(name, username, role_type, remote_addr):
+    print("delete_template from database start: " + str(name) + " " + username + " " +role_type + " " + remote_addr)
     Session = sessionmaker(bind=engine)
     s = Session()
     xml_templates.delete_template(name, username, role_type, remote_addr)
@@ -58,14 +59,17 @@ def delete_template(name, username, role_type, remote_addr):
         grp.template_name = None
         s.commit()
     s.commit()
+    print("Commited deletion of template: {}".format(name))
     s.close()
     return True
 
 
 def delete_templates(names, username, role_type, remote_addr):
+    print("delete_templates start: " + str(names) + " " + username + " " +role_type + " " + remote_addr)
     deleted = []
     not_deleted = []
     for name in names:
+        print("Template from list to be deleted:" + name)
         if (delete_template(name, username, role_type, remote_addr)):
             deleted.append(name)
         else:

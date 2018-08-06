@@ -93,6 +93,7 @@ class Templates(Resource):
         )
 
     def delete(self):
+        print("Attempting to delete a template")
         status = 401
         message = "Unauthorized"
         logged_user = request_parser.validateCreds(request)
@@ -103,9 +104,11 @@ class Templates(Resource):
             template_names = content['names']
             deleted, not_deleted = template_connector.delete_templates(template_names, logged_user.username, logged_user.role_type, request.remote_addr)
             if len(not_deleted) == 0:
+                print("Deleted template: " + str(template_names))
                 status=200
                 message="Templates deleted: {}".format(','.join(deleted))
             else:
+                print("Failed to delete template: " + str(template_names))
                 status = 412,
                 message = "Templates not deleted : {}\nTemplates deleted : {}".format(','.join(not_deleted), ','.join(deleted))
         return jsonify(
