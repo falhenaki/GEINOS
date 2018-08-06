@@ -18,8 +18,8 @@ def add_file(filename):
 def template_exists(template_name):
     Session = sessionmaker(bind=engine)
     s = Session()
-    query = s.query(Template).filter(Template.name == template_name)
-    if query is None:
+    query = s.query(Template).filter(Template.name == template_name).count()
+    if query == 0:
         s.close()
         return False
     s.close()
