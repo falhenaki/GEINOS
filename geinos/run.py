@@ -13,6 +13,10 @@ import time
 
 #subprocess.call(['app/pyorbit/tst_scr.sh'])
 
+print(app.config['BASE_DIR'])
+print(app.config['UPLOADS_FOLDER'])
+print(app.config['APPLIED_PARAMS_FOLDER'])
+
 if not os.path.exists(app.config['UPLOADS_FOLDER']):
     os.makedirs(app.config['UPLOADS_FOLDER'])
 
