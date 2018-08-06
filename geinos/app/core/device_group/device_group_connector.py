@@ -304,6 +304,6 @@ def check_orthogonal(filter_dict):
             return False
         else:
             for individual_key in group_filters.keys():
-                group_filters[individual_key] = 0
+                group_filt[individual_key] = 0
 
     return True
