@@ -50,14 +50,12 @@ def delete_template(name, username, role_type, remote_addr):
     s.delete(tmp)
     s.commit()
     grps = s.query(Device_Group).filter(Device_Group.template_name == name)
-    for grp in grps:
-        cur = s.query(Device_Group).filter(Device_Group.device_group_name == grp.device_group_name).first()
-        cur.template_name = None
-        s.commit()
-    dvs = s.query(Device).filter(str(Device.config_file).split('-')[0] == name)
-    for dv in dvs:
-        cur = s.query(Device).filter(Device.serial_number == dv.serial_number).first()
-        cur.config_file = None
+    for grp in grps.all():
+        for device in s.query(Device).filter(Device.device_group == grp.device_group_name).all():
+            if os.path.exists(device.config_file):
+                os.remove(device.config_file)
+            device.config_file = None
+        grp.template_name = None
         s.commit()
     s.commit()
     s.close()
