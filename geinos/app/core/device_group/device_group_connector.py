@@ -3,6 +3,7 @@ from app.core.device import device_connector
 from app.core.device_group.device_group import Device_Group
 from app.core.device_group.device_group_filter import Device_Group_Filter
 from app.core.device_group.device_in_group import Device_in_Group
+from app.core.template import template_connector
 from app.core.exceptions.custom_exceptions import Conflict, MissingResource
 from sqlalchemy.orm import sessionmaker
 from app import engine
@@ -245,6 +246,8 @@ def remove_group(group_name, username, user_role, request_ip):
     s = Session()
     device_group = s.query(Device_Group).filter(Device_Group.device_group_name == group_name)
     filters = s.query(Device_Group_Filter).filter(Device_Group_Filter.device_group_name == group_name)
+    if device_group.first().template_name is not None:
+        template_connector.delete_template(device_group.template_name)
     if device_group.first() is None:
         log_connector.add_log('DELETE DEVICE GROUP FAIL', "Tried to remove {} device group which does not exist".format(group_name), username, user_role, request_ip)
         s.close()
@@ -255,6 +258,11 @@ def remove_group(group_name, username, user_role, request_ip):
         dv = s.query(Device).filter(Device.serial_number == sn).first()
         dv.device_group = None
         dv.device_group_filters = 0
+        if dv.config_file is not None:
+            if os.path.exists(dv.config_file):
+                os.remove(dv.config_file)
+            dv.config_file = None
+            dv.config_available = "FALSE"
         s.commit()
     filters.delete()
     device_group.delete()
@@ -277,14 +285,14 @@ def check_orthogonal(filter_dict):
 
     filters = s.query(Device_Group_Filter)
     group_filters = {}
-    for filter in filters:
+    for filter in filters.all():
         if filter.device_group_name not in group_filters.keys():
             temp_list = [(filter.filter, filter.filter_value)]
             group_filters[filter.device_group_name] = temp_list
         else:
             group_filters[filter.device_group_name].append((filter.filter, filter.filter_value))
 
-    for key in group_filters:
+    for key in group_filters.keys():
         group_filt = {}
         for specific_filter in group_filters[key]:
             group_filt[specific_filter] = 0
@@ -295,7 +303,7 @@ def check_orthogonal(filter_dict):
         if not (0 in group_filt.values() and 0 in check_filters.values()):
             return False
         else:
-            for key in group_filters.keys():
-                group_filters[key] = 0
+            for individual_key in group_filters.keys():
+                group_filters[individual_key] = 0
 
     return True
