@@ -70,13 +70,15 @@ def get_parameter_next_value(name, request_ip, sn):
             param.current_offset = param.current_offset + 1
     elif param.param_type == "LIST":
         lst = s.query(ListParameter).filter(ListParameter.param_name == name)
-        if (param.current_offset >= len(lst)):
+        if (int(param.current_offset) == lst.count() or int(param.current_offset) > lst.count()):
             # param.current_offset = 0
             log_connector.add_log('PARAM OVERFLOW', "Ran out of params in list (param: {}). Starting over.".format(name), None, None,
                                   request_ip)
             raise Conflict("Ran out of parameters to assign")
-        ret_value = lst[param.current_offset].param_value
-        param.current_offset = param.current_offset + 1
+        lst_param = lst.filter(ListParameter.index == param.current_offset).first()
+        ret_value = lst_param.param_value
+        param.current_offset = str(int(param.current_offset) + 1)
+        s.commit()
     else:
         ret_value = param.start_value
     s.add(param)
@@ -92,7 +94,7 @@ def add_parameter(name, type, val, username, user_role, request_ip):
         if (type.upper() == "RANGE"):
             dv = Parameter(name, str(val[0]), "RANGE", str(val[-1]))
             s.add(dv)
-        elif (type.upper() == "LIST"):
+        elif (type.upper() == "IP-LIST"):
             val = val.split(",")
             dv = Parameter(name, "", "LIST")
             dv.current_offset = 0
@@ -112,7 +114,6 @@ def add_parameter(name, type, val, username, user_role, request_ip):
         return True
     else:
         log_connector.add_log('ADD PARAM FAIL', "Failed to add the {} parameter".format(name), username, user_role, request_ip)
-        s.close()
         raise GeneralError("Next parameter value for: {} could not be obtained for unknown reasons", name)
 
 
