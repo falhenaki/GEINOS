@@ -49,7 +49,7 @@ class Users(Resource):
     """
     def put(self):
         status = 400
-        message = "User not added"
+        message = "Failed to add user. User name may already be taken"
         logged_user = request_parser.validateCreds(request)
         auth_token = ""
         if (logged_user):
@@ -75,7 +75,7 @@ class Users(Resource):
             if auth.add_user(POST_USERNAME, POST_PASSWORD, POST_EMAIL, POST_ROLE, logged_user.username, logged_user.role_type, request.remote_addr):
                 auth.change_user_role(POST_USERNAME, POST_ROLE)
                 status=200
-                message = "User added"
+                message = "User \"{}\" added".format(POST_USERNAME)
         else:
             status = 401
             message = "Unauthorized"

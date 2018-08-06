@@ -61,10 +61,13 @@ def get_template(xml_filename):
     :return: specified filename
     """
     sec_filename = secure_filename(xml_filename)
-    with open(os.path.join(app.config['UPLOADS_FOLDER'], sec_filename), 'r') as myfile:
-        data = myfile.read()
+    try:
+        with open(os.path.join(app.config['UPLOADS_FOLDER'], sec_filename), 'r') as myfile:
+            data = myfile.read()
+    except FileNotFoundError:
+        print("Attempted to get_template {} but file was not found".format(xml_filename))
+        raise Conflict("File Not Found")
     return data
-    #return send_from_directory(app.config['UPLOADS_FOLDER'], sec_filename)
 
 def get_templates():
     """
