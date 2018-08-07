@@ -52,6 +52,7 @@ class Scep(CustomMixin, Base):
         self.ca_cert_id = ca_cert_id
         self.client_cert_id = client_cert_id
         self.sys_server = sys_server
+        self.id = '1'
 
     def set_thumb(self,thumbprint):
         self.thumbprint = thumbprint

@@ -9,27 +9,42 @@ from app.core.log import log_connector
 
 
 def config_scep_thread(dev):
-    for _ in range(2):
-        device = device_connector.get_device(dev)
-        tasks_connector.add_task(dev, 'Obtaining Certificate')
-        result = device_helpers.set_scep(device[0]['IP'],"admin","admin",device[0]['serial_number'])
+    result = "SCEP configuration exception"
+    try:
+        for _ in range(2):
+            device = device_connector.get_device(dev)
+            tasks_connector.add_task(dev, 'Obtaining Certificate')
+            result = device_helpers.set_scep(device[0]['IP'],"admin","admin",device[0]['serial_number'])
+            if "Error" or "failure" not in result:
+                break
+    except Exception as ex:
+        print('SCEP PROCESS FAILED: ' + str(ex))
+    finally:
+        print("SCEP Process Result: " + result)
         device_connector.set_device_access(dev, "FALSE")
-        log_connector.add_log( "Get Cert Device {}".format(dev),'Cert Status:' + result,
-                                      'System', 'None', 'None')
-        if "Error" not in result:
-            break
-    tasks_connector.delete_task(dev)
+        tasks_connector.delete_task(dev)
+        log_connector.add_log("Get Cert Device {}".format(dev), 'Cert Status:' + result,
+                              'System', 'None', 'None')
+    config_device_thread(dev)
 
 
 def config_device_thread(dev):
-    for _ in range(2):
-        device = device_connector.get_device(dev)
-        tasks_connector.add_task(dev, 'Configuring Device')
-        result = device_helpers.apply_template(device[0]['serial_number'],device[0]['IP'],"admin","admin")
+    result = "Configuration exception"
+    device = device_connector.get_device(dev)
+    try:
+        for _ in range(2):
+            tasks_connector.add_task(dev, 'Configuring Device')
+            result = device_helpers.apply_template(device[0]['serial_number'], device[0]['IP'], "admin", "admin")
+            if result is True:
+                break
+    except Exception as ex:
+        print("Configuration process failed: " + str(ex))
+    finally:
+        print("Config Process Result: " + result)
+        log_connector.add_log("Configure device {}".format(dev), 'Config Status:' + result,
+                              'System', 'None', 'None')
         device_connector.set_device_access(dev, "FALSE")
-        if result is True:
-            break
-    tasks_connector.delete_task(dev)
+        tasks_connector.delete_task(dev)
 
 
 def config_process(device_queue):

@@ -47,6 +47,7 @@ class Device_Groups(Resource):
     """
     #TODO why are we using a post here but a put for all other "adds"
     def post(self):
+        print("Attempting to add group")
         status = 400
         message = "Device(s) not added to group"
         logged_user = request_parser.validateCreds(request)
@@ -60,6 +61,10 @@ class Device_Groups(Resource):
             except KeyError:
                 attribute = "other"
             value = content["value"]
+            print("Group Name: " + group_name)
+            print("Group Value: " + str(value))
+            print("Group Attribute: " + str(attribute))
+
 
             '''
             groups = device_group_connector.get_all_device_groups()
@@ -72,14 +77,17 @@ class Device_Groups(Resource):
                     )
             '''
             if device_group_connector.add_device_group(group_name, attribute, value, logged_user.username, logged_user.role_type, request.remote_addr):
+                print("Device group: " + group_name + "added")
                 status=201
                 message="Device(s) added to group"
             else:
+                print("Failed to add group: " + group_name + "to database")
                 status = 402
                 message = "Device Group not created, group name or value already exists, or device could belong to multiple groups"
         else:
             status= 401
             message = "Unauthorized"
+        print(message)
         return jsonify(
             status=status,
             message=message,
@@ -106,7 +114,7 @@ class Device_Groups(Resource):
         else:
             status= 401
             message = "Unauthorized"
-
+        print(message)
         return jsonify(
             status=status,
             message=message,

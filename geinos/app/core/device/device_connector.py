@@ -217,6 +217,17 @@ def get_device_access(device_sn):
         return True
     s.close()
     return False
+def get_scep_fail():
+    Session = sessionmaker(bind=engine)
+    s = Session()
+    query = s.query(Device)
+    result = []
+    for d in query:
+        if get_rdy_scep(d):
+            result.append(d.serial_number)
+    s.close()
+    return result
+
 def set_device_access(device_sn,state):
     Session = sessionmaker(bind=engine)
     s = Session()

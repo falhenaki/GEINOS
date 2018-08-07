@@ -16,6 +16,7 @@ def add_list_of_devices(entries, filename, username, user_role, request_ip):
 
 
 def apply_template(sn, ip, user, pw):
+    print(sn,ip,user,pw)
     if device_connector.device_exists_and_templated(sn):
         config_path, template_path = device_connector.get_device_template(sn)
         rendered_template = xml_templates.parse_config_params(config_path, template_path, sn)
@@ -40,20 +41,26 @@ def set_scep(host, user, passwd, serial):
     if "Error" in otp:
         return otp
     dev = Device(host=host, username=user, password=passwd)
+    dev.open()
     scep_info = scep_connector.get_scep()
     if scep_info is None:
         return 'Error: SCEP information not in database'
         
     scep_thumb = scep_info.thumbprint
-    cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
+    try:
+        cert_server = scep_config.format_config_cert_server(scep_info.cert_server_id,
                                                         scep_info.server,
                                                         scep_info.digestalgo, scep_info.encryptalgo)
-    ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
-    cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
+        ca_server = scep_config.format_config_ca_server(scep_info.ca_server_id,scep_thumb)
+        cert_info = scep_config.format_config_cert_info(scep_info.cert_info_id, serial,scep_info.country,scep_info.state,
                                                     scep_info.locale,scep_info.organization,scep_info.org_unit)
-    cert_config = device_access.set_config(host, user, passwd, cert_server)
-    ca_config = device_access.set_config(host, user, passwd, ca_server)
-    cert_info_config = device_access.set_config(host, user, passwd, cert_info)
+        cert_config = device_access.set_config(host, user, passwd, cert_server,dev)
+        ca_config = device_access.set_config(host, user, passwd, ca_server,dev)
+        cert_info_config = device_access.set_config(host, user, passwd, cert_info,dev)
+    except Exception as ex:
+        print("Exception in set_scep: " + str(ex))
+        return "Error: " + str(ex)
+    result = None
     if cert_config is False:
         return "Error: Failed to config Certificate server information"
         
@@ -65,29 +72,27 @@ def set_scep(host, user, passwd, serial):
         
     pk = device_access.generate_private_key(dev,scep_info.key_id)
     if pk is False:
-        return "Error: Failed to generate private key"
+        result = "Error: Failed to generate private key"
         
     if "complete" not in pk:
-       return "Error: Failed to config Certificate server information"
-       
-    ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
-    if ca_cert is False:
-        return "Error: Failed to get CA Cert"
+        result = "Error: Failed to config Certificate server information"
+    if result is None:
+        ca_cert = device_access.get_ca_certs(dev, scep_info.ca_cert_id, scep_info.cert_server_id, scep_info.ca_server_id)
+        if ca_cert is False:
+            result = "Error: Failed to get CA Cert"
         
-    if "complete" not in ca_cert:
-        return "Error: Device return ed the following when attempt to get a CA Cert:" + ca_cert
-        
-    client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
+        if "complete" not in ca_cert:
+            result = "Error: Device return ed the following when attempt to get a CA Cert:" + ca_cert
+    if result is None:
+        client_cert = device_access.get_client_cert(dev, scep_info.cert_server_id, scep_info.ca_server_id, scep_info.client_cert_id,
                     scep_info.cert_info_id,scep_info.ca_cert_id,scep_info.key_id,otp)
-    if client_cert is False:
-        return "Error: Failed to get Client Cert"
+        if client_cert is False:
+            result = "Error: Failed to get Client Cert"
         
-    if "complete" not in client_cert:
-        return  \
+        if "complete" not in client_cert:
+            result = \
                "Error: Device return ed the following when attempt to get a Client Cert:" + client_cert
-    return "Device (sn:{})".format(serial) + "Client Certificate Obtained"
-
-def do_it_all(host,user,passwd,serial):
-    #set_scep(host,user,passwd,serial)
-    apply_template(serial, host,
-                   user, passwd)
+    dev.close()
+    if result is None:
+        result = "Device (sn:{})".format(serial) + "Client Certificate Obtained"
+    return result

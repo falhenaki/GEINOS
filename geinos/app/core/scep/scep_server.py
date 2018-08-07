@@ -83,6 +83,7 @@ def add_scep(server,username,password,digest,encrypt,cert_info_id,ca_server_id,c
 
 def update_thumbprint(thumb):
     server = scep_connector.get_scep()
+    print(thumb)
     if scep_connector.add_thumbprint(server,thumb):
         return True
     else:

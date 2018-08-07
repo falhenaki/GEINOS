@@ -59,7 +59,7 @@ class Register(Resource):
                 )
 
             else:
-                print("Device Registered")
+                print("Device Registered: " + serial_number)
                 status=200
                 message="Success"
         else:

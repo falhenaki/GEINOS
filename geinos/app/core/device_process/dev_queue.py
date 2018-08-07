@@ -21,7 +21,7 @@ def try_add_dev_queue(serial_number):
             tasks_connector.add_task(serial_number,'In queue for config')
             log_connector.add_log( "Queue Device {}".format(serial_number),'In queue for config',
                                    'System', 'None', 'None')
-            device_connector.set_device_access(serial_number,"TRUE")
+            #device_connector.set_device_access(serial_number,"TRUE")
             device_queue.put({'sn':serial_number,'process':'config'})
             return True
     if "TRUE" in status['cert_req'] and "TRUE" not in status['cert_obt']:
@@ -42,3 +42,9 @@ def try_add_group_queue(group_name):
         try_add_dev_queue(device['serial_number'])
 
 
+def retry_failed_cert():
+    dev_list = device_connector.get_scep_fail()
+    if dev_list.count is 0:
+        return False
+    for device in dev_list:
+        try_add_dev_queue(device)

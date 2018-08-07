@@ -16,13 +16,15 @@ def get_uptime(host, user, passwd):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return
-    finally:
-        dev.close()
 
-def set_config(host, user, passwd, t_conf):
+
+def set_config(host, user, passwd, t_conf,device=None):
     try:
-        dev = Device(host=host,username=user,password=passwd)
-        dev.open()
+        if device is None:
+            dev = Device(host=host,username=user,password=passwd)
+            dev.open()
+        else:
+            dev = device
         with Config(dev) as cm:
             print(t_conf)
             rsp = cm.load(content=t_conf)
@@ -33,8 +35,6 @@ def set_config(host, user, passwd, t_conf):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return False
-    finally:
-        dev.close()
     return True
 
 def get_config(host, user, passwd):
@@ -60,14 +60,13 @@ def get_interface_address(host="192.168.1.1", username="admin", password="admin"
             dt = json.loads(out)
             ifip = dt['data']['interfaces-state']['interface']['ipv4']['address']['ip']
             return ifip
-    except:
-        print("COULD NOT GET IF ADDRESS")
+    except Exception as ex:
+        print("COULD NOT GET IF ADDRESS: " + str(ex))
     finally:
         dev.close()
 
 def generate_private_key(dev, key_name):
     try:
-        dev.open()
         state = "Failed to open connection to device"
         with PKI(dev) as pki:
             rsp = pki.get_priv_keys()
@@ -88,20 +87,21 @@ def generate_private_key(dev, key_name):
     except ConnectError as err:
         print ("Cannot connect to device: {0}".format(err))
         return False
-    finally:
-        dev.close()
+    except Exception as ex:
+        print("Exception in Generatre Private Key: " + str(ex))
+
     return state
 
 
 def get_ca_certs(dev,cert_id,cert_server_id, ca_server_id):
     try:
         state = "failed to connect"
-        dev.open()
         with PKI(dev) as pki:
             rsp = pki.get_ca_certs()
             pki.import_ca_cert_scep(cert_id= cert_id, cert_server_id=cert_server_id, ca_server_id=ca_server_id)
             done = False
             while not done:
+                print("get_ca_cert \n")
                 status = pki.get_ca_cert_import_status()
                 print(status)
                 state = status['data']['pki']['ca-certs']['import-status']['state']
@@ -114,15 +114,12 @@ def get_ca_certs(dev,cert_id,cert_server_id, ca_server_id):
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
         return False
-    finally:
-        dev.close()
     return state
 
 
 def get_client_cert(dev, cert_server_id, ca_server_id, cert_id, cert_info_id, ca_cert_id, key_id, otp):
     try:
         state = "failed to connect"
-        dev.open()
         with PKI(dev) as pki:
             rsp = pki.get_client_certs()
             print(rsp)
@@ -131,9 +128,12 @@ def get_client_cert(dev, cert_server_id, ca_server_id, cert_id, cert_info_id, ca
                                         otp=otp)
             done = False
             while not done:
+                print("Get Client cert \n")
+                print("OTP:" + otp)
                 status = pki.get_client_cert_import_status()
                 state = status['data']['pki']['client-certs']['import-status']['state']
-                if state in ['inactive', 'complete', 'cancelled', 'failed']:
+                print(state)
+                if state in ['inactive', 'complete', 'cancelled', 'failure']:
                     done = True
                 else:
                     time.sleep(5)
@@ -141,8 +141,6 @@ def get_client_cert(dev, cert_server_id, ca_server_id, cert_id, cert_info_id, ca
     except ConnectError as err:
         print("Cannot connect to device: {0}".format(err))
         return False
-    finally:
-        dev.close()
     return state
 
 

@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import request, jsonify
 from app.core.scep import scep_server
 from app.core.api import request_parser
+from app.core.device_process import dev_queue
 """
  HTTP Method: PUT
  Authorization: Required
@@ -65,8 +66,9 @@ class Scep(Resource):
                     message = thumb
                 else:
                     scep_server.update_thumbprint(thumb)
+                    dev_queue.retry_failed_cert()
                     status = 200
-                    message = "SCEP server added"
+                    message = "Thumb Print Obtained"
             else:
                 status = 403
                 message = "Error adding SCEP server to database"

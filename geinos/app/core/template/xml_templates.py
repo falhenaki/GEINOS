@@ -64,6 +64,7 @@ def get_template(xml_filename):
     try:
         with open(os.path.join(app.config['UPLOADS_FOLDER'], sec_filename), 'r') as myfile:
             data = myfile.read()
+            print(sec_filename)
     except FileNotFoundError:
         print("Attempted to get_template {} but file was not found".format(xml_filename))
         raise Conflict("File Not Found")

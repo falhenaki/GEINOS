@@ -51,7 +51,7 @@ Add thumprint to server. input is a Scep object, and a string
 
 def add_thumbprint(server,thumb):
     Session = sessionmaker(bind=engine)
-    s = Session.object_session(server)
+    s = Session()
     scep = server
     scep.set_thumb(thumb)
     s.add(scep)
